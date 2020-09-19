@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 import datetime
+from phone_field import PhoneField
 
 
 # Create your models here.
@@ -9,11 +10,13 @@ import datetime
 class Publisher(models.Model):
     name = models.CharField(max_length=150)
     address = models.TextField(max_length=200)
+    phone = PhoneField(blank=True, help_text="Contact phone number")
     url = models.URLField()
 
 
 class Author(models.Model):
     name = models.CharField(max_length=150, null=False)
+    phone = PhoneField(blank=True, help_text="Contact phone number")
     address = models.CharField(max_length=150)
 
 
@@ -30,13 +33,14 @@ class Book(models.Model):
 
     class Formats(models.TextChoices):
         E_BOOK = "E-BK", _("E-Book")
-        HARD_COVER = "HD-CVR", _("Hand Cover")
+        HARD_COVER = "HD-CVR", _("Hardcover")
+        PAPER_BACK = "PPR-BCK", _("Paperback")
 
     title = models.CharField(max_length=150)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, default=None)
     category = models.CharField(max_length=5, choices=Categories.choices)
-    format = models.CharField(max_length=7, null=True)
+    format = models.CharField(max_length=7, choices=Formats.choices)
     isbn = models.CharField(max_length=13)
     year = models.IntegerField(
         _("year"), choices=YEAR_CHOICES, default=datetime.datetime.now().year
@@ -52,3 +56,15 @@ class Image(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     book_cover = models.ImageField(upload_to="images/")
     last_update = models.DateTimeField(auto_now=True)
+
+
+class Warehouse(models.Model):
+    # code =
+    address = models.TextField(max_length=200)
+    phone = PhoneField(blank=True, help_text="Contact phone number")
+
+
+class WarehouseBook(models.Model):
+    warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    count = models.IntegerField()

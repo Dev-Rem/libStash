@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "payments.apps.PaymentsConfig",
     "users.apps.UsersConfig",
     "rest_framework",
-    "phonenumber_field",
+    "phone_field",
 ]
 
 MIDDLEWARE = [
