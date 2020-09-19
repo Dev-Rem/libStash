@@ -60,12 +60,13 @@ class Image(models.Model):
 
 
 class Warehouse(models.Model):
+    # uuid = uuid.uuid4().hex[:6].upper()
+    # code = models.AutoField()
     address = models.TextField(max_length=200)
     phone = PhoneField(blank=True, help_text="Contact phone number")
 
 
 class WarehouseBook(models.Model):
-    code = uuid.uuid4().hex[:6].upper()
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     count = models.IntegerField()
