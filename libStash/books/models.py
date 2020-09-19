@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 import datetime
+import uuid
 from phone_field import PhoneField
 
 
@@ -59,12 +60,12 @@ class Image(models.Model):
 
 
 class Warehouse(models.Model):
-    # code =
     address = models.TextField(max_length=200)
     phone = PhoneField(blank=True, help_text="Contact phone number")
 
 
 class WarehouseBook(models.Model):
+    code = uuid.uuid4().hex[:6].upper()
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     count = models.IntegerField()
