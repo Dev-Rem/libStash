@@ -5,13 +5,13 @@ from books.models import Publisher, Book, Author, Warehouse, WarehouseBook, Imag
 class PublisherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publisher
-        fields = ["name", "address", "phone", "url"]
+        fields = ["name", "address", "phone", "url", "last_update"]
 
 
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
-        fields = ["name", "phone", "address"]
+        fields = ["name", "phone", "address", "last_update"]
 
 
 class BookSerializer(serializers.ModelSerializer):
@@ -20,6 +20,7 @@ class BookSerializer(serializers.ModelSerializer):
         fields = [
             "title",
             "author",
+            "book_cover",
             "publisher",
             "category",
             "format",
@@ -36,13 +37,13 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = ["book", "book_cover", "last_update"]
 
 
-class WarehouseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Warehouse
-        fields = ["address", "phone"]
+# class WarehouseSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Warehouse
+#         fields = ["address", "phone", 'last_update']
 
 
-class WarehouseBookSerilizer(serializers.ModelSerializer):
-    class meta:
-        model = WarehouseBook
-        fields = ["warehouse", "book", "count"]
+# class WarehouseBookSerilizer(serializers.ModelSerializer):
+#     class meta:
+#         model = WarehouseBook
+#         fields = ["warehouse", "book", "count", 'last_update']

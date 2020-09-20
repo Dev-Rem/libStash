@@ -13,12 +13,25 @@ class Publisher(models.Model):
     address = models.TextField(max_length=200)
     phone = PhoneField(blank=True, help_text="Contact phone number")
     url = models.URLField()
+    last_update = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{ self.name }"
 
 
 class Author(models.Model):
     name = models.CharField(max_length=150, null=False)
     phone = PhoneField(blank=True, help_text="Contact phone number")
-    address = models.CharField(max_length=150)
+    address = models.TextField(max_length=150)
+    last_update = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
+class Image(models.Model):
+    book_cover = models.ImageField(upload_to="images/")
+    last_update = models.DateTimeField(auto_now=True)
 
 
 class Book(models.Model):
@@ -39,6 +52,7 @@ class Book(models.Model):
 
     title = models.CharField(max_length=150)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    book_cover = models.ForeignKey(Image, on_delete=models.CASCADE)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, default=None)
     category = models.CharField(max_length=5, choices=Categories.choices)
     format = models.CharField(max_length=7, choices=Formats.choices)
@@ -50,13 +64,7 @@ class Book(models.Model):
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.title
-
-
-class Image(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    book_cover = models.ImageField(upload_to="images/")
-    last_update = models.DateTimeField(auto_now=True)
+        return f"{self.title}"
 
 
 class Warehouse(models.Model):
@@ -64,9 +72,17 @@ class Warehouse(models.Model):
     # code = models.AutoField()
     address = models.TextField(max_length=200)
     phone = PhoneField(blank=True, help_text="Contact phone number")
+    last_update = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.address}"
 
 
 class WarehouseBook(models.Model):
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     count = models.IntegerField()
+    last_update = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.book}, {self.count}"
