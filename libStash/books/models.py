@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+from django.template.defaultfilters import slugify
 from django.utils.translation import gettext_lazy as _
 import datetime
 import uuid
@@ -68,8 +70,6 @@ class Book(models.Model):
 
 
 class Warehouse(models.Model):
-    # uuid = uuid.uuid4().hex[:6].upper()
-    # code = models.AutoField()
     address = models.TextField(max_length=200)
     phone = PhoneField(blank=True, help_text="Contact phone number")
     last_update = models.DateTimeField(auto_now=True)

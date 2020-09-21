@@ -3,7 +3,7 @@ from .views import BookList, BookDetail, AuthorDetail
 
 urlpatterns = [
     # url paths
-    path("books/", BookList.as_view()),
-    path("books/<int:pk>", BookDetail.as_view()),
-    path("authors/<int:pk>", AuthorDetail.as_view()),
+    path("", BookList.as_view()),
+    path("book/<int:pk>", BookDetail.as_view(), name="book_detail"),
+    path("author/<int:pk>", AuthorDetail.as_view(), name="author_deatail"),
 ]

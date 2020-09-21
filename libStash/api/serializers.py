@@ -35,15 +35,3 @@ class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
         fields = ["book", "book_cover", "last_update"]
-
-
-# class WarehouseSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Warehouse
-#         fields = ["address", "phone", 'last_update']
-
-
-# class WarehouseBookSerilizer(serializers.ModelSerializer):
-#     class meta:
-#         model = WarehouseBook
-#         fields = ["warehouse", "book", "count", 'last_update']

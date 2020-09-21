@@ -4,8 +4,6 @@ from .serializers import (
     AuthorSerializer,
     BookSerializer,
     ImageSerializer,
-    # WarehouseSerializer,
-    # WarehouseBookSerilizer
 )
 from rest_framework import generics
 
