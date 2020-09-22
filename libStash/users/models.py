@@ -83,7 +83,7 @@ class Cart(models.Model):
     last_update = models.DateTimeField()
 
 
-class CartBook(models.Model):
+class BookInCart(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     count = models.IntegerField()

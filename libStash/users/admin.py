@@ -1,8 +1,7 @@
-from django.contrib import admin
-from .models import Account, Address, Cart, CartBook
-from django.contrib.auth.admin import UserAdmin
 from django import forms
+from django.contrib import admin
 from django.contrib.auth.models import Group
+from .models import Account, Address, Cart, BookInCart
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
@@ -39,7 +38,7 @@ class UserCreationForm(forms.ModelForm):
         return user
 
 
-class AccountAdmin(UserAdmin):
+class AccountAdmin(BaseUserAdmin):
     list_display = (
         "firstname",
         "lastname",
@@ -69,6 +68,7 @@ class AccountAdmin(UserAdmin):
 
 
 admin.site.register(Account, AccountAdmin)
+admin.site.unregister(Group)
 
 
 @admin.register(Address)
@@ -81,6 +81,6 @@ class CartAdmin(admin.ModelAdmin):
     list_display = ("user",)
 
 
-@admin.register(CartBook)
-class CartBookAdmin(admin.ModelAdmin):
+@admin.register(BookInCart)
+class BookInCartAdmin(admin.ModelAdmin):
     list_display = ("cart", "book", "count")

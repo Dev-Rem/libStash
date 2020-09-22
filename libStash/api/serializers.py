@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from books.models import Publisher, Book, Author, Warehouse, WarehouseBook, Image
-
-# from users.models import Account, Address, Cart, CartBook
+from users.models import Account, Address, Cart, BookInCart
 
 
 class PublisherSerializer(serializers.ModelSerializer):
@@ -39,7 +38,22 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = ["book", "book_cover", "last_update"]
 
 
-# class AccountSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Account
-#         fields = ['firstname', 'lastname', 'email', ]
+class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ["firstname", "lastname", "email"]
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    model = Address
+    fields = ["address1", "address2", "zip_code", "country"]
+
+
+class CartSerializer(serializers.ModelSerializer):
+    model = Cart
+    fields = ["user"]
+
+
+class BookInCartSerializer(serializers.ModelSerializer):
+    model = BookInCart
+    fields = ["cart", "book", "count"]

@@ -1,11 +1,16 @@
 from books.models import Publisher, Book, Author, Warehouse, WarehouseBook, Image
+from users.models import Account, Address, Cart, BookInCart
 from .serializers import (
     PublisherSerializer,
     AuthorSerializer,
     BookSerializer,
     ImageSerializer,
+    AccountSerializer,
+    AddressSerializer,
+    CartSerializer,
+    BookInCartSerializer,
 )
-from rest_framework import generics
+from rest_framework import generics, permissions
 
 # Create your views here.
 
@@ -33,3 +38,8 @@ class ImageDetail(generics.RetrieveAPIView):
 class PublisherDetail(generics.RetrieveAPIView):
     queryset = Publisher.objects.all()
     serializer_class = PublisherSerializer
+
+
+class AccountDetail(generics.RetrieveUpdateAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
