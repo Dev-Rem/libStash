@@ -27,14 +27,6 @@ class Author(models.Model):
     address = models.TextField(max_length=150)
     last_update = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f"{self.name}"
-
-
-class Image(models.Model):
-    book_cover = models.ImageField(upload_to="images/")
-    last_update = models.DateTimeField(auto_now=True)
-
 
 class Book(models.Model):
     class Categories(models.TextChoices):
@@ -54,7 +46,6 @@ class Book(models.Model):
 
     title = models.CharField(max_length=150)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    book_cover = models.ForeignKey(Image, on_delete=models.CASCADE)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, default=None)
     category = models.CharField(max_length=5, choices=Categories.choices)
     format = models.CharField(max_length=7, choices=Formats.choices)
@@ -67,6 +58,12 @@ class Book(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+
+
+class Image(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, default=None)
+    book_cover = models.ImageField(upload_to="images/")
+    last_update = models.DateTimeField(auto_now=True)
 
 
 class Warehouse(models.Model):

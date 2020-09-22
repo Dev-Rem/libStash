@@ -3,22 +3,23 @@ from books.models import Publisher, Book, Author, Warehouse, WarehouseBook, Imag
 from users.models import Account, Address, Cart, BookInCart
 
 
-class PublisherSerializer(serializers.ModelSerializer):
+class PublisherSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Publisher
-        fields = ["name", "address", "phone", "url", "last_update"]
+        fields = ["url", "name", "address", "phone", "url", "last_update"]
 
 
-class AuthorSerializer(serializers.ModelSerializer):
+class AuthorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Author
-        fields = ["name", "phone", "address", "last_update"]
+        fields = ["url", "name", "phone", "address", "last_update"]
 
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = [
+            "url",
             "title",
             "author",
             "book_cover",
@@ -28,32 +29,31 @@ class BookSerializer(serializers.ModelSerializer):
             "isbn",
             "year",
             "price",
-            "last_update",
         ]
 
 
-class ImageSerializer(serializers.ModelSerializer):
+class ImageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Image
-        fields = ["book", "book_cover", "last_update"]
+        fields = ["url", "book", "book_cover", "last_update"]
 
 
-class AccountSerializer(serializers.ModelSerializer):
+class AccountSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Account
-        fields = ["firstname", "lastname", "email"]
+        fields = ["url", "firstname", "lastname", "email"]
 
 
-class AddressSerializer(serializers.ModelSerializer):
+class AddressSerializer(serializers.HyperlinkedModelSerializer):
     model = Address
-    fields = ["address1", "address2", "zip_code", "country"]
+    fields = ["url", "address1", "address2", "zip_code", "country"]
 
 
-class CartSerializer(serializers.ModelSerializer):
+class CartSerializer(serializers.HyperlinkedModelSerializer):
     model = Cart
-    fields = ["user"]
+    fields = ["url", "user"]
 
 
-class BookInCartSerializer(serializers.ModelSerializer):
+class BookInCartSerializer(serializers.HyperlinkedModelSerializer):
     model = BookInCart
-    fields = ["cart", "book", "count"]
+    fields = ["url", "cart", "book", "count"]
