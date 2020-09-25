@@ -11,10 +11,10 @@ from phone_field import PhoneField
 
 
 class Publisher(models.Model):
-    name = models.CharField(max_length=150)
-    address = models.TextField(max_length=200)
-    phone = PhoneField(blank=True, help_text="Contact phone number")
-    url = models.URLField()
+    name = models.CharField("Publisher name", max_length=150)
+    address = models.TextField("Address", max_length=200)
+    phone = PhoneField("Phone number", blank=True, help_text="Contact phone number")
+    publisher_url = models.URLField()
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -22,9 +22,9 @@ class Publisher(models.Model):
 
 
 class Author(models.Model):
-    name = models.CharField(max_length=150, null=False)
-    phone = PhoneField(blank=True, help_text="Contact phone number")
-    address = models.TextField(max_length=150)
+    name = models.CharField("Author name", max_length=150, null=False)
+    phone = PhoneField("Phone number", blank=True, help_text="Contact phone number")
+    address = models.TextField("Address", max_length=150)
     last_update = models.DateTimeField(auto_now=True)
 
 
@@ -44,16 +44,16 @@ class Book(models.Model):
         HARD_COVER = "HD-CVR", _("Hardcover")
         PAPER_BACK = "PPR-BCK", _("Paperback")
 
-    title = models.CharField(max_length=150)
+    title = models.CharField("Title", max_length=150)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, default=None)
-    category = models.CharField(max_length=5, choices=Categories.choices)
-    format = models.CharField(max_length=7, choices=Formats.choices)
-    isbn = models.CharField(max_length=13)
+    category = models.CharField("Category", max_length=5, choices=Categories.choices)
+    format = models.CharField("Format", max_length=7, choices=Formats.choices)
+    isbn = models.CharField("ISBN", max_length=13)
     year = models.IntegerField(
         _("year"), choices=YEAR_CHOICES, default=datetime.datetime.now().year
     )
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    price = models.DecimalField("Price", max_digits=10, decimal_places=2, default=0)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -67,8 +67,8 @@ class Image(models.Model):
 
 
 class Warehouse(models.Model):
-    address = models.TextField(max_length=200)
-    phone = PhoneField(blank=True, help_text="Contact phone number")
+    address = models.TextField("Address", max_length=200)
+    phone = PhoneField("Phone number", blank=True, help_text="Contact phone number")
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -78,7 +78,7 @@ class Warehouse(models.Model):
 class WarehouseBook(models.Model):
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    count = models.IntegerField()
+    count = models.IntegerField("Book count", default=0)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):

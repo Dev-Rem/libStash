@@ -6,23 +6,26 @@ from users.models import Account, Address, Cart, BookInCart
 class PublisherSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Publisher
-        fields = ["url", "name", "address", "phone", "url", "last_update"]
+        fields = ["url", "id", "name", "address", "phone", "publisher_url"]
 
 
 class AuthorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Author
-        fields = ["url", "name", "phone", "address", "last_update"]
+        fields = ["url", "id", "name", "phone", "address"]
 
 
-class BookSerializer(serializers.ModelSerializer):
+class BookSerializer(serializers.HyperlinkedModelSerializer):
+    author = AuthorSerializer(read_only=True)
+    publisher = PublisherSerializer(read_only=True)
+
     class Meta:
         model = Book
         fields = [
             "url",
+            "id",
             "title",
             "author",
-            "book_cover",
             "publisher",
             "category",
             "format",
@@ -35,25 +38,27 @@ class BookSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Image
-        fields = ["url", "book", "book_cover", "last_update"]
-
-
-class AccountSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Account
-        fields = ["url", "firstname", "lastname", "email"]
+        fields = ["url", "id", "book", "book_cover"]
 
 
 class AddressSerializer(serializers.HyperlinkedModelSerializer):
     model = Address
-    fields = ["url", "address1", "address2", "zip_code", "country"]
+    fields = ["url", "id", "address1", "address2", "zip_code", "country"]
 
 
 class CartSerializer(serializers.HyperlinkedModelSerializer):
     model = Cart
-    fields = ["url", "user"]
+    fields = ["url", "id", "user"]
 
 
 class BookInCartSerializer(serializers.HyperlinkedModelSerializer):
     model = BookInCart
-    fields = ["url", "cart", "book", "count"]
+    fields = ["url", "id", "cart", "book", "count"]
+
+
+class AccountSerializer(serializers.HyperlinkedModelSerializer):
+    address = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = Account
+        fields = ["url", "id", "firstname", "lastname", "email", "address"]

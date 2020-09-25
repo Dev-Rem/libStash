@@ -61,7 +61,13 @@ class AccountAdmin(BaseUserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("firstname", "lastname", "email", "password1", "password2"),
+                "fields": (
+                    "firstname",
+                    "lastname",
+                    "email",
+                    "password1",
+                    "password2",
+                ),
             },
         ),
     )
@@ -73,12 +79,12 @@ admin.site.unregister(Group)
 
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
-    list_display = ("user", "address1", "address2", "zip_code", "country")
+    list_display = ("account", "address1", "address2", "zip_code", "country")
 
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-    list_display = ("user",)
+    list_display = ("account", "state")
 
 
 @admin.register(BookInCart)

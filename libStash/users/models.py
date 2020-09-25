@@ -44,17 +44,19 @@ class AccountManager(BaseUserManager):
 
 
 class Account(AbstractBaseUser):
-    firstname = models.CharField(verbose_name="first name", max_length=200)
-    lastname = models.CharField(verbose_name="last name", max_length=200)
-    email = models.EmailField(verbose_name="email", max_length=100, unique=True)
+    id = models.AutoField(primary_key=True)
+    firstname = models.CharField("First name", max_length=200)
+    lastname = models.CharField("Last name", max_length=200)
+    email = models.EmailField("Email", max_length=100, unique=True)
     date_joined = models.DateTimeField(
         verbose_name="date joined", auto_now=False, auto_now_add=True
     )
-    last_login = models.DateTimeField(verbose_name="last login", auto_now=True)
+    last_login = models.DateTimeField(verbose_name="Last login", auto_now=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    last_update = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["firstname", "lastname"]
@@ -71,19 +73,22 @@ class Account(AbstractBaseUser):
 
 
 class Address(models.Model):
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
     address1 = models.CharField("Address line 1", max_length=1024)
     address2 = models.CharField("Address line 2", max_length=1024, blank=True)
     zip_code = models.CharField("ZIP / Postal code", max_length=12)
     country = models.CharField("Country", max_length=100)
+    last_update = models.DateTimeField(auto_now=True)
 
 
 class Cart(models.Model):
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)
-    last_update = models.DateTimeField()
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    state = models.BooleanField("State", default=False)
+    last_update = models.DateTimeField(auto_now=True)
 
 
 class BookInCart(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    count = models.IntegerField()
+    count = models.IntegerField("Book count", default=0)
+    last_update = models.DateTimeField(auto_now=True)

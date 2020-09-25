@@ -24,7 +24,7 @@ class WarehouseAdmin(admin.ModelAdmin):
 
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):
-    list_display = ("name", "address", "phone", "url")
+    list_display = ("name", "address", "phone", "publisher_url")
 
 
 @admin.register(WarehouseBook)
