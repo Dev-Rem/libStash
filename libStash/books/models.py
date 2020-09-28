@@ -59,7 +59,6 @@ class Book(models.Model):
     def __str__(self):
         return f"{self.title}"
 
-
 class Image(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, default=None)
     book_cover = models.ImageField(upload_to="images/")

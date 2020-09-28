@@ -7,19 +7,16 @@ from datetime import date
 
 
 class AccountManager(BaseUserManager):
-    def create_user(self, firstname, lastname, email, password=None):
+    def create_user(self, firstname, lastname, email, password, password2):
         if not firstname:
             raise ValueError("Please provide a valid  first name")
         if not lastname:
             raise ValueError("Please provide a valid last name")
-        # if not username:
-        #     raise ValueError("Please provide a valid user name")
         if not email:
             raise ValueError("Please provide a valid email address")
 
         user = self.model(
             firstname=firstname,
-            # username=username,
             lastname=lastname,
             email=self.normalize_email(email),
         )
@@ -31,7 +28,6 @@ class AccountManager(BaseUserManager):
         user = self.create_user(
             firstname=firstname,
             lastname=lastname,
-            # username=username,
             email=self.normalize_email(email),
             password=password,
         )
@@ -73,7 +69,12 @@ class Account(AbstractBaseUser):
 
 
 class Address(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    account = models.ForeignKey(
+        Account,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="address",
+    )
     address1 = models.CharField("Address line 1", max_length=1024)
     address2 = models.CharField("Address line 2", max_length=1024, blank=True)
     zip_code = models.CharField("ZIP / Postal code", max_length=12)
@@ -92,3 +93,15 @@ class BookInCart(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     count = models.IntegerField("Book count", default=0)
     last_update = models.DateTimeField(auto_now=True)
+
+
+class BookReview(models.Model):
+    book = models.ForeignKey(Book, null=True, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, null=True, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=500, null=True)
+    # reply = models.ForeignKey(
+    #     "self", null=True, related_name="replies", on_delete=models.CASCADE
+    # )
+    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now=False, auto_now_add=True)

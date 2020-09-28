@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from .models import Account, Address, Cart, BookInCart
+from .models import Account, Address, Cart, BookInCart, BookReview
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
@@ -90,3 +90,8 @@ class CartAdmin(admin.ModelAdmin):
 @admin.register(BookInCart)
 class BookInCartAdmin(admin.ModelAdmin):
     list_display = ("cart", "book", "count")
+
+
+@admin.register(BookReview)
+class BookReviewAdmin(admin.ModelAdmin):
+    list_display = ("book", "account", "comment", "is_active", "is_deleted")

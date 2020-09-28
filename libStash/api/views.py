@@ -1,6 +1,7 @@
 from rest_framework import permissions, generics, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from .permissions import IsRegistered
 from books.models import Publisher, Book, Author, Warehouse, WarehouseBook, Image
 from users.models import Account, Address, Cart, BookInCart
@@ -97,6 +98,7 @@ class PublisherDetail(APIView):
 class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
+
 
 class AddressDetail(APIView):
     """
