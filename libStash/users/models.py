@@ -7,7 +7,7 @@ from datetime import date
 
 
 class AccountManager(BaseUserManager):
-    def create_user(self, firstname, lastname, email, password, password2):
+    def create_user(self, firstname, lastname, email, password=None):
         if not firstname:
             raise ValueError("Please provide a valid  first name")
         if not lastname:
@@ -38,7 +38,6 @@ class AccountManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-
 class Account(AbstractBaseUser):
     id = models.AutoField(primary_key=True)
     firstname = models.CharField("First name", max_length=200)
@@ -68,6 +67,7 @@ class Account(AbstractBaseUser):
         return True
 
 
+
 class Address(models.Model):
     account = models.ForeignKey(
         Account,
@@ -78,19 +78,21 @@ class Address(models.Model):
     address1 = models.CharField("Address line 1", max_length=1024)
     address2 = models.CharField("Address line 2", max_length=1024, blank=True)
     zip_code = models.CharField("ZIP / Postal code", max_length=12)
+    city = models.CharField('City', max_length=1024, null=True, blank=True)
     country = models.CharField("Country", max_length=100)
     last_update = models.DateTimeField(auto_now=True)
 
 
 class Cart(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    state = models.BooleanField("State", default=False)
+    total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+    is_active = models.BooleanField("State", default=False)
     last_update = models.DateTimeField(auto_now=True)
 
 
 class BookInCart(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='item_in_cart')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='book_in_cart')
     count = models.IntegerField("Book count", default=0)
     last_update = models.DateTimeField(auto_now=True)
 
@@ -99,9 +101,6 @@ class BookReview(models.Model):
     book = models.ForeignKey(Book, null=True, on_delete=models.CASCADE)
     account = models.ForeignKey(Account, null=True, on_delete=models.CASCADE)
     comment = models.CharField(max_length=500, null=True)
-    # reply = models.ForeignKey(
-    #     "self", null=True, related_name="replies", on_delete=models.CASCADE
-    # )
     is_active = models.BooleanField(default=True)
-    is_deleted = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now=False, auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)

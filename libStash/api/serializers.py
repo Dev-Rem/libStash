@@ -1,28 +1,25 @@
 from rest_framework import serializers
-from books.models import Publisher, Book, Author, Warehouse, WarehouseBook, Image
-from users.models import Account, Address, Cart, BookInCart, BookReview
+from books.models import *
+from users.models import *
 
 
-class PublisherSerializer(serializers.HyperlinkedModelSerializer):
+class PublisherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publisher
-        fields = ["url", "id", "name", "address", "phone", "publisher_url"]
+        fields = [ "id", "name", "address", "phone", "publisher_url"]
 
-
-class AuthorSerializer(serializers.HyperlinkedModelSerializer):
+class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
-        fields = ["url", "id", "name", "phone", "address"]
+        fields = [ "id", "name", "phone", "address"]
 
-
-class BookSerializer(serializers.HyperlinkedModelSerializer):
+class BookSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(read_only=True)
     publisher = PublisherSerializer(read_only=True)
 
     class Meta:
         model = Book
         fields = [
-            "url",
             "id",
             "title",
             "author",
@@ -34,68 +31,31 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
             "price",
         ]
 
-
-class ImageSerializer(serializers.HyperlinkedModelSerializer):
+class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ["url", "id", "book", "book_cover"]
+        fields = [ "id", "book", "book_cover"]
 
+class BookInCartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookInCart
+        fields = ["id", "cart", "book", "count"]
+
+class CartSerializer(serializers.ModelSerializer):
+    item_in_cart = BookInCartSerializer(many=True)
+
+    class Meta:
+        model = Cart
+        fields = ["id", "account", 'total', "item_in_cart", "state"]
+
+class BookReviewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BookReview
+        fields = ['account', 'comment', 'date']
 
 class AddressSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Address
         fields = ["id", "address1", "address2", "zip_code", "country"]
-
-
-class AccountSerializer(serializers.HyperlinkedModelSerializer):
-    address = AddressSerializer(many=True, read_only=True)
-    password = serializers.CharField(style={"input_type": "password"}, write_only=True)
-    password_confirm = serializers.CharField(
-        style={"input_type": "password"}, write_only=True
-    )
-
-    def create(self, validated_data):
-        account = Account(
-            firstname=self.validated_data["firstname"],
-            lastname=self.validated_data["lastname"],
-            email=self.validated_data["email"],
-        )
-        password = self.validated_data["password"]
-        password_confirm = self.validated_data["password_confirm"]
-        if password != password_confirm:
-            raise serializers.ValidationError({"password": "Passwords must match"})
-        account.set_password(validated_data["password"])
-        account.save()
-        cart = Cart.objects.create(account=account, state=True).save()
-        return account
-
-    class Meta:
-        model = Account
-        fields = [
-            "url",
-            "id",
-            "firstname",
-            "lastname",
-            "email",
-            "password",
-            "password_confirm",
-            "address",
-        ]
-
-
-class CartSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Cart
-        fields = ["url", "id", "account", "state"]
-
-
-class BookInCartSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = BookInCart
-        fields = ["url", "id", "cart", "book", "count"]
-
-
-class BookReviewSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = BookReview
-        fields = ["url", "book", "account", "comment", "date"]

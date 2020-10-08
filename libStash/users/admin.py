@@ -84,7 +84,7 @@ class AddressAdmin(admin.ModelAdmin):
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-    list_display = ("account", "state")
+    list_display = ("account", 'total', "is_active")
 
 
 @admin.register(BookInCart)
@@ -94,4 +94,4 @@ class BookInCartAdmin(admin.ModelAdmin):
 
 @admin.register(BookReview)
 class BookReviewAdmin(admin.ModelAdmin):
-    list_display = ("book", "account", "comment", "is_active", "is_deleted")
+    list_display = ("book", "account", "comment", "is_active", "date")

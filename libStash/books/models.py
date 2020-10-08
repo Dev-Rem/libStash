@@ -64,6 +64,8 @@ class Image(models.Model):
     book_cover = models.ImageField(upload_to="images/")
     last_update = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.book.id}"
 
 class Warehouse(models.Model):
     address = models.TextField("Address", max_length=200)
