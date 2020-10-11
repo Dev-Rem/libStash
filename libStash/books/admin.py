@@ -5,12 +5,13 @@ from .models import Book, Image, Author, Publisher, Warehouse, WarehouseBook
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     list_display = ("title", "author", "isbn", "year")
+    search_fields = ("title", "author", "isbn", "year")
 
 
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
     list_display = ("name", "phone", "address")
-
+    search_fields = ('name',)
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
@@ -25,7 +26,7 @@ class WarehouseAdmin(admin.ModelAdmin):
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):
     list_display = ("name", "address", "phone", "publisher_url")
-
+    search_fields = ('name',)
 
 @admin.register(WarehouseBook)
 class WarehouseBookAdmin(admin.ModelAdmin):

@@ -66,8 +66,6 @@ class Account(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
-
-
 class Address(models.Model):
     account = models.ForeignKey(
         Account,
@@ -82,20 +80,19 @@ class Address(models.Model):
     country = models.CharField("Country", max_length=100)
     last_update = models.DateTimeField(auto_now=True)
 
-
 class Cart(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
     is_active = models.BooleanField("State", default=False)
     last_update = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return 'Cart for ' + str(self.account)
 
 class BookInCart(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='item_in_cart')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='book_in_cart')
     count = models.IntegerField("Book count", default=0)
     last_update = models.DateTimeField(auto_now=True)
-
 
 class BookReview(models.Model):
     book = models.ForeignKey(Book, null=True, on_delete=models.CASCADE)

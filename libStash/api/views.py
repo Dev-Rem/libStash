@@ -1,12 +1,14 @@
 from rest_framework import permissions, generics, status, viewsets, serializers
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from djoser.views import UserViewSet
+from djoser import signals, utils
+from djoser.compat import get_user_email
+from djoser.conf import settings
 from books.models import *
 from users.models import *
 from .serializers import *
 from django.http.response import Http404
-
-from django.shortcuts import redirect
+from django.contrib.auth.tokens import default_token_generator
 
 
 # Create your views here.
@@ -26,7 +28,7 @@ class BookDetail(generics.RetrieveAPIView):
     """
 
     queryset = Book.objects.all()
-    serializer_class = BookSerializer
+    serializer_class = BookDetailSerializer
 
 class AuthorDetail(generics.RetrieveAPIView):
 
@@ -37,7 +39,7 @@ class AuthorDetail(generics.RetrieveAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
 
-class BooksByAuthor(viewsets.ViewSet):
+class BooksByAuthor(generics.ListAPIView):
 
     def get_object(self, pk):
         try:
@@ -45,9 +47,9 @@ class BooksByAuthor(viewsets.ViewSet):
         except:
             return Http404
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, *args, **kwargs):
         try:
-            books = Book.objects.filter(author=self.get_object(pk))
+            books = Book.objects.filter(author=self.get_object(kwargs['pk']))
             serializer = BookSerializer(books, many=True)
             return Response(serializer.data)
         except:
@@ -58,28 +60,24 @@ class ImageDetail(generics.RetrieveAPIView):
     Get all image instances associated with the book instance.
     """
 
-    # # Get book instance
-    # def get_object(self, pk):
-    #     try:
-    #         return Book.objects.get(pk=pk)
-    #     except:
-    #         return Http404
+    # Get book instance
+    def get_object(self, pk):
+        try:
+            return Book.objects.get(pk=pk)
+        except:
+            return Http404
 
-    # # Get images for book instance
-
+    # Get images for book instance
     def retrieve(self, request, *args, **kwargs):
+        images = Image.objects.filter(book=self.get_object(kwargs['pk']))
+        serializer = ImageSerializer(images, many=True)
         return super().retrieve(request, *args, **kwargs)
     
-    def get(self, request, pk, format=None):
-        images = Image.objects.filter(book=self.get_object(pk))
-        serializer = ImageSerializer(images, many=True)
-        return Response(serializer.data)
-
 class PublisherDetail(generics.RetrieveAPIView):
     queryset = Publisher.objects.all()
     serializer_class = PublisherSerializer
 
-class BooksByPublisher(viewsets.ViewSet):
+class BooksByPublisher(generics.ListAPIView):
     
     def get_object(self, pk):
         try:
@@ -87,9 +85,9 @@ class BooksByPublisher(viewsets.ViewSet):
         except:
             return Http404
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, *args, **kwargs):
         try:
-            books = Book.objects.filter(Publisher=self.get_object(pk))
+            books = Book.objects.filter(Publisher=self.get_object(kwargs['pk']))
             serializer = BookSerializer(books, many=True)
             return Response(serializer.data)
         except:
@@ -100,15 +98,8 @@ class AddressList(generics.RetrieveAPIView):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
 
-    def get_account(self, pk):
-        try:
-            return Account.objects.get(pk=pk)
-        except:
-            return Http404
-
     def retrieve(self, request, *args, **kwargs):
-        account = self.get_account(pk=kwargs['pk'])
-        address = Address.objects.filter(account=account).order_by('-last_update')
+        address = Address.objects.filter(account=request.user).order_by('-last_update')
         serializer = AddressSerializer(address, many=True)
         return Response(serializer.data)
 
@@ -118,10 +109,9 @@ class AddressCreate(generics.CreateAPIView):
     serializer_class = AddressSerializer
 
     def create(self, request, *args, **kwargs):
-        account = Account.objects.get(email=request.user)
         serializer = AddressSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.validated_data['account'] = account
+            serializer.validated_data['account'] = request.user
             serializer.save()
             return Response({'status': 'Address Created'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -131,21 +121,14 @@ class AddressUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
 
-    def get_account(self, pk):
-        try:
-            return Account.objects.get(pk=pk)
-        except:
-            return Http404
 
     def retrieve(self, request, *args, **kwargs):
-        account = self.get_account(kwargs['pk'])
-        address = Address.objects.get(account=account, pk=kwargs['adrs_pk'])
+        address = Address.objects.get(account=request.user, pk=kwargs['adrs_pk'])
         serializer = AddressSerializer(address)
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
-        account = self.get_account(kwargs['pk'])
-        address = Address.objects.get(account=account, pk=kwargs['adrs_pk'])
+        address = Address.objects.get(account=request.user, pk=kwargs['adrs_pk'])
         serializer = AddressSerializer(address, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -153,23 +136,21 @@ class AddressUpdate(generics.RetrieveUpdateDestroyAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def destroy(self, request, *args, **kwargs):
-        account = self.get_account(kwargs['pk'])
-        address = Address.objects.get(account=account, pk=kwargs['adrs_pk'])
+        address = Address.objects.get(account=request.user, pk=kwargs['adrs_pk'])
         address.delete()
         return Response({'status': 'Address Deleted'})
 
-class CartDetail(APIView):
+class CartDetail(generics.RetrieveAPIView):
 
-    def get(self, request, format=None):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
 
+    def retrieve(self, request, *args, **kwargs):
         cart = Cart.objects.get(account=request.user)
-        context = {
-            'request': request
-        }
-        serializer = CartSerializer(cart, context=context)
+        serializer = CartSerializer(cart)
         return Response(serializer.data)
 
-class BookInCartDetail(generics.RetrieveAPIView):
+class BookInCartDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = BookInCart.objects.all()
     serializer_class = BookInCartSerializer
@@ -178,17 +159,40 @@ class BookInCartDetail(generics.RetrieveAPIView):
         cart = Cart.objects.get(account=request.user)
         book_in_cart = BookInCart.objects.filter(cart=cart, pk=kwargs['pk'])
         serializer = BookInCartSerializer(book_in_cart, many=True)
-        return super().retrieve(request, *args, **kwargs)
+        return Response(serializer.data)
 
+class UserViewSet(UserViewSet):
+    serializer_class = UserSerializer
+    queryset = Account.objects.all()
+    permission_classes = settings.PERMISSIONS.user
+    token_generator = default_token_generator
+    lookup_field = settings.USER_ID_FIELD
 
-# class AddToCart(generics.CreateAPIView):
-    
-#     def create(self, request, *args, **kwargs):
-#         cart = Cart.objects.get(account=request.user)
-#         book = Book.objects.get(pk=kwargs['pk'])
-#         serializer = BookInCartSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.validated_data['cart'] = cart
-#             serializer.validated_data['book'] = book
-#             return Response({'status': 'Added book to cart'})
+    def perform_create(self, serializer):
+        
+        user = serializer.save()
+        cart = Cart.objects.create(account=user, is_active=True)
+        cart.save()
+        signals.user_registered.send(
+            sender=self.__class__, user=user, request=self.request
+        )
+
+        context = {"user": user}
+        to = [get_user_email(user)]
+        if settings.SEND_ACTIVATION_EMAIL:
+            settings.EMAIL.activation(self.request, context).send(to)
+        elif settings.SEND_CONFIRMATION_EMAIL:
+            settings.EMAIL.confirmation(self.request, context).send(to)
+
+class AddToCart(generics.CreateAPIView):
+    queryset = BookInCart.objects.all()
+    serializer_class = AddToCartSerializer
+
+    def create(self, request, *args, **kwargs):
+        cart = Cart.objects.get(account=request.user)
+        serializer = AddToCartSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['cart'] = cart
+            serializer.save()
+            return Response({'status': 'Added book to cart'})
         
