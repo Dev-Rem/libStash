@@ -3,7 +3,11 @@ from books.models import Book
 from api.serializers import *
 from django.http import Http404
 from rest_framework.response import Response
-from rest_framework import status, generics
+from rest_framework import status, generics, permissions
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
+
 
 # Create your views here.
 
@@ -13,6 +17,12 @@ class BookListView(generics.ListAPIView):
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 class BookDetailView(generics.RetrieveAPIView):
     """
@@ -20,6 +30,12 @@ class BookDetailView(generics.RetrieveAPIView):
     """
     queryset = Book.objects.all()
     serializer_class = BookDetailSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 class AuthorDetailView(generics.RetrieveAPIView):
     """
@@ -27,11 +43,18 @@ class AuthorDetailView(generics.RetrieveAPIView):
     """
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 class BooksByAuthorView(generics.ListAPIView):
     """
     GET: Returns all books associated with an author Instance
     """
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -54,6 +77,7 @@ class ImageDetailView(generics.RetrieveAPIView):
 
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     # Get book instance
     def get_object(self, pk):
@@ -62,6 +86,8 @@ class ImageDetailView(generics.RetrieveAPIView):
         except:
             return Http404
 
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
     # Get images for book instance
     def retrieve(self, request, *args, **kwargs):
         images = Image.objects.filter(book=self.get_object(kwargs['pk']))
@@ -75,6 +101,12 @@ class PublisherDetailView(generics.RetrieveAPIView):
 
     queryset = Publisher.objects.all()
     serializer_class = PublisherSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 class BooksByPublisherView(generics.ListAPIView):
     
@@ -82,8 +114,7 @@ class BooksByPublisherView(generics.ListAPIView):
     GET: Returns all books associated with a publisher instance
     """
 
-    queryset = Publisher.objects.all()
-    serializer_class = PublisherSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -107,6 +138,7 @@ class BookReviewListView(generics.ListCreateAPIView):
 
     queryset = BookReview.objects.all()
     serializer_class = BookReviewSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -114,6 +146,8 @@ class BookReviewListView(generics.ListCreateAPIView):
         except:
             return Http404
 
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
     def list(self, request, *args, **kwargs):
         book = self.get_object(kwargs['pk'])
         reviews = BookReview.objects.filter(book=book)

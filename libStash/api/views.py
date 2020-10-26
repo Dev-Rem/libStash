@@ -1,5 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from books.models import *
 from users.models import *
 from .serializers import *
@@ -17,6 +20,16 @@ class AuthorViewSet(viewsets.ModelViewSet):
     serializer_class = AuthorSerializer
     permission_classes = [IsAdminUser]
 
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 class BookViewSet(viewsets.ModelViewSet):
     """
     GET: Returns all Book instances.
@@ -27,6 +40,16 @@ class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAdminUser]
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 class ImageViewSet(viewsets.ModelViewSet):
     """
@@ -39,6 +62,16 @@ class ImageViewSet(viewsets.ModelViewSet):
     serializer_class = ImageSerializer
     permission_classes = [IsAdminUser]
 
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 class PublisherViewSet(viewsets.ModelViewSet):
     """
     GET: Returns all Publisher instances.
@@ -49,6 +82,16 @@ class PublisherViewSet(viewsets.ModelViewSet):
     queryset = Publisher.objects.all()
     serializer_class = PublisherSerializer
     permission_classes = [IsAdminUser]
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 class WarehouseBookViewSet(viewsets.ModelViewSet):
     """
@@ -61,6 +104,16 @@ class WarehouseBookViewSet(viewsets.ModelViewSet):
     serializer_class = WarehouseBookSerializer
     permission_classes = [IsAdminUser]
 
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 class WarehouseViewSet(viewsets.ModelViewSet):
     """
     GET: Returns all Warehouse instances.
@@ -71,6 +124,16 @@ class WarehouseViewSet(viewsets.ModelViewSet):
     queryset = Warehouse.objects.all()
     serializer_class = WarehouseSerializer
     permission_classes = [IsAdminUser]
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 class AccountViewSet(viewsets.ModelViewSet):
     """
@@ -83,6 +146,16 @@ class AccountViewSet(viewsets.ModelViewSet):
     serializer_class = AccountSerializer
     permission_classes = [IsAdminUser]
 
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 class AddressViewSet(viewsets.ModelViewSet):
     """
     GET: Returns all Address instances.
@@ -93,6 +166,16 @@ class AddressViewSet(viewsets.ModelViewSet):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
     permission_classes = [IsAdminUser]
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 class BookInCartViewSet(viewsets.ModelViewSet):
     """
@@ -105,6 +188,16 @@ class BookInCartViewSet(viewsets.ModelViewSet):
     serializer_class = BookInCartSerializer
     permission_classes = [IsAdminUser]
 
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 class BookReviewViewSet(viewsets.ModelViewSet):
     """
     GET: Returns all BookReview instances.
@@ -114,8 +207,18 @@ class BookReviewViewSet(viewsets.ModelViewSet):
     """
     queryset = BookReview.objects.all()
     serializer_class = BookReviewSerializer
-    permission_classes = [IsAdminUser] 
+    permission_classes = [IsAdminUser]
 
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+    
 class CartViewSet(viewsets.ModelViewSet):
     """
     GET: Returns all Cart instances.
@@ -127,8 +230,15 @@ class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartSerializer
     permission_classes = [IsAdminUser]
 
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
-
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 

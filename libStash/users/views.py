@@ -3,7 +3,7 @@ from django.contrib.auth.tokens import default_token_generator
 from users.models import Address
 from api.serializers import *
 from rest_framework.response import Response
-from rest_framework import status, generics
+from rest_framework import status, generics, permissions
 from djoser.conf import settings
 from djoser import signals, utils
 from djoser.compat import get_user_email
@@ -20,6 +20,7 @@ class AddressListView(generics.ListCreateAPIView):
 
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
         address = Address.objects.filter(account=request.user).order_by('-last_update')
@@ -42,6 +43,7 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
     def retrieve(self, request, *args, **kwargs):
@@ -69,6 +71,7 @@ class CartDetailView(generics.RetrieveAPIView):
 
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def retrieve(self, request, *args, **kwargs):
         cart = Cart.objects.get(account=request.user)
@@ -82,6 +85,7 @@ class BookInCartDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = BookInCart.objects.all()
     serializer_class = BookInCartSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def retrieve(self, request, *args, **kwargs):
         cart = Cart.objects.get(account=request.user)
@@ -117,6 +121,7 @@ class AddToCartView(generics.CreateAPIView):
     """
     queryset = BookInCart.objects.all()
     serializer_class = AddToCartSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         cart = Cart.objects.get(account=request.user)
