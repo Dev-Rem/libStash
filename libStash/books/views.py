@@ -15,7 +15,7 @@ class BookListView(generics.ListAPIView):
     """
     GET: Returns all book instance.
     """
-    queryset = Book.objects.all()
+    queryset = Book.objects.all().order_by('last_update')
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
