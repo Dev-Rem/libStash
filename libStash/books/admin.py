@@ -10,7 +10,7 @@ class BookAdmin(admin.ModelAdmin):
 
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
-    list_display = ("name", "phone", "address")
+    list_display = ("name", "email", "address")
     search_fields = ('name',)
 
 @admin.register(Image)
@@ -25,7 +25,7 @@ class WarehouseAdmin(admin.ModelAdmin):
 
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):
-    list_display = ("name", "address", "phone", "publisher_url")
+    list_display = ("name", "address", "email", "publisher_url")
     search_fields = ('name',)
 
 @admin.register(WarehouseBook)

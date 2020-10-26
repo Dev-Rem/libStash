@@ -40,9 +40,9 @@ class AccountManager(BaseUserManager):
 
 class Account(AbstractBaseUser):
     id = models.AutoField(primary_key=True)
-    firstname = models.CharField("First name", max_length=200)
-    lastname = models.CharField("Last name", max_length=200)
-    email = models.EmailField("Email", max_length=100, unique=True)
+    firstname = models.CharField(verbose_name="First name", max_length=200)
+    lastname = models.CharField(verbose_name="Last name", max_length=200)
+    email = models.EmailField(verbose_name="Email", max_length=100, unique=True)
     date_joined = models.DateTimeField(
         verbose_name="date joined", auto_now=False, auto_now_add=True
     )
@@ -73,16 +73,19 @@ class Address(models.Model):
         null=True,
         related_name="address",
     )
-    address1 = models.CharField("Address line 1", max_length=1024)
-    address2 = models.CharField("Address line 2", max_length=1024, blank=True)
-    zip_code = models.CharField("ZIP / Postal code", max_length=12)
-    city = models.CharField('City', max_length=1024, null=True, blank=True)
-    country = models.CharField("Country", max_length=100)
+    address1 = models.CharField(verbose_name="Address line 1", max_length=1024)
+    address2 = models.CharField(verbose_name="Address line 2", max_length=1024, blank=True)
+    zip_code = models.CharField(verbose_name="ZIP / Postal code", max_length=12)
+    city = models.CharField(verbose_name='City', max_length=1024, null=True, blank=True)
+    country = models.CharField(verbose_name="Country", max_length=100)
     last_update = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return 'Address for ' + str(self.account)
 
 class Cart(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    is_active = models.BooleanField("State", default=False)
+    is_active = models.BooleanField(verbose_name="State", default=False)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -91,13 +94,16 @@ class Cart(models.Model):
 class BookInCart(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='item_in_cart')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='book_in_cart')
-    count = models.IntegerField("Book count", default=0)
+    count = models.IntegerField(verbose_name="Book count", default=0)
     last_update = models.DateTimeField(auto_now=True)
 
 class BookReview(models.Model):
     book = models.ForeignKey(Book, null=True, on_delete=models.CASCADE)
     account = models.ForeignKey(Account, null=True, on_delete=models.CASCADE)
-    comment = models.CharField(max_length=500, null=True)
+    comment = models.CharField(verbose_name='Comment', max_length=500, null=True)
     is_active = models.BooleanField(default=True)
     date = models.DateTimeField(auto_now=False, auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.comment

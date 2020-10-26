@@ -13,19 +13,22 @@ class AuthorSerializer(serializers.ModelSerializer):
         model = Author
         fields = [ "id", "name", "phone", "address"]
 
+class BookReviewSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = BookReview
+        fields = ['account', 'comment', 'date']
+
+class BookReviewCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookReview
+        fields = ['comment', 'date']
+
 class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = [
-            "id",
-            "title",
-            "category",
-            "format",
-            "isbn",
-            "year",
-            "price"
-        ]
+        fields = '__all__'
 
 class BookDetailSerializer(serializers.ModelSerializer):
 
@@ -49,16 +52,16 @@ class BookDetailSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = [ "id", "book", "book_cover"]
+        fields = '__all__'
 
 class BookInCartSerializer(serializers.ModelSerializer):
     book = BookSerializer(read_only=True)
     class Meta:
         model = BookInCart
-        fields = ["id", "book", "count"]
+        fields = '__all__'
 
 class CartSerializer(serializers.ModelSerializer):
-    item_in_cart = BookInCartSerializer(many=True)
+    item_in_cart = BookInCartSerializer(many=True, read_only=True)
 
     class Meta:
         model = Cart
@@ -69,22 +72,29 @@ class AddToCartSerializer(serializers.ModelSerializer):
         model = BookInCart
         fields = ['book', 'count']
 
-class BookReviewSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = BookReview
-        fields = ['account', 'comment', 'date']
-
 class AddressSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Address
-        fields = ["id", "address1", "address2", "zip_code", "country"]
+        fields = ["id", 'account', "address1", "address2", "zip_code", "country"]
 
 class UserSerializer(BaseUserSerializer):
     class Meta:
         model = Account
         fields = ['id', 'firstname', 'lastname', 'email']
 
+class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = '__all__'
 
+class WarehouseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Warehouse
+        fields = '__all__'
+
+class WarehouseBookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WarehouseBook
+        fields = '__all__'
 
