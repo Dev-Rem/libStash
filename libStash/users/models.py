@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, User
 from books.models import Book
 from datetime import date
+import uuid
 
 # Create your models here.
 
@@ -43,6 +44,7 @@ class Account(AbstractBaseUser):
     firstname = models.CharField(verbose_name="First name", max_length=200)
     lastname = models.CharField(verbose_name="Last name", max_length=200)
     email = models.EmailField(verbose_name="Email", max_length=100, unique=True)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
     date_joined = models.DateTimeField(
         verbose_name="date joined", auto_now=False, auto_now_add=True
     )
@@ -78,6 +80,7 @@ class Address(models.Model):
     zip_code = models.CharField(verbose_name="ZIP / Postal code", max_length=12)
     city = models.CharField(verbose_name='City', max_length=1024, null=True, blank=True)
     country = models.CharField(verbose_name="Country", max_length=100)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -86,6 +89,7 @@ class Address(models.Model):
 class Cart(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     is_active = models.BooleanField(verbose_name="State", default=False)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -95,6 +99,7 @@ class BookInCart(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='item_in_cart')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='book_in_cart')
     count = models.IntegerField(verbose_name="Book count", default=0)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
     last_update = models.DateTimeField(auto_now=True)
 
 class BookReview(models.Model):
@@ -103,6 +108,7 @@ class BookReview(models.Model):
     comment = models.CharField(verbose_name='Comment', max_length=500, null=True)
     is_active = models.BooleanField(default=True)
     date = models.DateTimeField(auto_now=False, auto_now_add=True)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):

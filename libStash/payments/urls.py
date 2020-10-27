@@ -7,6 +7,6 @@ urlpatterns = [
     # url paths
 
     path('checkout/sessions/', views.create_checkout_session, name='create-sessions'),
-    path('checkout/sessions/<int:id>'),
-    path('checkout/sessions/<int:id>'),
+    # path('checkout/sessions/<int:id>'),
+    # path('checkout/sessions/<int:id>'),
 ]

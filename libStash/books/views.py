@@ -18,6 +18,7 @@ class BookListView(generics.ListAPIView):
     queryset = Book.objects.all().order_by('last_update')
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = 'unique_id'
 
     @method_decorator(vary_on_cookie)
     @method_decorator(cache_page(60*60))
@@ -31,6 +32,7 @@ class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookDetailSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = 'unique_id'
 
     @method_decorator(vary_on_cookie)
     @method_decorator(cache_page(60*60))
@@ -44,6 +46,7 @@ class AuthorDetailView(generics.RetrieveAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = 'unique_id'
 
     @method_decorator(vary_on_cookie)
     @method_decorator(cache_page(60*60))
@@ -55,6 +58,7 @@ class BooksByAuthorView(generics.ListAPIView):
     GET: Returns all books associated with an author Instance
     """
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = 'unique_id'
 
     def get_object(self, pk):
         try:
@@ -78,6 +82,7 @@ class ImageDetailView(generics.RetrieveAPIView):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = 'unique_id'
 
     # Get book instance
     def get_object(self, pk):
@@ -102,6 +107,7 @@ class PublisherDetailView(generics.RetrieveAPIView):
     queryset = Publisher.objects.all()
     serializer_class = PublisherSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = 'unique_id'
 
     @method_decorator(vary_on_cookie)
     @method_decorator(cache_page(60*60))
@@ -115,6 +121,7 @@ class BooksByPublisherView(generics.ListAPIView):
     """
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = 'unique_id'
 
     def get_object(self, pk):
         try:
@@ -139,6 +146,7 @@ class BookReviewListView(generics.ListCreateAPIView):
     queryset = BookReview.objects.all()
     serializer_class = BookReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = 'unique_id'
 
     def get_object(self, pk):
         try:

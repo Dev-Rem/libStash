@@ -21,6 +21,7 @@ class AddressListView(generics.ListCreateAPIView):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
     permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'unique_id'
 
     def list(self, request, *args, **kwargs):
         address = Address.objects.filter(account=request.user).order_by('-last_update')
@@ -44,6 +45,7 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
     permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'unique_id'
 
 
     def retrieve(self, request, *args, **kwargs):
@@ -72,6 +74,7 @@ class CartDetailView(generics.RetrieveAPIView):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
     permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'unique_id'
 
     def retrieve(self, request, *args, **kwargs):
         cart = Cart.objects.get(account=request.user)
@@ -86,6 +89,7 @@ class BookInCartDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BookInCart.objects.all()
     serializer_class = BookInCartSerializer
     permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'unique_id'
 
     def retrieve(self, request, *args, **kwargs):
         cart = Cart.objects.get(account=request.user)
@@ -98,7 +102,7 @@ class UserViewSet(UserViewSet):
     queryset = Account.objects.all()
     permission_classes = settings.PERMISSIONS.user
     token_generator = default_token_generator
-    lookup_field = settings.USER_ID_FIELD
+    lookup_field = 'unique_id'
     
     def perform_create(self, serializer):
         user = serializer.save()

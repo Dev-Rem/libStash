@@ -6,18 +6,18 @@ from djoser.serializers import UserSerializer as BaseUserSerializer
 class PublisherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publisher
-        fields = [ "id", "name", "address", "phone", "publisher_url"]
+        fields = [ "unique_id", "name", "address", "phone", "publisher_url"]
 
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
-        fields = [ "id", "name", "phone", "address"]
+        fields = [ "unique_id", "name", "phone", "address"]
 
 class BookReviewSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = BookReview
-        fields = ['account', 'comment', 'date']
+        fields = ['unique_id','account', 'comment', 'date']
 
 class BookReviewCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,7 +38,7 @@ class BookDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = [
-            "id",
+            "unique_id",
             "title",
             "author",
             "publisher",
@@ -65,7 +65,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cart
-        fields = ["id", "account", "item_in_cart", "is_active"]
+        fields = ["unique_id", "account", "item_in_cart", "is_active"]
 
 class AddToCartSerializer(serializers.ModelSerializer):
     class Meta:
@@ -76,12 +76,12 @@ class AddressSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Address
-        fields = ["id", 'account', "address1", "address2", "zip_code", "country"]
+        fields = ["unique_id", 'account', "address1", "address2", "zip_code", "country"]
 
 class UserSerializer(BaseUserSerializer):
     class Meta:
         model = Account
-        fields = ['id', 'firstname', 'lastname', 'email']
+        fields = ['unique_id', 'firstname', 'lastname', 'email']
 
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
