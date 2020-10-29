@@ -8,6 +8,11 @@ from djoser.conf import settings
 from djoser import signals, utils
 from djoser.compat import get_user_email
 from djoser.views import UserViewSet
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
+from libStash import settings as project_settings
+CACHE_TTL = getattr(project_settings, 'CACHE_TTL')
 
 
 # Create your views here.
@@ -23,10 +28,13 @@ class AddressListView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'unique_id'
 
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(CACHE_TTL))
     def list(self, request, *args, **kwargs):
         address = Address.objects.filter(account=request.user).order_by('-last_update')
         serializer = AddressSerializer(address, many=True)
         return Response(serializer.data)
+
 
     def create(self, request, *args, **kwargs):
         serializer = AddressSerializer(data=request.data)
@@ -47,7 +55,8 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'unique_id'
 
-
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         address = Address.objects.get(account=request.user, pk=kwargs['adrs_pk'])
         serializer = AddressSerializer(address)
@@ -76,6 +85,8 @@ class CartDetailView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'unique_id'
 
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         cart = Cart.objects.get(account=request.user)
         serializer = CartSerializer(cart)
@@ -91,6 +102,8 @@ class BookInCartDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'unique_id'
 
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         cart = Cart.objects.get(account=request.user)
         book_in_cart = BookInCart.objects.filter(cart=cart, pk=kwargs['pk'])

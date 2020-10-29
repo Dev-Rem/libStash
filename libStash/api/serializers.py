@@ -6,12 +6,12 @@ from djoser.serializers import UserSerializer as BaseUserSerializer
 class PublisherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publisher
-        fields = [ "unique_id", "name", "address", "phone", "publisher_url"]
+        fields = [ "unique_id", "name", "address", "email", "publisher_url"]
 
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
-        fields = [ "unique_id", "name", "phone", "address"]
+        fields = [ "unique_id", "name", "email", "address"]
 
 class BookReviewSerializer(serializers.ModelSerializer):
     
@@ -28,7 +28,7 @@ class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = '__all__'
+        fields = ['title', 'author', 'category', 'format', 'year', 'price', 'unique_id',]
 
 class BookDetailSerializer(serializers.ModelSerializer):
 
@@ -52,13 +52,13 @@ class BookDetailSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = '__all__'
+        fields = ['book', 'book_cover', 'unique_id']
 
 class BookInCartSerializer(serializers.ModelSerializer):
     book = BookSerializer(read_only=True)
     class Meta:
         model = BookInCart
-        fields = '__all__'
+        fields = ['cart','book', 'count', 'unique_id']
 
 class CartSerializer(serializers.ModelSerializer):
     item_in_cart = BookInCartSerializer(many=True, read_only=True)
@@ -86,15 +86,15 @@ class UserSerializer(BaseUserSerializer):
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = '__all__'
+        fields = ['unique_id', 'firstname', 'lastname', 'email']
 
 class WarehouseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Warehouse
-        fields = '__all__'
+        fields = ['address', 'phone', 'unique_id']
 
 class WarehouseBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = WarehouseBook
-        fields = '__all__'
+        fields = ['warehouse', 'book', 'count', 'unique_id']
 

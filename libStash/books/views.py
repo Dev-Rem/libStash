@@ -7,7 +7,8 @@ from rest_framework import status, generics, permissions
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-
+from libStash import settings
+CACHE_TTL = getattr(settings, 'CACHE_TTL')
 
 # Create your views here.
 
@@ -21,7 +22,7 @@ class BookListView(generics.ListAPIView):
     lookup_field = 'unique_id'
 
     @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60*60))
+    @method_decorator(cache_page(CACHE_TTL))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
@@ -35,7 +36,7 @@ class BookDetailView(generics.RetrieveAPIView):
     lookup_field = 'unique_id'
 
     @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60*60))
+    @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
@@ -49,7 +50,7 @@ class AuthorDetailView(generics.RetrieveAPIView):
     lookup_field = 'unique_id'
 
     @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60*60))
+    @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
@@ -60,19 +61,21 @@ class BooksByAuthorView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'unique_id'
 
-    def get_object(self, pk):
+    def get_object(self, unique_id):
         try:
-            return Author.objects.get(pk=pk)
+            return Author.objects.get(unique_id=unique_id)
         except:
             return Http404
-
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         try:
-            books = Book.objects.filter(author=self.get_object(kwargs['pk']))
+            books = Book.objects.filter(author=self.get_object(kwargs['unique_id']))
             serializer = BookSerializer(books, many=True)
             return Response(serializer.data)
         except:
             return Http404
+            
 
 class ImageDetailView(generics.RetrieveAPIView):
     """
@@ -85,17 +88,16 @@ class ImageDetailView(generics.RetrieveAPIView):
     lookup_field = 'unique_id'
 
     # Get book instance
-    def get_object(self, pk):
+    def get_object(self, unique_id):
         try:
-            return Book.objects.get(pk=pk)
+            return Book.objects.get(unique_id=unique_id)
         except:
             return Http404
 
     @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60*60))
-    # Get images for book instance
+    @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
-        images = Image.objects.filter(book=self.get_object(kwargs['pk']))
+        images = Image.objects.filter(book=self.get_object(kwargs['unique_id']))
         serializer = ImageSerializer(images, many=True)
         return super().retrieve(request, *args, **kwargs)
 
@@ -110,7 +112,7 @@ class PublisherDetailView(generics.RetrieveAPIView):
     lookup_field = 'unique_id'
 
     @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60*60))
+    @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
@@ -123,15 +125,15 @@ class BooksByPublisherView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'unique_id'
 
-    def get_object(self, pk):
+    def get_object(self, unique_id):
         try:
-            return Publisher.objects.get(pk=pk)
+            return Publisher.objects.get(unique_id=unique_id)
         except:
             return Http404
 
     def retrieve(self, request, *args, **kwargs):
         try:
-            books = Book.objects.filter(Publisher=self.get_object(kwargs['pk']))
+            books = Book.objects.filter(Publisher=self.get_object(kwargs['unique_id']))
             serializer = BookSerializer(books, many=True)
             return Response(serializer.data)
         except:
@@ -145,25 +147,25 @@ class BookReviewListView(generics.ListCreateAPIView):
 
     queryset = BookReview.objects.all()
     serializer_class = BookReviewSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'unique_id'
 
-    def get_object(self, pk):
+    def get_object(self, unique_id):
         try:
-            return Book.objects.get(pk=pk)
+            return Book.objects.get(unique_id=unique_id)
         except:
             return Http404
 
     @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60*60))
+    @method_decorator(cache_page(CACHE_TTL))
     def list(self, request, *args, **kwargs):
-        book = self.get_object(kwargs['pk'])
+        book = self.get_object(kwargs['unique_id'])
         reviews = BookReview.objects.filter(book=book)
         serializer = BookReviewSerializer(reviews, many=True)
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        book =self.get_object(kwargs['pk'])
+        book =self.get_object(kwargs['unique_id'])
         serializer = BookReviewCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.validated_data['account'] = request.user

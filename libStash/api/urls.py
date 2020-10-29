@@ -21,18 +21,19 @@ router.register(r'carts', CartViewSet, basename='cart')
 
 urlpatterns = [
 
-    path("books", BookListView.as_view()),
-    path("book/<int:pk>/", BookDetailView.as_view(), name="book-detail"), # done
-    path('book/<int:pk>/reviews/', BookReviewListView.as_view(), name='book-reviews'),
-    path("author/<int:pk>/", AuthorDetailView.as_view(), name="author-detail"), # done
-    path('author/<int:pk>/books/', BooksByAuthorView.as_view(), name='books-by-author'), # done
-    path("publisher/<int:pk>/", PublisherDetailView.as_view(), name="publisher-detail"), # done
+    path("books/", BookListView.as_view()),
+    path("book/<uuid:unique_id>/", BookDetailView.as_view(), name="book-detail"), # done
+    path('book/<uuid:unique_id>/reviews/', BookReviewListView.as_view(), name='book-reviews'),
+    path("author/<uuid:uunique_idid>/", AuthorDetailView.as_view(), name="author-detail"), # done
+    path('author/<uuid:unique_id>/books/', BooksByAuthorView.as_view(), name='books-by-author'), # done
+    path("publisher/<uuid:unique_id>/", PublisherDetailView.as_view(), name="publisher-detail"), # done
+    path('publisher/<uuid:unique_id>/books', BooksByPublisherView.as_view(), name='books-by-publisher'),
     path('account/register/', UserViewSet.as_view({'post': 'create'}), name='account-register'), # done
     path("account/address/", AddressListView.as_view(), name="account-address"), # done
-    path("account/address/edit/<int:adrs_pk>/", AddressUpdateView.as_view(), name="account-address-edit"), # done
-    path("account/address/delete/<int:adrs_pk>/", AddressUpdateView.as_view(), name="account-address-delete"), # done
+    path("account/address/edit/<uuid:unique_id/", AddressUpdateView.as_view(), name="account-address-edit"), # done
+    path("account/address/delete/<uuid:unique_id", AddressUpdateView.as_view(), name="account-address-delete"), # done
     path("account/cart/", CartDetailView.as_view(),name="account-cart"), # done
-    path('account/cart/book/edit/<int:pk>/',BookInCartDetailView.as_view(), name='book-in-cart-edit'), # done
+    path('account/cart/book/edit/<uuid:unique_id>/',BookInCartDetailView.as_view(), name='book-in-cart-edit'), # done
     path('account/cart/add-to-cart/',AddToCartView.as_view(), name='add-to-cart'), # done
 
 
