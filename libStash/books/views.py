@@ -1,8 +1,7 @@
-from django.shortcuts import render
-from books.models import Book
 from api.serializers import *
 from django.http import Http404
 from rest_framework.response import Response
+from rest_framework.filters import SearchFilter
 from rest_framework import status, generics, permissions
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -19,6 +18,8 @@ class BookListView(generics.ListAPIView):
     queryset = Book.objects.all().order_by('last_update')
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [SearchFilter]
+    search_fields = ['title', 'author', 'category', 'publisher', 'format', 'year', 'price']
     lookup_field = 'unique_id'
 
     @method_decorator(vary_on_cookie)
@@ -47,6 +48,8 @@ class AuthorDetailView(generics.RetrieveAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [SearchFilter]
+    search_fields = ["name",]
     lookup_field = 'unique_id'
 
     @method_decorator(vary_on_cookie)
@@ -97,7 +100,7 @@ class ImageDetailView(generics.RetrieveAPIView):
     @method_decorator(vary_on_cookie)
     @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
-        images = Image.objects.filter(book=self.get_object(kwargs['unique_id']))
+        images = Image.objects.get(book=self.get_object(kwargs['unique_id']))
         serializer = ImageSerializer(images, many=True)
         return super().retrieve(request, *args, **kwargs)
 
@@ -109,6 +112,8 @@ class PublisherDetailView(generics.RetrieveAPIView):
     queryset = Publisher.objects.all()
     serializer_class = PublisherSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [SearchFilter]
+    search_fields = ["name",]
     lookup_field = 'unique_id'
 
     @method_decorator(vary_on_cookie)

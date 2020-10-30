@@ -1,6 +1,5 @@
 from django.http import Http404
 from django.contrib.auth.tokens import default_token_generator
-from users.models import Address
 from api.serializers import *
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions

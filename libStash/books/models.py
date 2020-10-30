@@ -10,12 +10,14 @@ from phone_field import PhoneField
 # Create your models here.
 
 
+
+
 class Publisher(models.Model):
     name = models.CharField(verbose_name="Publisher name", max_length=150)
     address = models.TextField(verbose_name="Address", max_length=200)
     email = models.EmailField(verbose_name='Email', blank=True)
     publisher_url = models.URLField()
-    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     last_update = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
@@ -29,7 +31,7 @@ class Author(models.Model):
     name = models.CharField(verbose_name="Author name", max_length=150, null=False)
     email = models.EmailField(verbose_name='Email', blank=True)
     address = models.TextField(verbose_name="Address", max_length=150)
-    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     last_update = models.DateTimeField(auto_now=True)
     
     def __str__(self):
@@ -63,7 +65,7 @@ class Book(models.Model):
         _("year"), choices=YEAR_CHOICES, default=datetime.datetime.now().year
     )
     price = models.DecimalField(verbose_name="Price", max_digits=10, decimal_places=2, default=0)
-    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     last_update = models.DateTimeField("Last Update",auto_now=True)
 
     def __str__(self):
@@ -72,7 +74,7 @@ class Book(models.Model):
 class Image(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, default=None)
     book_cover = models.ImageField(verbose_name='Book cover', upload_to="images/")
-    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -81,7 +83,7 @@ class Image(models.Model):
 class Warehouse(models.Model):
     address = models.TextField(verbose_name="Address", max_length=200)
     phone = PhoneField(verbose_name="Phone number", blank=True, help_text="Contact phone number")
-    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -92,7 +94,7 @@ class WarehouseBook(models.Model):
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     count = models.IntegerField(verbose_name="Book count", default=0)
-    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):

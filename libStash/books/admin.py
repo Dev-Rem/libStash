@@ -15,7 +15,7 @@ class AuthorAdmin(admin.ModelAdmin):
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ("book_cover",)
+    list_display = ('book', "book_cover",)
 
 
 @admin.register(Warehouse)

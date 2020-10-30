@@ -10,7 +10,7 @@ router = DefaultRouter()
 router.register(r'authors', AuthorViewSet, basename='author')
 router.register(r'books', BookViewSet, basename='book')
 router.register(r'images', ImageViewSet, basename='image')
-router.register(r'publishers', AuthorViewSet, basename='author')
+router.register(r'publishers', PublisherViewSet, basename='publisher')
 router.register(r'warehousebooks', WarehouseBookViewSet, basename='warehousebook')
 router.register(r'warehouses', WarehouseViewSet, basename='warehouse')
 router.register(r'accounts', AccountViewSet, basename='account')
@@ -23,6 +23,7 @@ urlpatterns = [
 
     path("books/", BookListView.as_view()),
     path("book/<uuid:unique_id>/", BookDetailView.as_view(), name="book-detail"), # done
+    path('book/<uuid:unique_id>/cover/', ImageDetailView.as_view(), name='book-cover'),
     path('book/<uuid:unique_id>/reviews/', BookReviewListView.as_view(), name='book-reviews'),
     path("author/<uuid:uunique_idid>/", AuthorDetailView.as_view(), name="author-detail"), # done
     path('author/<uuid:unique_id>/books/', BooksByAuthorView.as_view(), name='books-by-author'), # done
@@ -35,13 +36,8 @@ urlpatterns = [
     path("account/cart/", CartDetailView.as_view(),name="account-cart"), # done
     path('account/cart/book/edit/<uuid:unique_id>/',BookInCartDetailView.as_view(), name='book-in-cart-edit'), # done
     path('account/cart/add-to-cart/',AddToCartView.as_view(), name='add-to-cart'), # done
-
-
+    
     # admin related urls
     path('admin/', include(router.urls) ),
-
-    # djoser urls for authentification
-    path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.authtoken')),
 
 ]

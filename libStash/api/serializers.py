@@ -25,10 +25,10 @@ class BookReviewCreateSerializer(serializers.ModelSerializer):
         fields = ['comment', 'date']
 
 class BookSerializer(serializers.ModelSerializer):
-
+    
     class Meta:
         model = Book
-        fields = ['title', 'author', 'category', 'format', 'year', 'price', 'unique_id',]
+        fields = ['title', 'author', 'category', 'format', 'year', 'price', 'unique_id']
 
 class BookDetailSerializer(serializers.ModelSerializer):
 
@@ -79,7 +79,7 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = ["unique_id", 'account', "address1", "address2", "zip_code", "country"]
 
 class UserSerializer(BaseUserSerializer):
-    class Meta:
+    class Meta(BaseUserSerializer.Meta):
         model = Account
         fields = ['unique_id', 'firstname', 'lastname', 'email']
 
