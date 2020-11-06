@@ -75,7 +75,7 @@ ROOT_URLCONF = "libStash.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ['/Users/Rem_files/Desktop/LibStash/libStash/libStash/payments/templates/payments'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -156,7 +156,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = "/static/"
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 AUTH_USER_MODEL = "users.Account"
 
@@ -198,4 +200,6 @@ DJOSER = {
     }
 }
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
+***REMOVED***
+***REMOVED***
+STRIPE_ENDPOINT_SECRET = ' whsec_5qXnve2cNKxOakt0CTFHG7qWM1oBFjH6'

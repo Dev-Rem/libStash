@@ -21,7 +21,7 @@ router.register(r'carts', CartViewSet, basename='cart')
 
 urlpatterns = [
 
-    path("books/", BookListView.as_view()),
+    path("books/", BookListView.as_view(), name='book-list'),
     path("book/<uuid:unique_id>/", BookDetailView.as_view(), name="book-detail"), # done
     path('book/<uuid:unique_id>/cover/', ImageDetailView.as_view(), name='book-cover'),
     path('book/<uuid:unique_id>/reviews/', BookReviewListView.as_view(), name='book-reviews'),

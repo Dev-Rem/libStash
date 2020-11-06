@@ -1,8 +1,13 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, User
+from libStash import settings
 from books.models import Book
 from datetime import date
-import uuid
+import uuid, stripe
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 # Create your models here.
 
@@ -38,6 +43,8 @@ class AccountManager(BaseUserManager):
 
         user.save(using=self._db)
         return user
+    
+
 
 class Account(AbstractBaseUser):
     id = models.AutoField(primary_key=True)
@@ -45,6 +52,7 @@ class Account(AbstractBaseUser):
     lastname = models.CharField(verbose_name="Last name", max_length=200)
     email = models.EmailField(verbose_name="Email", max_length=100, unique=True)
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
+    stripe_id = models.CharField(max_length=120, null=True, blank=True)
     date_joined = models.DateTimeField(
         verbose_name="date joined", auto_now=False, auto_now_add=True
     )
@@ -61,6 +69,9 @@ class Account(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+    def get_full_name(self):
+        return f'{self.firstname} {self.lastname}'
 
     def has_perm(self, perm, obj=None):
         return self.is_admin

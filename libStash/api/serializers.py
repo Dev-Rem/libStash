@@ -79,7 +79,7 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = ["unique_id", 'account', "address1", "address2", "zip_code", "country"]
 
 class UserSerializer(BaseUserSerializer):
-    class Meta(BaseUserSerializer.Meta):
+    class Meta:
         model = Account
         fields = ['unique_id', 'firstname', 'lastname', 'email']
 
