@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, User
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from libStash import settings
 from books.models import Book
 from datetime import date
@@ -12,19 +12,28 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 # Create your models here.
 
 
+
 class AccountManager(BaseUserManager):
-    def create_user(self, firstname, lastname, email, password=None):
+    def create_user(self, firstname, lastname, email, stripe_id, password=None):
         if not firstname:
             raise ValueError("Please provide a valid  first name")
         if not lastname:
             raise ValueError("Please provide a valid last name")
         if not email:
             raise ValueError("Please provide a valid email address")
+        if not stripe_id:
+            raise ValueError("Please provide a valid email address")
+        
+        customer = stripe.Customer.create(
+            email=email,
+            description='Created from django',
+        )
 
         user = self.model(
             firstname=firstname,
             lastname=lastname,
             email=self.normalize_email(email),
+            stripe_id=customer.id
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -78,6 +87,8 @@ class Account(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
+
 
 class Address(models.Model):
     account = models.ForeignKey(

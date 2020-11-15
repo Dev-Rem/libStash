@@ -48,7 +48,7 @@ class AccountAdmin(BaseUserAdmin):
         "is_admin",
     )
     search_fields = ("firstname", "lastname", "email")
-    # readonly_fields = ("date_joined", "last_login", 'uuid', 'stripe_id')
+    readonly_fields = ("date_joined", "last_login",)
     ordering = ("firstname",)
     filter_horizontal = ()
     list_filter = ()

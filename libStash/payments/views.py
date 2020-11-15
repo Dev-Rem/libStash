@@ -8,6 +8,7 @@ from django.conf import settings
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import stripe
+from rest_framework.utils import json
 
 # Create your views here.
 
@@ -57,26 +58,28 @@ def create_checkout_session(request):
 
 @csrf_exempt
 def stripe_webhook(request):
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-    endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
     payload = request.body
-    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
 
     try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, endpoint_secret
+        event = stripe.Event.construct_from(
+        json.loads(payload), stripe.api_key
         )
     except ValueError as e:
         # Invalid payload
         return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError as e:
-        # Invalid signature
-        return HttpResponse(status=400)
 
-    # Handle the checkout.session.completed event
-    if event['type'] == 'checkout.session.completed':
-        print("Payment was successful.")
-        # TODO: run some custom code here
+    # Handle Stripe events
+    if event.type == 'payment_intent.succeeded':
+        payment_intent = event.data.object 
+        print('PaymentIntent was successful!')
+    elif event.type == 'payment_method.attached':
+        payment_method = event.data.object 
+        print('PaymentMethod was attached to a Customer!')
+    elif event.type == 'checkout.session.completed':
+        payment_method = event.data.object 
+        print('Payment checkout complete!')
+    else:
+        print('Unhandled event type {}'.format(event.type))
 
     return HttpResponse(status=200)
