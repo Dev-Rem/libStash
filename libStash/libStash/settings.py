@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "payments.apps.PaymentsConfig",
     "users.apps.UsersConfig",
+    'blog.apps.BlogConfig',
     "rest_framework",
     'rest_framework.authtoken',
     "phone_field",

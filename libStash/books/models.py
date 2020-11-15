@@ -2,8 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.template.defaultfilters import slugify
 from django.utils.translation import gettext_lazy as _
-import datetime
-import uuid
+import datetime, uuid
 from phone_field import PhoneField
 
 
