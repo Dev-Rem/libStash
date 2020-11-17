@@ -1,7 +1,28 @@
 from rest_framework import serializers
-from books.models import *
-from users.models import *
+from blog.models import Post,Comment,Image
+from books.models import Publisher,Author,Book,Warehouse,WarehouseBook
+from users.models import Account,Address,Cart,BookInCart
 from djoser.serializers import UserSerializer as BaseUserSerializer
+
+# Serializer classes
+
+class PostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Post
+        fields = ['unique_id', 'title', 'content', 'account', 'is_active', 'date',]
+
+class CommentSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Comment
+        fields = ['unique_id', 'post', 'book', 'account',  'comment', 'likes', 'is_active', 'date',]
+        read_only_fields = ('post', 'book', 'account', 'likes','is_active' )
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = ['unique_id','book', 'post','image', 'date']
 
 class PublisherSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,22 +34,11 @@ class AuthorSerializer(serializers.ModelSerializer):
         model = Author
         fields = [ "unique_id", "name", "email", "address"]
 
-class BookReviewSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = BookReview
-        fields = ['unique_id','account', 'comment', 'date']
-
-class BookReviewCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BookReview
-        fields = ['comment', 'date']
-
 class BookSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Book
-        fields = ['title', 'author', 'category', 'format', 'year', 'price', 'unique_id']
+        fields = ['unique_id', 'title', 'author', 'category', 'format', 'year', 'price', ]
 
 class BookDetailSerializer(serializers.ModelSerializer):
 
@@ -49,16 +59,12 @@ class BookDetailSerializer(serializers.ModelSerializer):
             "price",
         ]
 
-class ImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Image
-        fields = ['book', 'book_cover', 'unique_id']
-
 class BookInCartSerializer(serializers.ModelSerializer):
     book = BookSerializer(read_only=True)
     class Meta:
         model = BookInCart
-        fields = ['cart','book', 'count', 'unique_id']
+        fields = ['unique_id', 'cart','book', 'count', ]
+        read_only_fields = ('cart')
 
 class CartSerializer(serializers.ModelSerializer):
     item_in_cart = BookInCartSerializer(many=True, read_only=True)
@@ -66,11 +72,6 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ["unique_id", "account", "item_in_cart", "is_active"]
-
-class AddToCartSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BookInCart
-        fields = ['book', 'count']
 
 class AddressSerializer(serializers.ModelSerializer):
     
@@ -91,10 +92,10 @@ class AccountSerializer(serializers.ModelSerializer):
 class WarehouseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Warehouse
-        fields = ['address', 'phone', 'unique_id']
+        fields = ['unique_id', 'address', 'phone', ]
 
 class WarehouseBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = WarehouseBook
-        fields = ['warehouse', 'book', 'count', 'unique_id']
+        fields = ['unique_id', 'warehouse', 'book', 'count', ]
 

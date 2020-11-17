@@ -1,4 +1,4 @@
-from api.serializers import *
+from api.serializers import BookDetailSerializer,BookSerializer,AuthorSerializer,PublisherSerializer
 from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter
@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from libStash import settings
+from books.models import Author, Book, Publisher
 CACHE_TTL = getattr(settings, 'CACHE_TTL')
 
 # Create your views here.
@@ -78,31 +79,6 @@ class BooksByAuthorView(generics.ListAPIView):
             return Response(serializer.data)
         except:
             return Http404
-            
-
-class ImageDetailView(generics.RetrieveAPIView):
-    """
-    GET: Returns all images associated with the book instance.
-    """
-
-    queryset = Image.objects.all()
-    serializer_class = ImageSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    lookup_field = 'unique_id'
-
-    # Get book instance
-    def get_object(self, unique_id):
-        try:
-            return Book.objects.get(unique_id=unique_id)
-        except:
-            return Http404
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(CACHE_TTL))
-    def retrieve(self, request, *args, **kwargs):
-        images = Image.objects.get(book=self.get_object(kwargs['unique_id']))
-        serializer = ImageSerializer(images, many=True)
-        return super().retrieve(request, *args, **kwargs)
 
 class PublisherDetailView(generics.RetrieveAPIView):
     """
@@ -144,37 +120,3 @@ class BooksByPublisherView(generics.ListAPIView):
         except:
             return Http404
             
-class BookReviewListView(generics.ListCreateAPIView):
-    """
-    GET: Returns all book reviews
-    POST: Crete a book review object
-    """
-
-    queryset = BookReview.objects.all()
-    serializer_class = BookReviewSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    lookup_field = 'unique_id'
-
-    def get_object(self, unique_id):
-        try:
-            return Book.objects.get(unique_id=unique_id)
-        except:
-            return Http404
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(CACHE_TTL))
-    def list(self, request, *args, **kwargs):
-        book = self.get_object(kwargs['unique_id'])
-        reviews = BookReview.objects.filter(book=book)
-        serializer = BookReviewSerializer(reviews, many=True)
-        return Response(serializer.data)
-
-    def create(self, request, *args, **kwargs):
-        book =self.get_object(kwargs['unique_id'])
-        serializer = BookReviewCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.validated_data['account'] = request.user
-            serializer._validated_data['book'] = book
-            serializer.save()
-            return super().create(request, *args, **kwargs)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

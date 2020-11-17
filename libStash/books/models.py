@@ -8,9 +8,6 @@ from phone_field import PhoneField
 
 # Create your models here.
 
-
-
-
 class Publisher(models.Model):
     name = models.CharField(verbose_name="Publisher name", max_length=150)
     address = models.TextField(verbose_name="Address", max_length=200)
@@ -70,14 +67,6 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
-class Image(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, default=None)
-    book_cover = models.ImageField(verbose_name='Book cover', upload_to="images/")
-    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
-    last_update = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.book.id}"
 
 class Warehouse(models.Model):
     address = models.TextField(verbose_name="Address", max_length=200)

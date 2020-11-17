@@ -4,11 +4,105 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from books.models import *
-from users.models import *
-from .serializers import *
+from blog.models import Post,Comment,Image
+from books.models import Author,Book,Warehouse,WarehouseBook,Publisher
+from users.models import Account,Address,BookInCart,Cart
+from .serializers import (
+    PostSerializer,
+    CommentSerializer,
+    ImageSerializer,
+    AuthorSerializer,
+    BookSerializer,
+    BookDetailSerializer,
+    CommentSerializer,
+    BookInCartSerializer,
+    CartSerializer,
+    PublisherSerializer,
+    WarehouseBookSerializer,
+    WarehouseSerializer,
+    AccountSerializer,
+    AddressSerializer,
+)
 
 # Create your views here.
+
+class PostViewSet(viewsets.ModelViewSet):
+    """
+    GET: Returns all Post instances 
+    POST: Create a new Post Instance
+    PUT: Update an Post Instance
+    PATCH: Partially update an Post instance
+    DELETE: Delete an Post instance
+    """
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAdminUser]
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = '__all__'
+    ordering_fields = '__all__'
+    lookup_field = 'unique_id'
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+class CommentViewSet(viewsets.ModelViewSet):
+    """
+    GET: Returns all BookReview instances.
+    POST: Create a new BookReview Instance
+    PUT: Update an BookReview Instance
+    PATCH: Partially update an BookReview instance
+    DELETE: Delete an BookReview instance
+    """
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [IsAdminUser]
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = '__all__'
+    ordering_fields = '__all__'
+    lookup_field = 'unique_id'
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+class ImageViewSet(viewsets.ModelViewSet):
+    """
+    GET: Returns all Image instances.
+    POST: Create a new Image Instance
+    PUT: Update an Image Instance
+    PATCH: Partially update an Image instance
+    DELETE: Delete an Image instance
+    """
+    queryset = Image.objects.all()
+    serializer_class = ImageSerializer
+    permission_classes = [IsAdminUser]
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = '__all__'
+    ordering_fields = '__all__'
+    lookup_field = 'unique_id'
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 class AuthorViewSet(viewsets.ModelViewSet):
     """
@@ -46,32 +140,6 @@ class BookViewSet(viewsets.ModelViewSet):
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAdminUser]
-    filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = '__all__'
-    ordering_fields = '__all__'
-    lookup_field = 'unique_id'
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60*60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60*60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-class ImageViewSet(viewsets.ModelViewSet):
-    """
-    GET: Returns all Image instances.
-    POST: Create a new Image Instance
-    PUT: Update an Image Instance
-    PATCH: Partially update an Image instance
-    DELETE: Delete an Image instance
-    """
-    queryset = Image.objects.all()
-    serializer_class = ImageSerializer
     permission_classes = [IsAdminUser]
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = '__all__'
@@ -244,32 +312,6 @@ class BookInCartViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-class BookReviewViewSet(viewsets.ModelViewSet):
-    """
-    GET: Returns all BookReview instances.
-    POST: Create a new BookReview Instance
-    PUT: Update an BookReview Instance
-    PATCH: Partially update an BookReview instance
-    DELETE: Delete an BookReview instance
-    """
-    queryset = BookReview.objects.all()
-    serializer_class = BookReviewSerializer
-    permission_classes = [IsAdminUser]
-    filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = '__all__'
-    ordering_fields = '__all__'
-    lookup_field = 'unique_id'
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60*60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-    
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60*60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-    
 class CartViewSet(viewsets.ModelViewSet):
     """
     GET: Returns all Cart instances.

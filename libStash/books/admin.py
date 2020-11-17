@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Book, Image, Author, Publisher, Warehouse, WarehouseBook
+from .models import Book, Author, Publisher, Warehouse, WarehouseBook
 
 # Register your models here.
 @admin.register(Book)
@@ -12,10 +12,6 @@ class BookAdmin(admin.ModelAdmin):
 class AuthorAdmin(admin.ModelAdmin):
     list_display = ("name", "email", "address")
     search_fields = ('name',)
-
-@admin.register(Image)
-class ImageAdmin(admin.ModelAdmin):
-    list_display = ('book', "book_cover",)
 
 
 @admin.register(Warehouse)

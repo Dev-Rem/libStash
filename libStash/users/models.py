@@ -4,7 +4,6 @@ from django.dispatch import receiver
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from libStash import settings
 from books.models import Book
-from datetime import date
 import uuid, stripe
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -14,7 +13,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class AccountManager(BaseUserManager):
-    def create_user(self, firstname, lastname, email, stripe_id, password=None):
+    def create_user(self, firstname, lastname, email, stripe_id=None, password=None):
         if not firstname:
             raise ValueError("Please provide a valid  first name")
         if not lastname:
@@ -124,14 +123,4 @@ class BookInCart(models.Model):
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     last_update = models.DateTimeField(auto_now=True)
 
-class BookReview(models.Model):
-    book = models.ForeignKey(Book, null=True, on_delete=models.CASCADE)
-    account = models.ForeignKey(Account, null=True, on_delete=models.CASCADE)
-    comment = models.CharField(verbose_name='Comment', max_length=500, null=True)
-    is_active = models.BooleanField(default=True)
-    date = models.DateTimeField(auto_now=False, auto_now_add=True)
-    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
-    last_update = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.comment
+    

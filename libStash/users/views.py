@@ -1,8 +1,8 @@
 from django.http import Http404
 from django.contrib.auth.tokens import default_token_generator
-from api.serializers import *
+from api.serializers import AddressSerializer, BookInCartSerializer, CartSerializer 
 from rest_framework.response import Response
-from rest_framework import status, generics, permissions
+from rest_framework import status, generics, permissions,viewsets
 from djoser.conf import settings
 from djoser import signals, utils
 from djoser.compat import get_user_email
@@ -11,6 +11,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from libStash import settings as project_settings
+from users.models import Account, Address, BookInCart, Cart
+from djoser.serializers import UserSerializer
 CACHE_TTL = getattr(project_settings, 'CACHE_TTL')
 
 
@@ -57,12 +59,12 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
     @method_decorator(vary_on_cookie)
     @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
-        address = Address.objects.get(account=request.user, pk=kwargs['adrs_pk'])
+        address = Address.objects.get(account=request.user, pk=kwargs['unique_id'])
         serializer = AddressSerializer(address)
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
-        address = Address.objects.get(account=request.user, pk=kwargs['adrs_pk'])
+        address = Address.objects.get(account=request.user, pk=kwargs['unique_id'])
         serializer = AddressSerializer(address, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -70,7 +72,7 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def destroy(self, request, *args, **kwargs):
-        address = Address.objects.get(account=request.user, pk=kwargs['adrs_pk'])
+        address = Address.objects.get(account=request.user, pk=kwargs['unique_id'])
         address.delete()
         return Response({'status': 'Address Deleted'})
 
@@ -105,9 +107,10 @@ class BookInCartDetailView(generics.RetrieveUpdateDestroyAPIView):
     @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         cart = Cart.objects.get(account=request.user)
-        book_in_cart = BookInCart.objects.filter(cart=cart, pk=kwargs['pk'])
+        book_in_cart = BookInCart.objects.filter(cart=cart, pk=kwargs['unique_id'])
         serializer = BookInCartSerializer(book_in_cart, many=True)
         return Response(serializer.data)
+    
 
 class UserViewSet(UserViewSet):
     serializer_class = UserSerializer
@@ -131,19 +134,32 @@ class UserViewSet(UserViewSet):
         elif settings.SEND_CONFIRMATION_EMAIL:
             settings.EMAIL.confirmation(self.request, context).send(to)
 
-class AddToCartView(generics.CreateAPIView):
+class ManageItemView(viewsets.ViewSet):
     """
     POST: Add book to cart
     """
     queryset = BookInCart.objects.all()
-    serializer_class = AddToCartSerializer
+    serializer_class = BookInCartSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def create(self, request, *args, **kwargs):
-        cart = Cart.objects.get(account=request.user)
-        serializer = AddToCartSerializer(data=request.data)
+    def get_object(self, request):
+        try:
+            return Cart.objects.get(account=request.user)
+        except:
+            return Http404
+
+    def create(self, request):
+        cart = self.get_object(request)
+        serializer = BookInCartSerializer(data=request.data)
         if serializer.is_valid():
             serializer.validated_data['cart'] = cart
             serializer.save()
             return Response({'status': 'Added book to cart'})
-        
+    
+    def destroy(self, request, *args, **kwargs):
+        cart = self.get_object(request)
+        item = BookInCart.object.get(cart=cart, unique_id=kwargs['uuid'])
+        self.pre_delete(item)
+        item.delete()
+        self.post_delete(item)
+        return Response({'status': ' Item removed from Cart'})

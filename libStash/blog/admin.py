@@ -4,13 +4,13 @@ from .models import Post, Comment, Image
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ("title", "account", 'is_active', 'date', )
+    list_display = ("title", 'is_active', 'date', )
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("post", "comment", 'is_active', 'date')
+    list_display = ("post", 'book', "comment", 'is_active', 'date')
 
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ("post", "image", 'date', )
+    list_display = ("post", 'book', "image", 'date', )
