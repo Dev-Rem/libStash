@@ -154,7 +154,7 @@ class ManageItemView(viewsets.ViewSet):
         if serializer.is_valid():
             serializer.validated_data['cart'] = cart
             serializer.save()
-            return Response({'status': 'Added book to cart'})
+            return Response({'status': ' Item added book to cart'})
     
     def destroy(self, request, *args, **kwargs):
         cart = self.get_object(request)
