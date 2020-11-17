@@ -4,7 +4,7 @@ from blog.views import CommentListView, ImageDetailView, PostDetailView, PostLis
 
 urlpatterns = [
     # url paths
-    path('posts/', PostListView.as_view(), name='post-list'),
+    path('', PostListView.as_view(), name='post-list'),
     path('post/<uuid:unique_id>/', PostDetailView.as_view(), name='post-detail'),
     path('post/<uuid:unique_id>/comments/', CommentListView.as_view(), name='post-comments'),
     path('post/<uuid:unique_id>/image/', ImageDetailView.as_view(), name='blog-image'),

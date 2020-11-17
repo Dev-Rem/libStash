@@ -2,6 +2,7 @@ from django.db import models
 import uuid
 from users.models import Account
 from books.models import Book
+from libStash import settings
 # Create your models here.
 
 class Post(models.Model):
@@ -40,7 +41,7 @@ class Comment(models.Model):
 class Image(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, null=True, blank=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
-    image = models.ImageField(verbose_name='Image', upload_to="images/")
+    image = models.ImageField(verbose_name='Image', upload_to='images/')
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     date = models.DateTimeField( auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
