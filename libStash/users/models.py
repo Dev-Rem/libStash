@@ -3,7 +3,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from libStash import settings
-from books.models import Book
 import uuid, stripe
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -107,20 +106,3 @@ class Address(models.Model):
     def __str__(self):
         return 'Address for ' + str(self.account)
 
-class Cart(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    is_active = models.BooleanField(verbose_name="State", default=False)
-    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
-    last_update = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return 'Cart for ' + str(self.account)
-
-class BookInCart(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='item_in_cart')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='book_in_cart')
-    count = models.IntegerField(verbose_name="Book count", default=0)
-    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
-    last_update = models.DateTimeField(auto_now=True)
-
-    

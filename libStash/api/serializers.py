@@ -20,9 +20,12 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only_fields = ('post', 'book', 'account', 'likes','is_active' )
 
 class ImageSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField('get_image_url')
     class Meta:
         model = Image
-        fields = ['unique_id','book', 'post','image', 'date']
+        fields = ['unique_id','book', 'post','image', 'image_url', 'date']
+    def get_image_url(self, obj):
+        return obj.image.url
 
 class PublisherSerializer(serializers.ModelSerializer):
     class Meta:

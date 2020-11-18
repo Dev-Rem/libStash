@@ -4,7 +4,7 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import gettext_lazy as _
 import datetime, uuid
 from phone_field import PhoneField
-
+from users.models import Account
 
 # Create your models here.
 
@@ -52,7 +52,7 @@ class Book(models.Model):
         PAPER_BACK = "PPR-BCK", _("Paperback")
 
     title = models.CharField(verbose_name="Title", max_length=150)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    author = models.ManyToManyField( Author, related_name="book_author")
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, default=None)
     category = models.CharField(verbose_name="Category", max_length=5, choices=Categories.choices)
     format = models.CharField(verbose_name="Format", max_length=7, choices=Formats.choices)
@@ -87,3 +87,45 @@ class WarehouseBook(models.Model):
 
     def __str__(self):
         return f"{self.book}, {self.count}"
+
+
+class BookImage(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    image = models.ImageField(verbose_name='Image')
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
+    last_update = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.image
+
+class BookComment(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, null=True, on_delete=models.CASCADE)
+    comment = models.TextField(verbose_name='Comment')
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
+    date = models.DateTimeField( auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-date']
+
+    def __str__(self):
+        return self.comment
+
+class Cart(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    is_active = models.BooleanField(verbose_name="State", default=False)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
+    last_update = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return 'Cart for ' + str(self.account)
+
+class BookInCart(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='item_in_cart')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='book_in_cart')
+    count = models.IntegerField(verbose_name="Book count", default=0)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
+    last_update = models.DateTimeField(auto_now=True)
+
+    
