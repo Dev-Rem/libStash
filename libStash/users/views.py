@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from libStash import settings as project_settings
-from users.models import Account, Address, BookInCart, Cart
+from users.models import Account, Address
 from djoser.serializers import UserSerializer
 CACHE_TTL = getattr(project_settings, 'CACHE_TTL')
 
@@ -74,43 +74,7 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         address = Address.objects.get(account=request.user, pk=kwargs['unique_id'])
         address.delete()
-        return Response({'status': 'Address Deleted'})
-
-class CartDetailView(generics.RetrieveAPIView):
-    """
-    GET: a cart instance associated with the logged in user.
-    """
-
-    queryset = Cart.objects.all()
-    serializer_class = CartSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    lookup_field = 'unique_id'
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(CACHE_TTL))
-    def retrieve(self, request, *args, **kwargs):
-        cart = Cart.objects.get(account=request.user)
-        serializer = CartSerializer(cart)
-        return Response(serializer.data)
-
-class BookInCartDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """
-    GET: All book instances in cart
-    """
-
-    queryset = BookInCart.objects.all()
-    serializer_class = BookInCartSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    lookup_field = 'unique_id'
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(CACHE_TTL))
-    def retrieve(self, request, *args, **kwargs):
-        cart = Cart.objects.get(account=request.user)
-        book_in_cart = BookInCart.objects.filter(cart=cart, pk=kwargs['unique_id'])
-        serializer = BookInCartSerializer(book_in_cart, many=True)
-        return Response(serializer.data)
-    
+        return Response({'status': 'Address Deleted'})    
 
 class UserViewSet(UserViewSet):
     serializer_class = UserSerializer
@@ -134,32 +98,3 @@ class UserViewSet(UserViewSet):
         elif settings.SEND_CONFIRMATION_EMAIL:
             settings.EMAIL.confirmation(self.request, context).send(to)
 
-class ManageItemView(viewsets.ViewSet):
-    """
-    POST: Add book to cart
-    """
-    queryset = BookInCart.objects.all()
-    serializer_class = BookInCartSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_object(self, request):
-        try:
-            return Cart.objects.get(account=request.user)
-        except:
-            return Http404
-
-    def create(self, request):
-        cart = self.get_object(request)
-        serializer = BookInCartSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.validated_data['cart'] = cart
-            serializer.save()
-            return Response({'status': ' Item added book to cart'})
-    
-    def destroy(self, request, *args, **kwargs):
-        cart = self.get_object(request)
-        item = BookInCart.object.get(cart=cart, unique_id=kwargs['uuid'])
-        self.pre_delete(item)
-        item.delete()
-        self.post_delete(item)
-        return Response({'status': ' Item removed from Cart'})

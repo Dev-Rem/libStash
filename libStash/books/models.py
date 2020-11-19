@@ -57,16 +57,13 @@ class Book(models.Model):
     category = models.CharField(verbose_name="Category", max_length=5, choices=Categories.choices)
     format = models.CharField(verbose_name="Format", max_length=7, choices=Formats.choices)
     isbn = models.CharField(verbose_name="ISBN", max_length=13)
-    year = models.IntegerField(
-        _("year"), choices=YEAR_CHOICES, default=datetime.datetime.now().year
-    )
+    year = models.IntegerField(_("year"), choices=YEAR_CHOICES, default=datetime.datetime.now().year)
     price = models.DecimalField(verbose_name="Price", max_digits=10, decimal_places=2, default=0)
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     last_update = models.DateTimeField("Last Update",auto_now=True)
 
     def __str__(self):
         return self.title
-
 
 class Warehouse(models.Model):
     address = models.TextField(verbose_name="Address", max_length=200)

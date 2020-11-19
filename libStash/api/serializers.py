@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from blog.models import Post,Comment,Image
-from books.models import Publisher,Author,Book,Warehouse,WarehouseBook
-from users.models import Account,Address,Cart,BookInCart
+from blog.models import Post,PostComment,PostImage
+from books.models import Author,Book,Warehouse,WarehouseBook,Publisher, BookInCart,Cart,BookComment,BookImage
+from users.models import Account,Address
 from djoser.serializers import UserSerializer as BaseUserSerializer
 
 # Serializer classes
@@ -10,22 +10,17 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['unique_id', 'title', 'content', 'account', 'is_active', 'date',]
+        fields = ['unique_id', 'title', 'content', 'account', 'likes', 'date',]
 
-class CommentSerializer(serializers.ModelSerializer):
-    
+class PostImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Comment
-        fields = ['unique_id', 'post', 'book', 'account',  'comment', 'likes', 'is_active', 'date',]
-        read_only_fields = ('post', 'book', 'account', 'likes','is_active' )
+        model = PostImage
+        fields = ['unique_id', 'post', 'image']
 
-class ImageSerializer(serializers.ModelSerializer):
-    image_url = serializers.SerializerMethodField('get_image_url')
+class PostCommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Image
-        fields = ['unique_id','book', 'post','image', 'image_url', 'date']
-    def get_image_url(self, obj):
-        return obj.image.url
+        model = PostComment
+        fields = ['unique_id', 'post', 'account', 'comment', 'date']
 
 class PublisherSerializer(serializers.ModelSerializer):
     class Meta:
@@ -61,6 +56,17 @@ class BookDetailSerializer(serializers.ModelSerializer):
             "year",
             "price",
         ]
+
+class BookImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookImage
+        fields = ['unique_id', 'post', 'image']
+
+class BookCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookComment
+        fields = ['unique_id', 'post', 'account', 'comment', 'date']
+
 
 class BookInCartSerializer(serializers.ModelSerializer):
     book = BookSerializer(read_only=True)

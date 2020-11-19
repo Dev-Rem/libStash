@@ -13,7 +13,6 @@ class Post(models.Model):
     account = models.ForeignKey(Account, null=True, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
-    
 
     class Meta:
         ordering = ['-date']

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from .models import Account,Address,Cart,BookInCart
+from .models import Account,Address
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
@@ -78,15 +78,3 @@ admin.site.unregister(Group)
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
     list_display = ("account", "address1", "address2", "zip_code", "country")
-
-
-@admin.register(Cart)
-class CartAdmin(admin.ModelAdmin):
-    list_display = ("account", "is_active")
-
-
-@admin.register(BookInCart)
-class BookInCartAdmin(admin.ModelAdmin):
-    list_display = ("cart", "book", "count")
-
-

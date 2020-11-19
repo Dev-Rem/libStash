@@ -7,9 +7,11 @@ from api.views import (
     BookInCartViewSet, 
     BookViewSet, 
     CartViewSet, 
-    CommentViewSet, 
-    ImageViewSet, 
-    PostViewSet, 
+    BookCommentViewSet, 
+    BookImageViewSet, 
+    PostViewSet,
+    PostImageViewSet,
+    PostCommentViewSet,
     PublisherViewSet, 
     WarehouseBookViewSet, 
     WarehouseViewSet,
@@ -18,8 +20,10 @@ app_name = 'users'
 
 router = DefaultRouter()
 router.register(r'posts', PostViewSet, basename='post')
-router.register(r'comments', CommentViewSet, basename='book-review')
-router.register(r'images', ImageViewSet, basename='image')
+router.register(r'comments', BookCommentViewSet, basename='book-review')
+router.register(r'comments', PostCommentViewSet, basename='book-review')
+router.register(r'images', BookImageViewSet, basename='image')
+router.register(r'images', BookImageViewSet, basename='image')
 router.register(r'authors', AuthorViewSet, basename='author')
 router.register(r'books', BookViewSet, basename='book')
 router.register(r'publishers', PublisherViewSet, basename='publisher')

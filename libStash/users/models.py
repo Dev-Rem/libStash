@@ -5,8 +5,6 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from libStash import settings
 import uuid, stripe
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
 # Create your models here.
 
 
@@ -52,7 +50,6 @@ class AccountManager(BaseUserManager):
         return user
     
 
-
 class Account(AbstractBaseUser):
     id = models.AutoField(primary_key=True)
     firstname = models.CharField(verbose_name="First name", max_length=200)
@@ -85,8 +82,6 @@ class Account(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
-
-
 
 class Address(models.Model):
     account = models.ForeignKey(

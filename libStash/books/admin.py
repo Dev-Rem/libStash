@@ -1,10 +1,11 @@
 from django.contrib import admin
-from .models import Book, Author, Publisher, Warehouse, WarehouseBook
+from .models import Book, Author, Publisher, Warehouse, WarehouseBook, BookComment, BookImage, Cart, BookInCart
 
 # Register your models here.
+
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ("title", "author", "isbn", "year")
+    list_display = ("title", "isbn", "year")
     search_fields = ("title", "author", "isbn", "year")
 
 
@@ -27,3 +28,19 @@ class PublisherAdmin(admin.ModelAdmin):
 @admin.register(WarehouseBook)
 class WarehouseBookAdmin(admin.ModelAdmin):
     list_display = ("warehouse", "book", "count")
+
+@admin.register(BookComment)
+class BookCommentAdmin(admin.ModelAdmin):
+    list_display = ( "book",'account', "comment", 'date')
+
+@admin.register(BookImage)
+class BookImageAdmin(admin.ModelAdmin):
+    list_display = ("book", "image", )
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    list_display = ('account', 'is_active')
+
+@admin.register(BookInCart)
+class BookInCartAdmin(admin.ModelAdmin):
+    list_display = ('cart', 'book', 'count')
