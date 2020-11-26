@@ -17,8 +17,6 @@ class AccountManager(BaseUserManager):
             raise ValueError("Please provide a valid last name")
         if not email:
             raise ValueError("Please provide a valid email address")
-        if not stripe_id:
-            raise ValueError("Please provide a valid email address")
         
         customer = stripe.Customer.create(
             email=email,

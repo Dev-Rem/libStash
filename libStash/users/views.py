@@ -1,6 +1,6 @@
 from django.http import Http404
 from django.contrib.auth.tokens import default_token_generator
-from api.serializers import AddressSerializer, BookInCartSerializer, CartSerializer 
+from api.serializers import AddressSerializer, BookInCartSerializer, CartSerializer, UserSerializer
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions,viewsets
 from djoser.conf import settings
@@ -12,7 +12,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from libStash import settings as project_settings
 from users.models import Account, Address
-from djoser.serializers import UserSerializer
+from books.models import Cart
 CACHE_TTL = getattr(project_settings, 'CACHE_TTL')
 
 
