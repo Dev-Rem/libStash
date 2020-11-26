@@ -170,8 +170,6 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 10,
     "DEFAULT_AUTHENTICATION_CLASSES": [
         'rest_framework.authentication.TokenAuthentication',
-        "rest_framework.authentication.BasicAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
     ],
 }
 
@@ -187,20 +185,10 @@ DJOSER = {
     'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': False,
     'SERIALIZERS': {
-        'password_reset': 'djoser.serializers.SendEmailResetSerializer',
-        'password_reset_confirm': 'djoser.serializers.PasswordResetConfirmSerializer',
-        'password_reset_confirm_retype': 'djoser.serializers.PasswordResetConfirmRetypeSerializer',
-        'user_create_password_retype': 'djoser.serializers.UserCreatePasswordRetypeSerializer',
-        'user': 'djoser.serializers.UserSerializer',
+        
+        'user': 'api.serializers.UserSerializer',
         'current_user': 'api.serializers.UserSerializer',
-        'token': 'djoser.serializers.TokenSerializer',
-        'token_create': 'djoser.serializers.TokenCreateSerializer',
-    },
-    'EMAIL': {
-        'confirmation': 'djoser.email.ConfirmationEmail',
-        'password_reset': 'djoser.email.PasswordResetEmail',
-        'password_changed_confirmation': 'djoser.email.PasswordChangedConfirmationEmail',
-    }
+        }
 }
 
 ***REMOVED***
