@@ -77,3 +77,25 @@ class PostCommentListView(generics.ListCreateAPIView):
             return Response({'status': 'Comment posted'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class PostImageDetailView(generics.RetrieveAPIView):
+    """
+    GET: Returns all images associated with the book instance.
+    """
+    queryset = PostImage.objects.all()
+    serializer_class = PostImageSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = 'unique_id'
+
+    def get_object(self, unique_id):
+        try:
+            return Post.objects.get(unique_id=unique_id)
+        except:
+            raise Http404
+
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(CACHE_TTL))
+    def retrieve(self, request, *args, **kwargs):
+        object_ = self.get_object(kwargs['unique_id'])
+        image = PostImage.objects.get(post=object_)
+        serializer = PostImageSerializer(image)
+        return Response(serializer.data)

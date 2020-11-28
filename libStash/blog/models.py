@@ -26,8 +26,6 @@ class PostImage(models.Model):
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     last_update = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return '{}'.format(self.image)
 
 class PostComment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)

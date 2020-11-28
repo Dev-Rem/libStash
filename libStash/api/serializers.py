@@ -73,14 +73,14 @@ class BookInCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookInCart
         fields = ['unique_id', 'cart','book', 'count', ]
-        read_only_fields = ('cart')
+        read_only_fields = ('cart', )
 
 class CartSerializer(serializers.ModelSerializer):
-    item_in_cart = BookInCartSerializer(many=True, read_only=True)
+    items = BookInCartSerializer(many=True, read_only=True)
 
     class Meta:
         model = Cart
-        fields = ["unique_id", "account", "item_in_cart", "is_active"]
+        fields = ["unique_id", "account", "items", "is_active"]
 
 class AddressSerializer(serializers.ModelSerializer):
     

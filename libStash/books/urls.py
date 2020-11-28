@@ -1,5 +1,9 @@
 from django.urls import path
-from books.views import AuthorDetailView, BookCommentListView, BookDetailView, BookImageDetailView, BookListView, BooksByAuthorView, BooksByPublisherView, PublisherDetailView 
+from books.views import AuthorDetailView, BookCommentListView, BookDetailView, BookImageDetailView, BookListView, BooksByAuthorView, BooksByPublisherView, CartDetailView, ManageCartView, PublisherDetailView 
+from rest_framework.routers import DefaultRouter
+from django.conf.urls import include
+
+
 
 
 urlpatterns = [
@@ -11,5 +15,9 @@ urlpatterns = [
     path("author/<uuid:uunique_idid>/", AuthorDetailView.as_view(), name="author-detail"), # done
     path('author/<uuid:unique_id>/books/', BooksByAuthorView.as_view(), name='books-by-author'), # done
     path("publisher/<uuid:unique_id>/", PublisherDetailView.as_view(), name="publisher-detail"), # done
-    path('publisher/<uuid:unique_id>/books', BooksByPublisherView.as_view(), name='books-by-publisher'),
+    path('publisher/<uuid:unique_id>/books/', BooksByPublisherView.as_view(), name='books-by-publisher'),
+    path('cart/', CartDetailView.as_view(), name='cart=items'),
+    path('cart/add/<uuid:unique_id>/', ManageCartView.as_view({'post': 'create'}), name='add-item'),
+    path('cart/remove/<uuid:unique_id>/', ManageCartView.as_view({'delete': 'destroy'}), name='remove-item'),
+    path('cart/item/<uuid:unique_id>/', ManageCartView.as_view({'post': 'create'}), name='add-to-cart'),
 ]

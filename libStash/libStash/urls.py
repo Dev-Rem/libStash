@@ -24,7 +24,7 @@ urlpatterns = [
     path('payment/', include('payments.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
-    # path("api-auth/", include("rest_framework.urls")),
+    path("api-auth/", include("rest_framework.urls")),
 
 ]
 

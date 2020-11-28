@@ -137,30 +137,15 @@ class CartDetailView(generics.RetrieveAPIView):
         serializer = CartSerializer(cart)
         return Response(serializer.data)
 
-class BookInCartDetailView(generics.RetrieveUpdateDestroyAPIView):
+class ManageCartView(viewsets.ViewSet):
     """
-    GET: All book instances in cart
+    POST: Add book to cart
+    DELETE: Remove book from cart
     """
     queryset = BookInCart.objects.all()
     serializer_class = BookInCartSerializer
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'unique_id'
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(CACHE_TTL))
-    def retrieve(self, request, *args, **kwargs):
-        cart = Cart.objects.get(account=request.user)
-        book_in_cart = BookInCart.objects.get(cart=cart, pk=kwargs['unique_id'])
-        serializer = BookInCartSerializer(book_in_cart, many=True)
-        return Response(serializer.data)
-
-class ManageItemView(viewsets.ViewSet):
-    """
-    POST: Add book to cart
-    """
-    queryset = BookInCart.objects.all()
-    serializer_class = BookInCartSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self, request):
         try:
@@ -168,17 +153,37 @@ class ManageItemView(viewsets.ViewSet):
         except:
             return Http404
 
-    def create(self, request):
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(CACHE_TTL))
+    def retrieve(self, request, unique_id=None):
         cart = self.get_object(request)
+        item = BookInCart.objects.get(cart=cart, unique_id=unique_id)
+        serializer = BookInCartSerializer(item, many=True)
+        return Response(serializer.data)
+
+    def create(self, request, unique_id=None):
+        cart = self.get_object(request)
+        book = Book.objects.get(unique_id=unique_id)
         serializer = BookInCartSerializer(data=request.data)
         if serializer.is_valid():
             serializer.validated_data['cart'] = cart
+            serializer.validated_data['book'] = book
             serializer.save()
             return Response({'status': ' Item added book to cart'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def destroy(self, request, *args, **kwargs):
+    def update(self, request, unique_id=None):
         cart = self.get_object(request)
-        item = BookInCart.object.get(cart=cart, unique_id=kwargs['uuid'])
+        item = BookInCart.object.get(cart=cart, unique_id=unique_id)
+        serializer = BookInCartSerializer(item, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'Cart item updated'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, unique_id=None):
+        cart = self.get_object(request)
+        item = BookInCart.object.get(cart=cart, unique_id=unique_id)
         self.pre_delete(item)
         item.delete()
         self.post_delete(item)
