@@ -19,5 +19,5 @@ urlpatterns = [
     path('cart/', CartDetailView.as_view(), name='cart=items'),
     path('cart/add/<uuid:unique_id>/', ManageCartView.as_view({'post': 'create'}), name='add-item'),
     path('cart/remove/<uuid:unique_id>/', ManageCartView.as_view({'delete': 'destroy'}), name='remove-item'),
-    path('cart/item/<uuid:unique_id>/', ManageCartView.as_view({'post': 'create'}), name='add-to-cart'),
+    path('cart/item/<uuid:unique_id>/', ManageCartView.as_view({'put': 'update'}), name='edit-item'),
 ]

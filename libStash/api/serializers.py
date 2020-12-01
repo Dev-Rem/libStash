@@ -67,9 +67,7 @@ class BookCommentSerializer(serializers.ModelSerializer):
         model = BookComment
         fields = ['unique_id', 'post', 'account', 'comment', 'date']
 
-
 class BookInCartSerializer(serializers.ModelSerializer):
-    book = BookSerializer(read_only=True)
     class Meta:
         model = BookInCart
         fields = ['unique_id', 'cart','book', 'count', ]
@@ -80,7 +78,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cart
-        fields = ["unique_id", "account", "items", "is_active"]
+        fields = ["unique_id", "account", "is_active", "items"]
 
 class AddressSerializer(serializers.ModelSerializer):
     

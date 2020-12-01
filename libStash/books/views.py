@@ -169,7 +169,7 @@ class ManageCartView(viewsets.ViewSet):
             serializer.validated_data['cart'] = cart
             serializer.validated_data['book'] = book
             serializer.save()
-            return Response({'status': ' Item added book to cart'})
+            return Response({'status': ' Item added to cart'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def update(self, request, unique_id=None):
@@ -183,10 +183,8 @@ class ManageCartView(viewsets.ViewSet):
 
     def destroy(self, request, unique_id=None):
         cart = self.get_object(request)
-        item = BookInCart.object.get(cart=cart, unique_id=unique_id)
-        self.pre_delete(item)
+        item = BookInCart.objects.get(cart=cart, unique_id=unique_id)
         item.delete()
-        self.post_delete(item)
         return Response({'status': ' Item removed from Cart'})
 
 
