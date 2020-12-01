@@ -7,17 +7,20 @@ from djoser.serializers import UserSerializer as BaseUserSerializer
 # Serializer classes
 
 class PostSerializer(serializers.ModelSerializer):
-
+    account = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
     class Meta:
         model = Post
         fields = ['unique_id', 'title', 'content', 'account', 'likes', 'date',]
 
 class PostImageSerializer(serializers.ModelSerializer):
+    post = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
     class Meta:
         model = PostImage
         fields = ['unique_id', 'post', 'image']
 
 class PostCommentSerializer(serializers.ModelSerializer):
+    account = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
+    post = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
     class Meta:
         model = PostComment
         fields = ['unique_id', 'post', 'account', 'comment', 'date']
@@ -33,15 +36,15 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = [ "unique_id", "name", "email", "address"]
 
 class BookSerializer(serializers.ModelSerializer):
-    
+    author = serializers.SlugRelatedField(many=True, slug_field='unique_id', read_only=True)
     class Meta:
         model = Book
         fields = ['unique_id', 'title', 'author', 'category', 'format', 'year', 'price', ]
 
 class BookDetailSerializer(serializers.ModelSerializer):
 
-    author = AuthorSerializer(read_only=True)
-    publisher = PublisherSerializer(read_only=True)
+    author = serializers.SlugRelatedField(many=True, slug_field='unique_id', read_only=True)
+    publisher = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
 
     class Meta:
         model = Book
@@ -63,9 +66,11 @@ class BookImageSerializer(serializers.ModelSerializer):
         fields = ['unique_id', 'post', 'image']
 
 class BookCommentSerializer(serializers.ModelSerializer):
+    account = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
+    book = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
     class Meta:
         model = BookComment
-        fields = ['unique_id', 'post', 'account', 'comment', 'date']
+        fields = ['unique_id', 'book', 'account', 'comment', 'date']
 
 class BookInCartSerializer(serializers.ModelSerializer):
     book = serializers.SlugRelatedField(read_only=True, slug_field='unique_id')
@@ -74,15 +79,16 @@ class BookInCartSerializer(serializers.ModelSerializer):
         fields = ['unique_id','book', 'count', ]
 
 class CartSerializer(serializers.ModelSerializer):
+    account = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
     class Meta:
         model = Cart
         fields = ["unique_id", "account", "is_active"]
 
 class AddressSerializer(serializers.ModelSerializer):
-    
+    account = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
     class Meta:
         model = Address
-        fields = ["unique_id", 'account', "address1", "address2", "zip_code", "country"]
+        fields = ["unique_id", 'account', "address1", "address2", "zip_code", 'city', "country"]
 
 class UserSerializer(BaseUserSerializer):
     class Meta:
@@ -100,6 +106,7 @@ class WarehouseSerializer(serializers.ModelSerializer):
         fields = ['unique_id', 'address', 'phone', ]
 
 class WarehouseBookSerializer(serializers.ModelSerializer):
+    book = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
     class Meta:
         model = WarehouseBook
         fields = ['unique_id', 'warehouse', 'book', 'count', ]

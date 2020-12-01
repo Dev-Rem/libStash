@@ -23,7 +23,6 @@ class AddressListView(generics.ListCreateAPIView):
     GET: Returns all address instances associated with the logged in user
     POST: Create new address object.
     """
-
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -49,8 +48,8 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
     """
     GET: Returns an address instance
     PUT: Updates the address instance
+    DELETE: Delete an address instance
     """
-
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -59,12 +58,12 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
     @method_decorator(vary_on_cookie)
     @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
-        address = Address.objects.get(account=request.user, pk=kwargs['unique_id'])
+        address = Address.objects.get(account=request.user, unique_id=kwargs['unique_id'])
         serializer = AddressSerializer(address)
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
-        address = Address.objects.get(account=request.user, pk=kwargs['unique_id'])
+        address = Address.objects.get(account=request.user, unique_id=kwargs['unique_id'])
         serializer = AddressSerializer(address, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -72,7 +71,7 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def destroy(self, request, *args, **kwargs):
-        address = Address.objects.get(account=request.user, pk=kwargs['unique_id'])
+        address = Address.objects.get(account=request.user, unique_id=kwargs['unique_id'])
         address.delete()
         return Response({'status': 'Address Deleted'})    
 

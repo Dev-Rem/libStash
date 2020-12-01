@@ -62,17 +62,17 @@ class PostCommentListView(generics.ListCreateAPIView):
     @method_decorator(vary_on_cookie)
     @method_decorator(cache_page(CACHE_TTL))
     def list(self, request, *args, **kwargs):
-        object_ = self.get_object(kwargs['unique_id'])
-        comments = PostComment.objects.filter(post=object_)
+        post = self.get_object(kwargs['unique_id'])
+        comments = PostComment.objects.filter(post=post)
         serializer = PostCommentSerializer(comments, many=True)
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        object_ =self.get_object(kwargs['unique_id'])
+        post =self.get_object(kwargs['unique_id'])
         serializer = PostCommentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.validated_data['account'] = request.user
-            serializer._validated_data['post'] = object_
+            serializer._validated_data['post'] = post
             serializer.save()
             return Response({'status': 'Comment posted'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -95,7 +95,7 @@ class PostImageDetailView(generics.RetrieveAPIView):
     @method_decorator(vary_on_cookie)
     @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
-        object_ = self.get_object(kwargs['unique_id'])
-        image = PostImage.objects.get(post=object_)
+        post = self.get_object(kwargs['unique_id'])
+        image = PostImage.objects.get(post=post)
         serializer = PostImageSerializer(image)
         return Response(serializer.data)
