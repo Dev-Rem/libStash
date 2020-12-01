@@ -68,17 +68,15 @@ class BookCommentSerializer(serializers.ModelSerializer):
         fields = ['unique_id', 'post', 'account', 'comment', 'date']
 
 class BookInCartSerializer(serializers.ModelSerializer):
+    book = serializers.SlugRelatedField(read_only=True, slug_field='unique_id')
     class Meta:
         model = BookInCart
-        fields = ['unique_id', 'cart','book', 'count', ]
-        read_only_fields = ('cart', )
+        fields = ['unique_id','book', 'count', ]
 
 class CartSerializer(serializers.ModelSerializer):
-    items = BookInCartSerializer(many=True, read_only=True)
-
     class Meta:
         model = Cart
-        fields = ["unique_id", "account", "is_active", "items"]
+        fields = ["unique_id", "account", "is_active"]
 
 class AddressSerializer(serializers.ModelSerializer):
     

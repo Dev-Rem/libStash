@@ -15,9 +15,10 @@ urlpatterns = [
     path("author/<uuid:uunique_idid>/", AuthorDetailView.as_view(), name="author-detail"), # done
     path('author/<uuid:unique_id>/books/', BooksByAuthorView.as_view(), name='books-by-author'), # done
     path("publisher/<uuid:unique_id>/", PublisherDetailView.as_view(), name="publisher-detail"), # done
-    path('publisher/<uuid:unique_id>/books/', BooksByPublisherView.as_view(), name='books-by-publisher'),
+    path('publisher/<uuid:unique_id>/books/', BooksByPublisherView.as_view(), name='books-by-publisher'), # done
     path('cart/', CartDetailView.as_view(), name='cart=items'),
-    path('cart/add/<uuid:unique_id>/', ManageCartView.as_view({'post': 'create'}), name='add-item'),
-    path('cart/remove/<uuid:unique_id>/', ManageCartView.as_view({'delete': 'destroy'}), name='remove-item'),
-    path('cart/item/<uuid:unique_id>/', ManageCartView.as_view({'put': 'update'}), name='edit-item'),
+    path('cart/item/<uuid:unique_id>/', ManageCartView.as_view({'get': 'retrieve'}), name='item'),
+    path('cart/add/item/<uuid:unique_id>/', ManageCartView.as_view({'post': 'create'}), name='add-item'), # done
+    path('cart/remove/item/<uuid:unique_id>/', ManageCartView.as_view({'delete': 'destroy'}), name='remove-item'), # done
+    path('cart/edit/item/<uuid:unique_id>/', ManageCartView.as_view({'put': 'update'}), name='edit-item'), # done
 ]

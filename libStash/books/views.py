@@ -120,21 +120,22 @@ class BooksByPublisherView(generics.ListAPIView):
         except:
             return Http404
 
-class CartDetailView(generics.RetrieveAPIView):
+class CartDetailView(generics.ListAPIView):
     """
-    GET: a cart instance associated with the logged in user.
+    GET: List all books in cart
     """
 
     queryset = Cart.objects.all()
-    serializer_class = CartSerializer
+    serializer_class = BookInCartSerializer
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'unique_id'
 
     @method_decorator(vary_on_cookie)
     @method_decorator(cache_page(CACHE_TTL))
-    def retrieve(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         cart = Cart.objects.get(account=request.user)
-        serializer = CartSerializer(cart)
+        items = BookInCart.objects.filter(cart=cart)
+        serializer = BookInCartSerializer(items, many=True,)
         return Response(serializer.data)
 
 class ManageCartView(viewsets.ViewSet):
