@@ -159,7 +159,7 @@ class ManageCartView(viewsets.ViewSet):
     def retrieve(self, request, unique_id=None):
         cart = self.get_object(request)
         item = BookInCart.objects.get(cart=cart, unique_id=unique_id)
-        serializer = BookInCartSerializer(item, many=True)
+        serializer = BookInCartSerializer(item)
         return Response(serializer.data)
 
     def create(self, request, unique_id=None):
@@ -175,7 +175,7 @@ class ManageCartView(viewsets.ViewSet):
     
     def update(self, request, unique_id=None):
         cart = self.get_object(request)
-        item = BookInCart.object.get(cart=cart, unique_id=unique_id)
+        item = BookInCart.objects.get(cart=cart, unique_id=unique_id)
         serializer = BookInCartSerializer(item, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -187,7 +187,6 @@ class ManageCartView(viewsets.ViewSet):
         item = BookInCart.objects.get(cart=cart, unique_id=unique_id)
         item.delete()
         return Response({'status': ' Item removed from Cart'})
-
 
 class BookCommentListView(generics.ListCreateAPIView):
     """
