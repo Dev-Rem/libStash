@@ -20,8 +20,8 @@ app_name = 'users'
 
 router = DefaultRouter()
 router.register(r'posts', PostViewSet, basename='post')
-router.register(r'comments', BookCommentViewSet, basename='book-review')
-router.register(r'comments', PostCommentViewSet, basename='book-review')
+router.register(r'comments', BookCommentViewSet, basename='book-comment')
+router.register(r'comments', PostCommentViewSet, basename='post-comment')
 router.register(r'images', BookImageViewSet, basename='image')
 router.register(r'images', BookImageViewSet, basename='image')
 router.register(r'authors', AuthorViewSet, basename='author')

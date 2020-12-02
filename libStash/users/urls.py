@@ -9,7 +9,7 @@ urlpatterns = [
     path("address/edit/<uuid:unique_id>/", AddressUpdateView.as_view(), name="account-address-edit"), # done
     path("address/delete/<uuid:unique_id>/", AddressUpdateView.as_view(), name="account-address-delete"), # done
     # auth/token/login/ login token url
-    # auth/users/me/  account info url
+    # auth/users/me/  account info, delete, update url
     # auth/users/me/set_password/ account password reset url
-    
+
    ]

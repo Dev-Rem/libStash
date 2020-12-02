@@ -16,7 +16,7 @@ class PostImageSerializer(serializers.ModelSerializer):
     post = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
     class Meta:
         model = PostImage
-        fields = ['unique_id', 'post', 'image']
+        fields = ['unique_id', 'post', 'image',]
 
 class PostCommentSerializer(serializers.ModelSerializer):
     account = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)

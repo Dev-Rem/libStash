@@ -2,6 +2,7 @@ from django.shortcuts import render
 from blog.models import Post, PostComment, PostImage
 from api.serializers import PostCommentSerializer, PostImageSerializer, PostSerializer
 from rest_framework import permissions, status, generics
+from rest_framework.parsers import MultiPartParser, FormParser
 from django.http import Http404
 from rest_framework.response import Response
 from django.utils.decorators import method_decorator
@@ -84,6 +85,7 @@ class PostImageDetailView(generics.RetrieveAPIView):
     queryset = PostImage.objects.all()
     serializer_class = PostImageSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    parser_classes = (MultiPartParser, FormParser)
     lookup_field = 'unique_id'
 
     def get_object(self, unique_id):
@@ -96,6 +98,6 @@ class PostImageDetailView(generics.RetrieveAPIView):
     @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         post = self.get_object(kwargs['unique_id'])
-        image = PostImage.objects.get(post=post)
-        serializer = PostImageSerializer(image)
+        image = PostImage.objects.filter(post=post)
+        serializer = PostImageSerializer(image, many=True, context={"request": request})
         return Response(serializer.data)

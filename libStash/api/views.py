@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.permissions import IsAdminUser
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.utils.decorators import method_decorator
@@ -7,6 +7,7 @@ from django.views.decorators.vary import vary_on_cookie
 from blog.models import Post,PostComment,PostImage
 from books.models import Author,Book,Warehouse,WarehouseBook,Publisher, BookInCart,Cart,BookComment,BookImage
 from users.models import Account,Address
+from libStash import settings
 from .serializers import (
     PostSerializer,
     PostImageSerializer,
@@ -24,6 +25,10 @@ from .serializers import (
     AccountSerializer,
     AddressSerializer,
 )
+from rest_framework.response import Response
+
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL')
 
 # Create your views here.
 
@@ -53,6 +58,14 @@ class PostViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
+    def create(self, request, *args, **kwargs):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['account'] = request.user
+            serializer.save()
+            return Response({'status': 'Post created'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class PostImageViewSet(viewsets.ModelViewSet):
     """
     GET: Returns all PostImage instances.
@@ -78,6 +91,14 @@ class PostImageViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(60*60))
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
+    
+    def create(self, request, *args, **kwargs):
+        serializer = PostImageSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['account'] = request.user
+            serializer.save()
+            return Response({'status': 'Post image created'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PostCommentViewSet(viewsets.ModelViewSet):
     """
@@ -105,6 +126,14 @@ class PostCommentViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
+    def create(self, request, *args, **kwargs):
+        serializer = PostCommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['account'] = request.user
+            serializer.save()
+            return Response({'status': 'Post comment created'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class PublisherViewSet(viewsets.ModelViewSet):
     """
     GET: Returns all Publisher instances.
@@ -131,6 +160,14 @@ class PublisherViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
+    def create(self, request, *args, **kwargs):
+        serializer = PublisherSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['account'] = request.user
+            serializer.save()
+            return Response({'status': 'Publisher created'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class AuthorViewSet(viewsets.ModelViewSet):
     """
     GET: Returns all Author instances 
@@ -156,6 +193,14 @@ class AuthorViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(60*60))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+    
+    def create(self, request, *args, **kwargs):
+        serializer = AuthorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['account'] = request.user
+            serializer.save()
+            return Response({'status': 'Author created'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class BookViewSet(viewsets.ModelViewSet):
     """
@@ -183,6 +228,14 @@ class BookViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
+    def create(self, request, *args, **kwargs):
+        serializer = BookSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['account'] = request.user
+            serializer.save()
+            return Response({'status': 'Book created'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class BookImageViewSet(viewsets.ModelViewSet):
     """
     GET: Returns all BookImage instances.
@@ -208,6 +261,14 @@ class BookImageViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(60*60))
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
+    
+    def create(self, request, *args, **kwargs):
+        serializer = BookImageSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['account'] = request.user
+            serializer.save()
+            return Response({'status': 'Book image created'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class BookCommentViewSet(viewsets.ModelViewSet):
     """
@@ -234,6 +295,14 @@ class BookCommentViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(60*60))
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
+    
+    def create(self, request, *args, **kwargs):
+        serializer = BookCommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['account'] = request.user
+            serializer.save()
+            return Response({'status': 'Book comment created'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class WarehouseBookViewSet(viewsets.ModelViewSet):
     """
@@ -260,6 +329,14 @@ class WarehouseBookViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(60*60))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+    
+    def create(self, request, *args, **kwargs):
+        serializer = WarehouseBookSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['account'] = request.user
+            serializer.save()
+            return Response({'status': 'Post created'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class WarehouseViewSet(viewsets.ModelViewSet):
     """

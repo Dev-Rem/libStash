@@ -242,5 +242,5 @@ class BookImageDetailView(generics.RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         object_ = self.get_object(kwargs['unique_id'])
         image = BookImage.objects.get(book=object_)
-        serializer = BookImageSerializer(image)
+        serializer = BookImageSerializer(image, many=True, context={"request": request})
         return Response(serializer.data)
