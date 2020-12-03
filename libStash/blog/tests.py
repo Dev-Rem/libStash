@@ -9,16 +9,31 @@ from users.models import  Account
 
 class PostTestCase(TestCase):
     """
-    Test case to test some the fields in the Post model
+    Test case to testing the fields of the Post model
     """
     def setUp(self):
-
         account = Account.objects.create(firstname='Test', lastname='Test',email='test@email.com')
-        Post.objects.create(title='Test Title', content='Test Content', account=account )
+        Post.objects.create(title='Test Title', content='Test Content', account=account)
         
-
     def test_model_fields(self):
+        account = Account.objects.get(firstname='Test')
         post = Post.objects.get(title='Test Title')
         self.assertEqual(post.title, 'Test Title' )
         self.assertEqual(post.content, 'Test Content')
+        self.assertEqual(post.account, account)
         self.assertTrue(post.is_active)
+
+class PostImageTestCase(TestCase):
+    """
+    Test case for testing the fields of the Post image model
+    """
+    def setUp(self):
+        account = Account.objects.create(firstname='Test', lastname='Test',email='test@email.com')
+        post = Post.objects.create(title='Test Title', content='Test Content', account=account)
+        PostImage.objects.create(post=post, image='image.jpg')
+
+    def test_model_fields(self):
+        post = Post.objects.get(title='Test Title')
+        post_image = PostImage.objects.get(post=post)
+        self.assertEqual(post_image.image, 'image.jpg')
+
