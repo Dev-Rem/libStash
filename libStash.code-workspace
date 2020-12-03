@@ -8,5 +8,21 @@
     "git.ignoreLimitWarning": true,
     "compile-hero.disable-compile-files-on-did-save-code": false
 
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+    
+      {
+        "name": "Python: Django",
+        "type": "python",
+        "request": "launch",
+        "program": "${workspaceFolder}/manage.py",
+        "args": [
+          "runserver"
+        ],
+        "django": true
+      }
+    ]
   }
 }
