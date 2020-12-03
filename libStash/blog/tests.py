@@ -37,3 +37,16 @@ class PostImageTestCase(TestCase):
         post_image = PostImage.objects.get(post=post)
         self.assertEqual(post_image.image, 'image.jpg')
 
+class PostCommmentTestCase(TestCase):
+    """
+    Test case for testing the fields of the Post comment model
+    """
+    def setUp(self):
+        account = Account.objects.create(firstname='Test', lastname='Test',email='test@email.com')
+        post = Post.objects.create(title='Test Title', content='Test Content', account=account)
+        PostComment.objects.create(account=account, post=post, comment='Test Comment')
+
+    def test_model_fields(self):
+        post = Post.objects.get(title='Test Title')
+        comment = PostComment.objects.get(post=post)
+        self.assertEqual(comment.comment, 'Test Comment')
