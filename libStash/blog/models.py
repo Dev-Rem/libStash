@@ -19,6 +19,9 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-date']
+    
+    # def was_published_recently(self):
+    #     pass
 
     def __str__(self):
         return self.title
