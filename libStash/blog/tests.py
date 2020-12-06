@@ -1,7 +1,11 @@
 import datetime
-Ppostfrom django.test import Client
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
+from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import AnonymousUser
+from rest_framework.test import force_authenticate
 from blog.models import Post, PostComment, PostImage
+from blog.views import PostListView, PostDetailView
 from users.models import  Account
 
 
@@ -12,12 +16,14 @@ class PostTestCase(TestCase):
     """
     Test case to testing the fields of the Post model
     """
+
     def setUp(self):
         account = Account.objects.create(firstname='Test', lastname='Test',email='test@email.com')
         Account.objects.create(firstname='Wrong Test', lastname='Wrong Test',email='wrongtest@email.com')
         Post.objects.create(title='Test Title', content='Test Content', account=account)
-        
-    def test_model_fields_with_correct_values(self):
+
+    
+    def test_model_fields_with_values(self):
         account = Account.objects.get(firstname='Test')
         post = Post.objects.get(title='Test Title')
 
@@ -26,14 +32,20 @@ class PostTestCase(TestCase):
         self.assertEqual(post.account, account)
         self.assertTrue(post.is_active)
     
-    def test_model_fields_with_incorrect_values(self):
-        account = Account.objects.get(firstname='Wrong Test')
+    def test_create(self):
         post = Post.objects.get(title='Test Title')
+        self.assertIsInstance(post, Post)
 
-        self.assertNotEqual(post.title, 'Wrong Test title')
-        self.assertNotEqual(post.content, 'Wrong Test content')
-        self.assertNotEqual(post.account, account)
-        self.assertNotEqual(post.is_active, False)
+    def test_update(self):
+        post = Post.objects.get(title='Test Title')
+        post.title = 'Updated Test Title'
+        post.save()
+        self.assertEqual(post.title, 'Updated Test Title')
+
+    def test_delete(self):
+        post = Post.objects.get(title='Test Title')
+        post.delete()
+        self.assertRaises(ObjectDoesNotExist)
 
 class PostImageTests(TestCase):
     """
@@ -45,19 +57,27 @@ class PostImageTests(TestCase):
         PostImage.objects.create(post=post, image='image.jpg')
         Post.objects.create(title='Wrong Test Title', content='Wrong Test Content', account=account)
 
-    def test_model_fields_with_correct_values(self):
+    def test_model_fields_with_values(self):
         post = Post.objects.get(title='Test Title')
         post_image = PostImage.objects.get(post=post)
 
         self.assertEqual(post_image.image, 'image.jpg')
         self.assertEqual(post_image.post, post)
 
-    def test_model_fields_with_incorrect_values(self):
-        post = Post.objects.get(title='Wrong Test Title')
+    def test_create(self):
         post_image = PostImage.objects.get(image='image.jpg')
+        self.assertIsInstance(post_image, PostImage)
 
-        self.assertNotEqual(post_image.image, 'Wrong_image.jpg')
-        self.assertNotEqual(post_image.post, post)
+    def test_update(self):
+        post_image = PostImage.objects.get(image='image.jpg')
+        post_image.image = 'image2.jpg'
+        post_image.save()
+        self.assertEqual(post_image.image, 'image2.jpg')
+
+    def test_delete(self):
+        post_image = PostImage.objects.get(image='image.jpg')
+        post_image.delete()
+        self.assertRaises(ObjectDoesNotExist)
 
 class PostCommmentTests(TestCase):
     """
@@ -70,7 +90,7 @@ class PostCommmentTests(TestCase):
         Post.objects.create(title='Wrong Test Title', content='Wrong Test Content', account=account)
         Account.objects.create(firstname='Wrong Test', lastname='Wrong Test',email='wrongtest@email.com')
 
-    def test_model_fields_with_correct_values(self):
+    def test_model_fields_with_values(self):
         post = Post.objects.get(title='Test Title')
         comment = PostComment.objects.get(post=post)
         account = Account.objects.get(firstname='Test')
@@ -79,16 +99,98 @@ class PostCommmentTests(TestCase):
         self.assertEqual(comment.post, post)
         self.assertEqual(comment.account, account)
 
-    def test_model_fields_with_incorrect_values(self):
-        post = Post.objects.get(title='Wrong Test Title')
-        account = Account.objects.get(firstname='Wrong Test')
-        comment = PostComment.objects.get(comment='Test Comment')
+    def test_create(self):
+        post_comment = PostComment.objects.get(comment='Test Comment')
+        self.assertIsInstance(post_comment, PostComment)
 
-        self.assertNotEqual(comment.post, post)
-        self.assertNotEqual(comment.comment, 'Wrong Test Comment')
-        self.assertNotEqual(comment.account, account)
+    def test_update(self):
+        post_comment = PostComment.objects.get(comment='Test Comment')
+        post_comment.comment = 'Test Comment Update'
+        post_comment.save()
+        self.assertEqual(post_comment.comment, 'Test Comment Update')
 
-# class PostListViewTests(TestCase):
-#     def test_for_post_listing(self):
-        
+    def test_delete(self):
+        post_comment = PostComment.objects.get(comment='Test Comment')
+        post_comment.delete()
+        self.assertRaises(ObjectDoesNotExist)
+
+class PostListViewTests(TestCase):
+    """
+    This class tests the PostListView
+    """
+    def setUp(self):
+        account = Account.objects.create(firstname='Test', lastname='Test',email='test@email.com')
+        Post.objects.create(title='Test Title', content='Test Content', account=account)
+        Post.objects.create(title='Test Title 2', content='Test Content 2', account=account)
+        self.factory = RequestFactory()
+        self.view = PostListView.as_view()
+        self.user = Account.objects.get(firstname='Test')
+
+    def test_post_listing_status_code(self):
+        request = self.factory.get('/api/v1/blog/')
+        request.user = self.user
+        response = self.view(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_list_objects(self):
+        request = self.factory.get('/api/v1/blog/')
+        request.user = self.user
+        response = self.view(request)
+        self.assertContains(response, 'Test Title')
+        self.assertContains(response, 'Test Title 2')
+
+    def test_list_objects_count(self):
+        request = self.factory.get('/api/v1/blog/')
+        request.user = self.user
+        response = self.view(request)
+        self.assertContains(response, '"count":2')
+    
+    def test_list_fields(self):
+        request = self.factory.get('/api/v1/blog/')
+        request.user = self.user
+        response = self.view(request)
+        self.assertContains(response, 'unique_id')
+        self.assertContains(response, 'title')
+        self.assertContains(response, 'content')
+        self.assertContains(response, 'date')
+        self.assertContains(response, 'likes')
+
+    
+    def test_post_http_method_not_allowed(self):
+        data = {'title': 'Test Title', 'content': 'Test Content',}
+        request = self.factory.post('/api/v1/blog/', data, format='json')
+        force_authenticate(request, user=self.user)
+        response = self.view(request)
+        self.assertEqual(response.status_code, 405)
+    
+    def test_put_http_method_not_allowed(self):
+        data = {'title': 'Test Title', 'content': 'Test Content',}
+        request = self.factory.put('/api/v1/blog/', data, format='json')
+        force_authenticate(request, user=self.user)
+        response = self.view(request)
+        self.assertEqual(response.status_code, 405)
+    
+    def test_delete_http_method_not_allowed(self):
+        data = {'title': 'Test Title', 'content': 'Test Content',}
+        request = self.factory.delete('/api/v1/blog/', data, format='json')
+        force_authenticate(request, user=self.user)
+        response = self.view(request)
+        self.assertEqual(response.status_code, 405)
+    
+class PostDetailViewTests(TestCase):
+
+    def setUp(self):
+        account = Account.objects.create(firstname='Test', lastname='Test',email='test@email.com')
+        Post.objects.create(title='Test Title', content='Test Content', account=account)
+        self.factory = RequestFactory()
+        self.view = PostDetailView.as_view()
+        self.user = Account.objects.get(firstname='Test')
+
+    def test_post_details(self):
+        request = self.factory.get('/api/v1/blog/')
+        request.user = AnonymousUser()
+        response = self.view(request)
+        self.assertContains(response, 'Test Title')
+
+
     
