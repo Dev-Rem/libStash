@@ -186,11 +186,55 @@ class PostDetailViewTests(TestCase):
         self.view = PostDetailView.as_view()
         self.user = Account.objects.get(firstname='Test')
 
-    def test_post_details(self):
+    def test_status_code(self):
+        post = Post.objects.get(title='Test Title')
         request = self.factory.get('/api/v1/blog/')
-        request.user = AnonymousUser()
-        response = self.view(request)
+        request.user = self.user
+        response = self.view(request, unique_id=post.unique_id)
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_detail(self):
+        post = Post.objects.get(title='Test Title')
+        request = self.factory.get('/api/v1/blog/post/')
+        request.user = self.user
+        response = self.view(request, unique_id=post.unique_id)
         self.assertContains(response, 'Test Title')
+    
+    def test_detail_fields(self):
+        post = Post.objects.get(title='Test Title')
+        request = self.factory.get('/api/v1/blog/post/')
+        request.user = self.user
+        response = self.view(request, unique_id=post.unique_id)
+        self.assertContains(response, 'unique_id')
+        self.assertContains(response, 'title')
+        self.assertContains(response, 'content')
+        self.assertContains(response, 'date')
+        self.assertContains(response, 'likes')
+
+    def test_post_http_method_not_allowed(self):
+        post = Post.objects.get(title='Test Title')
+        data = {'title': 'Test Title', 'content': 'Test Content',}
+        request = self.factory.post('/api/v1/blog/post/', data, format='json')
+        force_authenticate(request, user=self.user)
+        response = self.view(request, unique_id=post.unique_id)
+        self.assertEqual(response.status_code, 405)
+    
+    def test_put_http_method_not_allowed(self):
+        post = Post.objects.get(title='Test Title')
+        data = {'title': 'Test Title', 'content': 'Test Content',}
+        request = self.factory.put('/api/v1/blog/post/', data, format='json')
+        force_authenticate(request, user=self.user)
+        response = self.view(request, unique_id=post.unique_id)
+        self.assertEqual(response.status_code, 405)
+    
+    def test_delete_http_method_not_allowed(self):
+        post = Post.objects.get(title='Test Title')
+        data = {'title': 'Test Title', 'content': 'Test Content',}
+        request = self.factory.delete('/api/v1/blog/post/', data, format='json')
+        force_authenticate(request, user=self.user)
+        response = self.view(request, unique_id=post.unique_id)
+        self.assertEqual(response.status_code, 405)
+    
 
 
     
