@@ -126,20 +126,20 @@ class PostListViewTests(TestCase):
         self.view = PostListView.as_view()
         self.user = Account.objects.get(firstname='Test')
 
-    def test_post_listing_status_code(self):
+    def test_status_code(self):
         request = self.factory.get('/api/v1/blog/')
         request.user = self.user
         response = self.view(request)
         self.assertEqual(response.status_code, 200)
 
-    def test_list_objects(self):
+    def test_list(self):
         request = self.factory.get('/api/v1/blog/')
         request.user = self.user
         response = self.view(request)
         self.assertContains(response, 'Test Title')
         self.assertContains(response, 'Test Title 2')
 
-    def test_list_objects_count(self):
+    def test_list_count(self):
         request = self.factory.get('/api/v1/blog/')
         request.user = self.user
         response = self.view(request)
@@ -193,14 +193,14 @@ class PostDetailViewTests(TestCase):
         response = self.view(request, unique_id=post.unique_id)
         self.assertEqual(response.status_code, 200)
 
-    def test_post_detail(self):
+    def test_retrieve(self):
         post = Post.objects.get(title='Test Title')
         request = self.factory.get('/api/v1/blog/post/')
         request.user = self.user
         response = self.view(request, unique_id=post.unique_id)
         self.assertContains(response, 'Test Title')
     
-    def test_detail_fields(self):
+    def test_retrieve_fields(self):
         post = Post.objects.get(title='Test Title')
         request = self.factory.get('/api/v1/blog/post/')
         request.user = self.user
