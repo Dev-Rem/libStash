@@ -8,7 +8,7 @@ class Post(models.Model):
     """
     A model for the Post, posted by an admin
     """
-    title = models.CharField('Ttile',max_length=200, unique=True )
+    title = models.CharField('Ttile',max_length=1024, unique=True )
     content = models.TextField('Content')
     likes = models.ManyToManyField(Account, related_name="like_post", blank=True, default=0)
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)

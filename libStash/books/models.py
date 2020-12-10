@@ -27,6 +27,7 @@ class Author(models.Model):
     name = models.CharField(verbose_name="Author name", max_length=150, null=False)
     email = models.EmailField(verbose_name='Email', blank=True)
     address = models.TextField(verbose_name="Address", max_length=150)
+    bio = models.TextField('Biography', null=True, blank=True)
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     last_update = models.DateTimeField(auto_now=True)
     
@@ -52,7 +53,7 @@ class Book(models.Model):
         PAPER_BACK = "PPR-BCK", _("Paperback")
 
     title = models.CharField(verbose_name="Title", max_length=150)
-    author = models.ManyToManyField( Author, related_name="book_author")
+    authors = models.ManyToManyField( Author, related_name="book_author")
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, default=None)
     category = models.CharField(verbose_name="Category", max_length=5, choices=Categories.choices)
     format = models.CharField(verbose_name="Format", max_length=7, choices=Formats.choices)
