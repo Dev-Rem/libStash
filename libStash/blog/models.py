@@ -6,7 +6,7 @@ from users.models import Account
 
 class Post(models.Model):
     """
-    A model for the Post, posted by an admin
+    A model for the creating blog posts.
     """
     title = models.CharField('Ttile',max_length=1024, unique=True )
     content = models.TextField('Content')
@@ -20,8 +20,6 @@ class Post(models.Model):
     class Meta:
         ordering = ['-date']
     
-    # def was_published_recently(self):
-    #     pass
 
     def __str__(self):
         return self.title

@@ -53,7 +53,7 @@ class Book(models.Model):
         PAPER_BACK = "PPR-BCK", _("Paperback")
 
     title = models.CharField(verbose_name="Title", max_length=150)
-    authors = models.ManyToManyField( Author, related_name="book_author")
+    author = models.ManyToManyField( Author, related_name="book_author")
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, default=None)
     category = models.CharField(verbose_name="Category", max_length=5, choices=Categories.choices)
     format = models.CharField(verbose_name="Format", max_length=7, choices=Formats.choices)
