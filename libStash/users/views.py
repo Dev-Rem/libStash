@@ -36,8 +36,8 @@ class AddressListView(generics.ListCreateAPIView):
     @method_decorator(vary_on_cookie)
     @method_decorator(cache_page(CACHE_TTL))
     def list(self, request, *args, **kwargs):
-        address = Address.objects.filter(account=request.user).order_by('-last_update')
-        serializer = AddressSerializer(address, many=True)
+        address = Address.objects.get(account=request.user)
+        serializer = AddressSerializer(address)
         return Response(serializer.data)
 
 
@@ -71,19 +71,15 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
         address = Address.objects.get(account=request.user, unique_id=kwargs['unique_id'])
         serializer = AddressSerializer(address, data=request.data)
         if serializer.is_valid():
-            user_email = serializer.validated_data['email']
             message = Mail(
             from_email=config('DEFAULT_FROM_EMAIL'),
-            to_emails=To(f'{user_email}'),
-            subject='Account registration complete',
-            html_content= f'<p> Hello {user_email}, your address was successful updated. <br> We wish you a wonderful time on our web page.</p>'
+            to_emails=To(f'{request.user}'),
+            subject='Address Update',
+            html_content= f'<p> Hello {request.user}, your address was successful updated. <br> We wish you a wonderful time on our web page.</p>'
             )
             try:
                 sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
-                response = sg.send(message)
-                print(response.status_code)
-                print(response.body)
-                print(response.headers)
+                sg.send(message)
             except Exception as e:
                 print(e)
             serializer.save()
