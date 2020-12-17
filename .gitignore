@@ -5,7 +5,6 @@ libStash.code-workspace
 libStash.code-workspace
 libStash.code-workspace
 libStash/libStash/settings.py
-libStash/keys.env
 libStash/.env
 libStash/libStash/settings.py
 libStash/libStash/settings.py

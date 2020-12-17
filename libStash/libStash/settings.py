@@ -101,7 +101,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "clearpage",
         "USER": "clearpageuser",
-        "PASSWORD": "clearpage1407",
+        "PASSWORD": config('POSTGRES_PASSWORD'),
         "HOST": "localhost",
         "PORT": "",
     }
