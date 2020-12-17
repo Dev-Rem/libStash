@@ -4,6 +4,7 @@ from users.views import AddressListView, AddressUpdateView, UserViewSet
 urlpatterns = [
     
     path('register/', UserViewSet.as_view({'post': 'create'}), name='account-register'), # done
+    path('edit/<uuid:unique_id>/', UserViewSet.as_view({'patch': 'partial_update'}), name='account-update'),
     path("address/", AddressListView.as_view(), name="account-addresses"), # done
     path("address/<uuid:unique_id>/", AddressListView.as_view(), name="account-address"), # done
     path("address/edit/<uuid:unique_id>/", AddressUpdateView.as_view(), name="account-address-edit"), # done

@@ -75,7 +75,7 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
             from_email=config('DEFAULT_FROM_EMAIL'),
             to_emails=To(f'{request.user}'),
             subject='Address Update',
-            html_content= f'<p> Hello {request.user}, your address was successful updated. <br> We wish you a wonderful time on our web page.</p>'
+            html_content= f'<p> Hello {request.user}, your address was successful updated.</p>  <br> <p> From LibStash, we wish you a wonderful time on our web page.</p>'
             )
             try:
                 sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
@@ -89,6 +89,17 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         address = Address.objects.get(account=request.user, unique_id=kwargs['unique_id'])
         address.delete()
+        message = Mail(
+        from_email=config('DEFAULT_FROM_EMAIL'),
+        to_emails=To(f'{request.user}'),
+        subject='Address Delete',
+        html_content= f'<p> Hello {request.user}, it seems you deleted your shipping address. <br> We strongly advice that you add a shipping addres to your account to ensure safe delivevry of your orders.</p> <br> <p> From LibStash, we wish you a wonderful time on our web page.</p>'
+        )
+        try:
+            sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
+            sg.send(message)
+        except Exception as e:
+            print(e)
         return Response({'status': 'Address Deleted'})    
 
 class UserViewSet(UserViewSet):
@@ -105,17 +116,55 @@ class UserViewSet(UserViewSet):
         from_email=config('DEFAULT_FROM_EMAIL'),
         to_emails=To(f'{user_email}'),
         subject='Account registration complete',
-        html_content= f'<p> Hello {user_email}, your account registration was successful. <br> We wish you a wonderful time on our web page.</p>'
+        html_content= f'<p> Hello {user_email}, your account registration was successful.</p> <br> <p> From LibStash, we wish you a wonderful time on our web page.</p>'
         )
         try:
             sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
             sg.send(message)
         except Exception as e:
-            print(e)
+            print(e.message)
             
         user = serializer.save()
         cart = Cart.objects.create(account=user, is_active=True)
         cart.save()
+        # Account activation - front-end required.
+        signals.user_registered.send(
+            sender=self.__class__, user=user, request=self.request
+        )
+        context = {"user": user}
+        to = [get_user_email(user)]
+        if settings.SEND_ACTIVATION_EMAIL:
+            settings.EMAIL.activation(self.request, context).send(to)
+        elif settings.SEND_CONFIRMATION_EMAIL:
+            settings.EMAIL.confirmation(self.request, context).send(to)
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        user = serializer.instance
+
+        message = Mail(
+        from_email=config('DEFAULT_FROM_EMAIL'),
+        to_emails=To(f'{user}'),
+        subject='Account Update',
+        html_content= f'<p> Hello {user}, this mail is to inform you about your account information update.</p> <br> <p> From LibStash, we wish you a wonderful time on our web page.</p>'
+        )
+        try:
+            sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
+
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            print(e)
+
+        # Account activation - front-end required.
+        # should we send activation email after update?
+        if settings.SEND_ACTIVATION_EMAIL:
+            context = {"user": user}
+            to = [get_user_email(user)]
+            settings.EMAIL.activation(self.request, context).send(to)
+
         
 
         
