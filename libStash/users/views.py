@@ -13,6 +13,11 @@ from django.views.decorators.vary import vary_on_cookie
 from libStash import settings as project_settings
 from users.models import Account, Address
 from books.models import Cart
+from decouple import config
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail, Personalization, Email
+from sendgrid.helpers.mail import To
+
 CACHE_TTL = getattr(project_settings, 'CACHE_TTL')
 
 
@@ -66,6 +71,21 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
         address = Address.objects.get(account=request.user, unique_id=kwargs['unique_id'])
         serializer = AddressSerializer(address, data=request.data)
         if serializer.is_valid():
+            user_email = serializer.validated_data['email']
+            message = Mail(
+            from_email=config('DEFAULT_FROM_EMAIL'),
+            to_emails=To(f'{user_email}'),
+            subject='Account registration complete',
+            html_content= f'<p> Hello {user_email}, your address was successful updated. <br> We wish you a wonderful time on our web page.</p>'
+            )
+            try:
+                sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
+                response = sg.send(message)
+                print(response.status_code)
+                print(response.body)
+                print(response.headers)
+            except Exception as e:
+                print(e)
             serializer.save()
             return Response({'status': 'Address Updated'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -83,17 +103,24 @@ class UserViewSet(UserViewSet):
     lookup_field = 'unique_id'
     
     def perform_create(self, serializer):
+        user_email = serializer.validated_data['email']
+        
+        message = Mail(
+        from_email=config('DEFAULT_FROM_EMAIL'),
+        to_emails=To(f'{user_email}'),
+        subject='Account registration complete',
+        html_content= f'<p> Hello {user_email}, your account registration was successful. <br> We wish you a wonderful time on our web page.</p>'
+        )
+        try:
+            sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
+            sg.send(message)
+        except Exception as e:
+            print(e)
+            
         user = serializer.save()
         cart = Cart.objects.create(account=user, is_active=True)
         cart.save()
-        signals.user_registered.send(
-            sender=self.__class__, user=user, request=self.request
-        )
+        
 
-        context = {"user": user}
-        to = [get_user_email(user)]
-        if settings.SEND_ACTIVATION_EMAIL:
-            settings.EMAIL.activation(self.request, context).send(to)
-        elif settings.SEND_CONFIRMATION_EMAIL:
-            settings.EMAIL.confirmation(self.request, context).send(to)
+        
 
