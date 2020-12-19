@@ -43,4 +43,4 @@ class CartAdmin(admin.ModelAdmin):
 
 @admin.register(BookInCart)
 class BookInCartAdmin(admin.ModelAdmin):
-    list_display = ('unique_id', 'cart', 'book', 'count')
+    list_display = ('unique_id', 'cart', 'book', 'quantity')

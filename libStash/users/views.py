@@ -127,16 +127,7 @@ class UserViewSet(UserViewSet):
         user = serializer.save()
         cart = Cart.objects.create(account=user, is_active=True)
         cart.save()
-        # Account activation - front-end required.
-        signals.user_registered.send(
-            sender=self.__class__, user=user, request=self.request
-        )
-        context = {"user": user}
-        to = [get_user_email(user)]
-        if settings.SEND_ACTIVATION_EMAIL:
-            settings.EMAIL.activation(self.request, context).send(to)
-        elif settings.SEND_CONFIRMATION_EMAIL:
-            settings.EMAIL.confirmation(self.request, context).send(to)
+       
 
     def perform_update(self, serializer):
         super().perform_update(serializer)
@@ -150,20 +141,9 @@ class UserViewSet(UserViewSet):
         )
         try:
             sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
-
-            response = sg.send(message)
-            print(response.status_code)
-            print(response.body)
-            print(response.headers)
+            sg.send(message)
         except Exception as e:
             print(e)
-
-        # Account activation - front-end required.
-        # should we send activation email after update?
-        if settings.SEND_ACTIVATION_EMAIL:
-            context = {"user": user}
-            to = [get_user_email(user)]
-            settings.EMAIL.activation(self.request, context).send(to)
 
         
 

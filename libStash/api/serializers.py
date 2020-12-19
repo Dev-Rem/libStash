@@ -3,6 +3,7 @@ from blog.models import Post,PostComment,PostImage
 from books.models import Author,Book,Warehouse,WarehouseBook,Publisher, BookInCart,Cart,BookComment,BookImage
 from users.models import Account,Address
 from djoser.serializers import UserSerializer as BaseUserSerializer
+from rest_framework.fields import SerializerMethodField
 
 # Serializer classes
 
@@ -39,7 +40,7 @@ class BookSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(many=True, slug_field='unique_id', read_only=True)
     class Meta:
         model = Book
-        fields = ['unique_id', 'title', 'author', 'category', 'format', 'year', 'price', ]
+        fields = ['unique_id', 'title', 'category', 'author', 'format', 'year', 'price', ]
 
 class BookDetailSerializer(serializers.ModelSerializer):
 
@@ -48,17 +49,7 @@ class BookDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = [
-            "unique_id",
-            "title",
-            "author",
-            "publisher",
-            "category",
-            "format",
-            "isbn",
-            "year",
-            "price",
-        ]
+        fields = ["unique_id", "title", "author", "publisher", "category", "format", "isbn", "year","price"]
 
 class BookImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -73,10 +64,17 @@ class BookCommentSerializer(serializers.ModelSerializer):
         fields = ['unique_id', 'book', 'account', 'comment', 'date']
 
 class BookInCartSerializer(serializers.ModelSerializer):
-    book = serializers.SlugRelatedField(read_only=True, slug_field='unique_id')
+    book = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
+    unit_amount = serializers.SerializerMethodField('get_price')
+
     class Meta:
         model = BookInCart
-        fields = ['unique_id','book', 'count', ]
+        fields = ['unique_id','book', 'quantity', "unit_amount"]
+
+    def get_price(self, obj):
+        book = Book.objects.get(unique_id=obj.book.unique_id)
+        return book.price
+    
 
 class CartSerializer(serializers.ModelSerializer):
     account = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)

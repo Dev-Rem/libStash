@@ -1,3 +1,4 @@
+import stripe
 from django.shortcuts import redirect, render
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,8 +8,10 @@ from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import stripe
 from rest_framework.utils import json
+from decouple import config
+from books.models import BookInCart, Cart
+from stripe.api_resources import checkout
 
 # Create your views here.
 
@@ -33,7 +36,7 @@ def stripe_config(request):
 @csrf_exempt
 def create_checkout_session(request):
     if request.method == 'GET': 
-        domain_url = 'http://127.0.0.1:8000/payment/'
+        domain_url = config('DOMAIN_URL')
         stripe.api_key = settings.STRIPE_SECRET_KEY
         try:
             checkout_session = stripe.checkout.Session.create(

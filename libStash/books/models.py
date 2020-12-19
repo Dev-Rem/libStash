@@ -59,7 +59,7 @@ class Book(models.Model):
     format = models.CharField(verbose_name="Format", max_length=7, choices=Formats.choices)
     isbn = models.CharField(verbose_name="ISBN", max_length=13)
     year = models.IntegerField(_("year"), choices=YEAR_CHOICES, default=datetime.datetime.now().year)
-    price = models.DecimalField(verbose_name="Price", max_digits=10, decimal_places=2, default=0)
+    price = models.IntegerField(verbose_name="Price", default=0)
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     last_update = models.DateTimeField("Last Update",auto_now=True)
 
@@ -120,7 +120,7 @@ class Cart(models.Model):
 class BookInCart(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='item_in_cart')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='book_in_cart')
-    count = models.IntegerField(verbose_name="Book count", default=0)
+    quantity = models.IntegerField(verbose_name="Book count", default=0)
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     last_update = models.DateTimeField(auto_now=True)
 
