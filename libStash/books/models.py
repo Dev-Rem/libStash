@@ -122,6 +122,7 @@ class BookInCart(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='book_in_cart')
     quantity = models.IntegerField(verbose_name="Book count", default=0)
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
+    amount = models.IntegerField(verbose_name="Book unit amount", default=0)
     last_update = models.DateTimeField(auto_now=True)
 
     

@@ -169,6 +169,7 @@ class ManageCartView(viewsets.ViewSet):
         if serializer.is_valid():
             serializer.validated_data['cart'] = cart
             serializer.validated_data['book'] = book
+            serializer.validated_data['amount'] = book.price
             serializer.save()
             return Response({'status': ' Item added to cart'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -186,7 +187,7 @@ class ManageCartView(viewsets.ViewSet):
         cart = self.get_object(request)
         item = BookInCart.objects.get(cart=cart, unique_id=unique_id)
         item.delete()
-        return Response({'status': ' Item removed from Cart'})
+        return Response({'status': 'Cart item removed'})
 
 class BookCommentListView(generics.ListCreateAPIView):
     """

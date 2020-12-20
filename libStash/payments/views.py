@@ -1,4 +1,6 @@
 import stripe
+from django.core import serializers
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.utils import json
 from decouple import config
 from books.models import BookInCart, Cart
+from api.serializers import BookInCartSerializer
 from stripe.api_resources import checkout
 
 # Create your views here.
@@ -27,6 +30,7 @@ class SuccessView(TemplateView):
 class CancelView(TemplateView):
     template_name = 'cancel.html'
 
+
 @csrf_exempt
 def stripe_config(request):
     if request.method == 'GET':
@@ -35,10 +39,13 @@ def stripe_config(request):
 
 @csrf_exempt
 def create_checkout_session(request):
-    if request.method == 'GET': 
+    if request.method == 'POST': 
         domain_url = config('DOMAIN_URL')
         stripe.api_key = settings.STRIPE_SECRET_KEY
         try:
+            cart = Cart.objects.get(account=request.user)
+            items = BookInCart.objects.filter(cart=cart)
+            print(items)
             checkout_session = stripe.checkout.Session.create(
                 success_url=domain_url + 'checkout/success/?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url=domain_url + 'checkout/cancel/',

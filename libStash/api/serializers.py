@@ -65,16 +65,13 @@ class BookCommentSerializer(serializers.ModelSerializer):
 
 class BookInCartSerializer(serializers.ModelSerializer):
     book = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
-    unit_amount = serializers.SerializerMethodField('get_price')
+    
 
     class Meta:
         model = BookInCart
-        fields = ['unique_id','book', 'quantity', "unit_amount"]
+        fields = ['unique_id','book', 'quantity', "amount"]
 
-    def get_price(self, obj):
-        book = Book.objects.get(unique_id=obj.book.unique_id)
-        return book.price
-    
+
 
 class CartSerializer(serializers.ModelSerializer):
     account = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
