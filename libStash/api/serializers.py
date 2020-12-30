@@ -65,7 +65,6 @@ class BookCommentSerializer(serializers.ModelSerializer):
 
 class BookInCartSerializer(serializers.ModelSerializer):
     book = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
-    
 
     class Meta:
         model = BookInCart

@@ -1,5 +1,14 @@
 console.log("Sanity check!");
 
+var myHeaders = new Headers();
+myHeaders.append('pragma', 'no-cache');
+myHeaders.append('cache-control', 'no-cache');
+
+var myInit = {
+  method: 'GET',
+  headers: myHeaders,
+};
+
 // Get Stripe publishable key
 fetch("/payment/config/")
 .then((result) => { return result.json(); })
@@ -7,11 +16,10 @@ fetch("/payment/config/")
   // Initialize Stripe.js
   const stripe = Stripe(data.publicKey);
 
-  // new
   // Event handler
   document.querySelector("#submitBtn").addEventListener("click", () => {
     // Get Checkout Session ID
-    fetch("/payment/create-checkout-session/")
+    fetch("/payment/checkout/", myInit)
     .then((result) => { return result.json(); })
     .then((data) => {
       console.log(data);

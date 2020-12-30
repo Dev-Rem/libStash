@@ -20,7 +20,7 @@ class AccountManager(BaseUserManager):
         
         customer = stripe.Customer.create(
             email=email,
-            description='Created from django',
+            name=f'{firstname} {lastname}',
         )
 
         user = self.model(

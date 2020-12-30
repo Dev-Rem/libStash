@@ -1,68 +1,78 @@
 import stripe
-from django.core import serializers
-from django.http import HttpResponse
-from django.shortcuts import redirect, render
-from rest_framework.response import Response
-from rest_framework import status
-from social_core.backends import stripe
-from rest_framework.decorators import api_view
-from django.views.generic.base import TemplateView
-from django.conf import settings
-from django.http.response import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.utils import json
+from rest_framework.response import Response
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.views.generic.base import TemplateView
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.core import serializers
+from users.models import  Account
+from books.models import Cart, BookInCart, Book
 from decouple import config
-from books.models import BookInCart, Cart
-from api.serializers import BookInCartSerializer
-from stripe.api_resources import checkout
 
 # Create your views here.
 
-stripe.api_key = 'sk_test_51HcX1oDC7msJ0hb4JqSnP0b5lH9nhPkn2bBSdgtmrjiCWZ7MhoW5jePPYHJe4BOs1kc8OQ30vcbGARYZlei2AntH00EZ98Dhco'
+stripe.api_key = config('STRIPE_SECRET_KEY')
 
+class IndexPageView(TemplateView):
+    template_name = 'index.html'
 
-class CheckoutView(TemplateView):
-    template_name = 'checkout.html'
 
 class SuccessView(TemplateView):
     template_name = 'success.html'
 
-class CancelView(TemplateView):
-    template_name = 'cancel.html'
 
+class CancelledView(TemplateView):
+    template_name = 'cancelled.html'
 
-@csrf_exempt
-def stripe_config(request):
+def get_total(request):
     if request.method == 'GET':
-        stripe_config = {'publicKey': settings.STRIPE_PUBLISHABLE_KEY}
-        return JsonResponse(stripe_config, safe=False)
+        account = Account.objects.get(email=request.user)
+        cart = Cart.objects.get(account=account)
+        cart_items = BookInCart.objects.filter(cart=cart)
+        cart_items_list = [cart_items.values()]
+        print(cart_items_list)
+        total = 0
+        for item in cart_items_list:
+            sub_total = item['fields']['quantity'] * item['fields']['amount']
+            total += sub_total
+        
+        return HttpResponse(serializers.serialize('json', cart_items))
 
 @csrf_exempt
 def create_checkout_session(request):
-    if request.method == 'POST': 
+    if request.method == 'GET':
         domain_url = config('DOMAIN_URL')
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        try:
-            cart = Cart.objects.get(account=request.user)
-            items = BookInCart.objects.filter(cart=cart)
-            print(items)
+        try:     
+            account = Account.objects.get(email=request.user)   
+            if type(account.stripe_id) == str:
+                customer = stripe.Customer.retrieve(account.stripe_id)
+            else:
+                customer = stripe.Customer.create(
+                    email = request.user,
+                    name = f'{request.user.firstname} {request.user.lastname}',
+                )
+
+                account.stripe_id = customer.id
+                account.save()
             checkout_session = stripe.checkout.Session.create(
-                success_url=domain_url + 'checkout/success/?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url=domain_url + 'checkout/cancel/',
+                success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url=domain_url + 'cancelled/',
                 payment_method_types=['card'],
+                customer=customer,
                 mode='payment',
-                line_items=[
-                    {
-                        'name': 'Book',
-                        'quantity': 2,
-                        'currency': 'usd',
-                        'amount': '2000',
-                    }
-                ]
+
             )
             return JsonResponse({'sessionId': checkout_session['id']})
         except Exception as e:
             return JsonResponse({'error': str(e)})
+
+@csrf_exempt
+def stripe_config(request):
+    if request.method == 'GET':
+        stripe_config = {'publicKey': config('STRIPE_PUBLISHABLE_KEY')}
+        return JsonResponse(stripe_config, safe=False)
 
 
 
