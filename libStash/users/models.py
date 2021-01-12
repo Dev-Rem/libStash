@@ -1,16 +1,14 @@
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from libStash import settings
-import uuid, stripe
+import uuid
 
 # Create your models here.
 
 
 
 class AccountManager(BaseUserManager):
-    def create_user(self, firstname, lastname, email, stripe_id=None, password=None):
+    def create_user(self, firstname, lastname, email, password=None):
         if not firstname:
             raise ValueError("Please provide a valid  first name")
         if not lastname:
@@ -18,16 +16,11 @@ class AccountManager(BaseUserManager):
         if not email:
             raise ValueError("Please provide a valid email address")
         
-        customer = stripe.Customer.create(
-            email=email,
-            name=f'{firstname} {lastname}',
-        )
 
         user = self.model(
             firstname=firstname,
             lastname=lastname,
             email=self.normalize_email(email),
-            stripe_id=customer.id
         )
         user.set_password(password)
         user.save(using=self._db)

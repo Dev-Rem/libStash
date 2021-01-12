@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from blog.models import Post, PostComment, PostImage
 from api.serializers import PostCommentSerializer, PostImageSerializer, PostSerializer
 from rest_framework import permissions, status, generics
@@ -9,7 +8,6 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from libStash import settings
-from django.db.models import ObjectDoesNotExist
 # Create your views here.
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL')

@@ -8,6 +8,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from libStash import settings
 from books.models import Author, Book, Publisher, BookComment, BookImage, Cart, BookInCart
+
 CACHE_TTL = getattr(settings, 'CACHE_TTL')
 
 # Create your views here.

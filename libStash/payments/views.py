@@ -84,29 +84,30 @@ def stripe_config(request):
 
 @csrf_exempt
 def stripe_webhook(request):
-    stripe.api_key = config("STRIPE_SECRET_KEY")
-    endpoint_secret = config("STRIPE_ENDPOINT_SECRET")
-    payload = request.body
-    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
-    event = None
+    if request.method == 'POST':
+        stripe.api_key = config("STRIPE_SECRET_KEY")
+        endpoint_secret = config("STRIPE_ENDPOINT_SECRET")
+        payload = request.body
+        sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+        event = None
 
-    try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, endpoint_secret
-        )
-    except ValueError as e:
-        # Invalid payload
-        return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError as e:
-        # Invalid signature
-        return HttpResponse(status=400)
+        try:
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, endpoint_secret
+            )
+        except ValueError as e:
+            # Invalid payload
+            return HttpResponse(status=400)
+        except stripe.error.SignatureVerificationError as e:
+            # Invalid signature
+            return HttpResponse(status=400)
 
-    # Handle the checkout.session.completed event
-    if event['type'] == 'checkout.session.completed':
-        print("Payment was successful.")
-        
-        account = Account.objects.get(email=request.user)
-        cart = Cart.objects.get(account=account)
-        cart_items = BookInCart.objects.filter(cart=cart)
-
-    return HttpResponse(status=200)
+        # Handle the checkout.session.completed event
+        if event['type'] == 'checkout.session.completed':
+            print("Payment was successful.")
+            
+            account = Account.objects.get(email=request.user)
+            cart = Cart.objects.get(account=account)
+            cart_items = BookInCart.objects.filter(cart=cart)
+            cart_items.delete()
+        return HttpResponse(status=200)

@@ -70,8 +70,6 @@ class BookInCartSerializer(serializers.ModelSerializer):
         model = BookInCart
         fields = ['unique_id','book', 'quantity', "amount"]
 
-
-
 class CartSerializer(serializers.ModelSerializer):
     account = serializers.SlugRelatedField(slug_field='unique_id', read_only=True)
     class Meta:

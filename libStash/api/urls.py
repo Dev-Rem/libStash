@@ -35,9 +35,9 @@ router.register(r'books-in-cart', BookInCartViewSet, basename='book-in-cart')
 router.register(r'carts', CartViewSet, basename='cart')
 
 urlpatterns = [
+    
     path('blog/', include('blog.urls')),
     path('book/', include('books.urls')),
     path('account/', include('users.urls')),
     path('admin/', include(router.urls) ),
-
 ]

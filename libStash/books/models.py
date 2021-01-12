@@ -1,6 +1,4 @@
 from django.db import models
-from django.urls import reverse
-from django.template.defaultfilters import slugify
 from django.utils.translation import gettext_lazy as _
 import datetime, uuid
 from phone_field import PhoneField
@@ -15,9 +13,6 @@ class Publisher(models.Model):
     publisher_url = models.URLField()
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     last_update = models.DateTimeField(auto_now=True)
-
-    def get_absolute_url(self):
-        return reverse('publisher-detail', args=[str(self.id)])
 
     def __str__(self):
         return f"{ self.name }"
