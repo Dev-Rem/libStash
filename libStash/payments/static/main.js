@@ -1,13 +1,5 @@
+
 console.log("Sanity check!");
-
-var myHeaders = new Headers();
-myHeaders.append('pragma', 'no-cache');
-myHeaders.append('cache-control', 'no-cache');
-
-var myInit = {
-  method: 'GET',
-  headers: myHeaders,
-};
 
 // Get Stripe publishable key
 fetch("/payment/config/")
@@ -19,7 +11,7 @@ fetch("/payment/config/")
   // Event handler
   document.querySelector("#submitBtn").addEventListener("click", () => {
     // Get Checkout Session ID
-    fetch("/payment/checkout/", myInit)
+    fetch("/payment/checkout/")
     .then((result) => { return result.json(); })
     .then((data) => {
       console.log(data);

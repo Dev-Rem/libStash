@@ -1,15 +1,14 @@
 from django.urls import path
-from django.conf.urls import url
-from payments.views import IndexPageView, stripe_config, create_checkout_session,SuccessView,CancelledView, get_total
+from payments.views import IndexView, stripe_config, stripe_webhook, checkout,SuccessView,CancelledView
 
 
 urlpatterns = [
     # url paths
 
-    path('', IndexPageView.as_view(), name='index'),
+    path('', IndexView.as_view(), name='index'),
     path('config/', stripe_config, name='stripe-config'),
-    path('checkout/', create_checkout_session),
-    path('success/', SuccessView.as_view()), 
+    path('checkout/', checkout, name='checkout'),
+    path('success/', SuccessView.as_view(), name='success'), 
     path('cancelled/', CancelledView.as_view()), 
-    path('get-total/', get_total, name='get-total')
+    path('webhook/', stripe_webhook, name='webhook')
 ]
