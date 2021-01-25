@@ -3,6 +3,7 @@ import json
 from django.http import HttpResponse, JsonResponse
 from django.views.generic.base import TemplateView
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from django.core import serializers
 from users.models import  Account
 from books.models import Cart, BookInCart, Book
@@ -43,20 +44,22 @@ def get_amount(request):
 def checkout(request):
     if request.method == 'GET':
         domain_url = config('DOMAIN_URL')
-        stripe.api_key = config('STRIPE_SECRET_KEY')
         try:
             item_amount = get_amount(request)
-            account = Account.objects.get(email=request.user)  
-            if type(account.stripe_id) == str:
-                customer = stripe.Customer.retrieve(account.stripe_id)
-            else:
+            account = Account.objects.get(email=request.user)
+            print(type(account.stripe_id))
+            print(account.stripe_id)
+            if account.stripe_id == None:
                 customer = stripe.Customer.create(
-                    email = request.user,
-                    name = f'{request.user.firstname} {request.user.lastname}',
+                    email = account.email,
+                    name = f'{account.firstname} {account.lastname}',
                 )
                 account.stripe_id = customer.id
                 account.save()
+            else:
+                customer = stripe.Customer.retrieve(account.stripe_id)
             checkout_session = stripe.checkout.Session.create(
+                client_reference_id=request.user.unique_id if request.user.is_authenticated else None,
                 success_url=domain_url + 'payment/success?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url=domain_url + 'payment/cancelled/',
                 payment_method_types=['card'],
@@ -84,30 +87,29 @@ def stripe_config(request):
 
 @csrf_exempt
 def stripe_webhook(request):
-    if request.method == 'POST':
-        stripe.api_key = config("STRIPE_SECRET_KEY")
-        endpoint_secret = config("STRIPE_ENDPOINT_SECRET")
-        payload = request.body
-        sig_header = request.META['HTTP_STRIPE_SIGNATURE']
-        event = None
+    endpoint_secret = config("STRIPE_ENDPOINT_SECRET")
+    payload = request.body.decode('utf-8')
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
 
-        try:
-            event = stripe.Webhook.construct_event(
-                payload, sig_header, endpoint_secret
-            )
-        except ValueError as e:
-            # Invalid payload
-            return HttpResponse(status=400)
-        except stripe.error.SignatureVerificationError as e:
-            # Invalid signature
-            return HttpResponse(status=400)
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        print("invalid payload")
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        print('invalid signature')
+        return HttpResponse(status=400)
 
-        # Handle the checkout.session.completed event
-        if event['type'] == 'checkout.session.completed':
-            print("Payment was successful.")
-            
-            account = Account.objects.get(email=request.user)
-            cart = Cart.objects.get(account=account)
-            cart_items = BookInCart.objects.filter(cart=cart)
-            cart_items.delete()
-        return HttpResponse(status=200)
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        payload = json.loads(payload)
+        account = Account.objects.get(unique_id=payload['data']['object']['client_reference_id'])
+        cart = Cart.objects.get(account=account)
+        cart_items = BookInCart.objects.filter(cart=cart)
+        cart_items.delete()
+    return HttpResponse(status=200)
