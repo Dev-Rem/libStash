@@ -8,7 +8,12 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic.base import TemplateView
+from django.template.loader import render_to_string
 from users.models import Account
+from decouple import config
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail, Personalization, Email, To, Content
+
 
 # Create your views here.
 
@@ -116,5 +121,17 @@ def stripe_webhook(request):
         )
         cart = Cart.objects.get(account=account)
         cart_items = BookInCart.objects.filter(cart=cart)
-        cart_items.delete()
+        mail_content = render_to_string("new_order.html", {"cart_items": cart_items})
+        message = Mail(
+            from_email=config("DEFAULT_FROM_EMAIL"),
+            to_emails=To("kingremzy1407@gmail.com"),
+            subject=f"Order for {account.email}",
+            html_content=Content("text/html", mail_content),
+        )
+        try:
+            sg = SendGridAPIClient(config("SENDGRID_API_KEY"))
+            sg.send(message)
+            cart_items.delete()
+        except Exception as e:
+            print(e)
     return HttpResponse(status=200)

@@ -1,7 +1,18 @@
 from django.contrib import admin
-from .models import Book, Author, Publisher, Warehouse, WarehouseBook, BookComment, BookImage, Cart, BookInCart
+from .models import (
+    Book,
+    Author,
+    Publisher,
+    Warehouse,
+    WarehouseBook,
+    BookComment,
+    BookImage,
+    Cart,
+    BookInCart,
+)
 
 # Register your models here.
+
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
@@ -12,7 +23,7 @@ class BookAdmin(admin.ModelAdmin):
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
     list_display = ("name", "email", "address")
-    search_fields = ('name',)
+    search_fields = ("name",)
 
 
 @admin.register(Warehouse)
@@ -23,24 +34,32 @@ class WarehouseAdmin(admin.ModelAdmin):
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):
     list_display = ("name", "address", "email", "publisher_url")
-    search_fields = ('name',)
+    search_fields = ("name",)
+
 
 @admin.register(WarehouseBook)
 class WarehouseBookAdmin(admin.ModelAdmin):
     list_display = ("warehouse", "book", "count")
 
+
 @admin.register(BookComment)
 class BookCommentAdmin(admin.ModelAdmin):
-    list_display = ( "book",'account', "comment", 'date')
+    list_display = ("book", "account", "comment", "date")
+
 
 @admin.register(BookImage)
 class BookImageAdmin(admin.ModelAdmin):
-    list_display = ("book", "image", )
+    list_display = (
+        "book",
+        "image",
+    )
+
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-    list_display = ('account', 'is_active')
+    list_display = ("account", "is_active")
+
 
 @admin.register(BookInCart)
 class BookInCartAdmin(admin.ModelAdmin):
-    list_display = ('unique_id', 'cart', 'book', 'quantity')
+    list_display = ("unique_id", "cart", "book", "quantity", "amount")
