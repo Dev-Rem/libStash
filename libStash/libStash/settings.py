@@ -207,5 +207,5 @@ ELASTICSEARCH_DSL = {
 }
 
 ELASTICSEARCH_INDEX_NAMES = {
-    "blogs.documents": "book",
+    "searches.documents": "book",
 }

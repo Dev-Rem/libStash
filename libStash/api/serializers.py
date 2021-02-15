@@ -8,7 +8,6 @@ from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
 from rest_framework import serializers
 
 from blogs.models import Post, PostComment, PostImage
-from blogs.documents import PostDocument
 from users.models import Account, Address
 from books.models import (
     Author,
@@ -251,12 +250,3 @@ class WarehouseBookSerializer(serializers.ModelSerializer):
             "book",
             "count",
         ]
-
-
-class PostDocumentSerializer(DocumentSerializer):
-    """
-    Serializer for the BookDocument.
-    """
-
-    class Meta(object):
-        fields = ["id", "title", "content", "date", "last_update"]

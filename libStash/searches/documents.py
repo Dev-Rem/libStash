@@ -2,7 +2,7 @@
 from django.conf import settings
 from django_elasticsearch_dsl import Document, Index, fields
 from elasticsearch_dsl import analyzer
-from .models import Post, PostImage, PostComment
+from blogs.models import Post, PostImage, PostComment
 
 """Get index name for setting"""
 INDEX = Index(settings.ELASTICSEARCH_INDEX_NAMES[__name__])
@@ -21,6 +21,7 @@ html_strip = analyzer(
 class PostDocument(Document):
     """Post Elasticsearch document."""
 
+    # document fields
     id = fields.IntegerField(attr="id")
 
     title = fields.TextField(

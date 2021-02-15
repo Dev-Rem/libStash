@@ -10,19 +10,11 @@ from rest_framework.response import Response
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-
-from .documents import PostDocument
-from .utils import (
-    is_empty_or_null,
-    rebuild_elasticsearch_index,
-    delete_elasticsearch_index,
-)
 from libStash import settings
 
 # Create your views here.
 
 CACHE_TTL = getattr(settings, "CACHE_TTL")
-logger = logging.getLogger(__name__)
 
 
 class PostListView(generics.ListAPIView):
