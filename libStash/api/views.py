@@ -4,7 +4,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from blog.models import Post, PostComment, PostImage
+from blogs.models import Post, PostComment, PostImage
 from books.models import (
     Author,
     Book,

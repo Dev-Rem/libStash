@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "payments.apps.PaymentsConfig",
     "users.apps.UsersConfig",
-    "blog.apps.BlogConfig",
+    "blogs.apps.BlogConfig",
     "rest_framework",
     "rest_framework.authtoken",
     "phone_field",
@@ -203,4 +203,8 @@ ELASTICSEARCH_DSL = {
     "default": {
         "hosts": "localhost:9200",
     },
+}
+
+ELASTICSEARCH_INDEX_NAMES = {
+    "blogs.documents": "book",
 }
