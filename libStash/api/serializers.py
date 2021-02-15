@@ -54,11 +54,7 @@ class PostImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PostImage
-        fields = [
-            "unique_id",
-            "post",
-            "image",
-        ]
+        fields = ["unique_id", "post", "image"]
 
 
 class PostCommentSerializer(serializers.ModelSerializer):
@@ -237,11 +233,7 @@ class WarehouseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Warehouse
-        fields = [
-            "unique_id",
-            "address",
-            "phone",
-        ]
+        fields = ["unique_id", "address", "phone"]
 
 
 class WarehouseBookSerializer(serializers.ModelSerializer):
@@ -265,3 +257,6 @@ class PostDocumentSerializer(DocumentSerializer):
     """
     Serializer for the BookDocument.
     """
+
+    class Meta(object):
+        fields = ["id", "title", "content", "date", "last_update"]
