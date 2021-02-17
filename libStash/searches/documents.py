@@ -27,14 +27,14 @@ class PostDocument(Document):
     title = fields.TextField(
         analyzer=html_strip,
         fields={
-            "raw": fields.TextField(analyzer="keyword"),
+            "raw": fields.StringField(analyzer="keyword"),
         },
     )
 
     content = fields.TextField(
         analyzer=html_strip,
         fields={
-            "raw": fields.TextField(analyzer="keyword"),
+            "raw": fields.StringField(analyzer="keyword"),
         },
     )
 
