@@ -13,4 +13,8 @@ class PostDocumentSerializer(DocumentSerializer):
     """
 
     class Meta(object):
+        """Meta options."""
+
+        # Specify the correspondent document class
+        document = PostDocument
         fields = ["id", "title", "content", "date", "last_update"]

@@ -11,7 +11,7 @@ from django_elasticsearch_dsl_drf.filter_backends import (
     IdsFilterBackend,
     OrderingFilterBackend,
     DefaultOrderingFilterBackend,
-    SearchFilterBackend,
+    CompoundSearchFilterBackend,
 )
 
 from django_elasticsearch_dsl_drf.constants import (
@@ -44,7 +44,7 @@ class PostDocumentView(BaseDocumentViewSet):
         IdsFilterBackend,
         OrderingFilterBackend,
         DefaultOrderingFilterBackend,
-        SearchFilterBackend,
+        CompoundSearchFilterBackend,
     ]
 
     # Define the search fields
@@ -75,11 +75,8 @@ class PostDocumentView(BaseDocumentViewSet):
 
     # Define Ordering fields
     ordering_fields = {
-        "id": "id",
-        "title": "title.raw",
-        "content": "content.raw",
         "date": "date",
         "last_update": "last_update",
     }
 
-    ordering = ["id", "title", "date"]
+    ordering = ["date"]

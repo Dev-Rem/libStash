@@ -25,7 +25,7 @@ class Post(models.Model):
         Account,
         related_name="like_post",
         blank=True,
-        default=0,
+        default=[0],
     )
 
     unique_id = models.UUIDField(
@@ -89,7 +89,7 @@ class PostImage(models.Model):
         db_index=True,
         unique=True,
     )
-    
+
     last_update = models.DateTimeField(
         auto_now=True,
     )
