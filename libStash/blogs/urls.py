@@ -17,4 +17,4 @@ urlpatterns = [
         name="post-comments",
     ),
     path("post/<uuid:unique_id>/image/", PostImageView.as_view(), name="blog-image"),
-]
+] 
