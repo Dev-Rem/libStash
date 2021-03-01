@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from libStash import settings
+from django.shortcuts import redirect
 
 # Create your views here.
 
@@ -49,7 +50,7 @@ class PostDetailView(generics.RetrieveAPIView):
         return super().retrieve(request, *args, **kwargs)
 
 
-class PostCommentListView(generics.ListCreateAPIView):
+class PostCommentView(generics.ListCreateAPIView):
     """
     GET: Returns all Comments instance related to either a blog post or book review
     POST: Crete a book Comment object
@@ -81,7 +82,7 @@ class PostCommentListView(generics.ListCreateAPIView):
             serializer.validated_data["account"] = request.user
             serializer._validated_data["post"] = post
             serializer.save()
-            return Response({"status": "Comment posted"})
+            return redirect(request.path_info)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

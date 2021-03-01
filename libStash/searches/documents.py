@@ -22,19 +22,19 @@ class PostDocument(Document):
     """Post Elasticsearch document."""
 
     # document fields
-    id = fields.IntegerField(attr="id")
+    unique_id = fields.TextField(attr="unique_id")
 
     title = fields.TextField(
         analyzer=html_strip,
         fields={
-            "raw": fields.TextField(analyzer="keyword"),
+            "raw": fields.KeywordField(analyzer="keyword"),
         },
     )
 
     content = fields.TextField(
         analyzer=html_strip,
         fields={
-            "raw": fields.TextField(analyzer="keyword"),
+            "raw": fields.KeywordField(analyzer="keyword"),
         },
     )
 
