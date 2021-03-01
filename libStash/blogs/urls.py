@@ -24,14 +24,10 @@ urlpatterns = [
         PostCommentView.as_view(),
         name="post-comments",
     ),
-<<<<<<< HEAD
     path(
         "post/<uuid:unique_id>/image/",
         PostImageView.as_view(),
         name="blog-image",
     ),
-]
-=======
     path("post/<uuid:unique_id>/image/", PostImageView.as_view(), name="blog-image"),
-] 
->>>>>>> 6137b010210341b78fe2a774cbd84ea935e2fe7c
+]
