@@ -1,8 +1,7 @@
 import datetime
 from django.test import TestCase, RequestFactory
-from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.models import AnonymousUser
+from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import force_authenticate
 from .models import Post, PostComment, PostImage
 from .views import PostListView, PostDetailView, PostCommentView
@@ -322,14 +321,75 @@ class PostCommentViewTests(TestCase):
         self.assertContains(response, "Comment 2")
 
     def test_create(self):
-        """Test the create fucntion in PostCommentView """
+        """Test the create fucntion in PostCommentView"""
 
         post = self.post
         request = self.factory.post(
+            f"post/{post.unique_id}/comments/",
+            {"comment": "Comment 3"},
+            format="json",
+        )
+        force_authenticate(request, user=self.user)
+        response = self.view(request, unique_id=post.unique_id)
+        self.assertEqual(response.status_code, 302)
+
+    def test_put_http_method_not_allowed(self):
+        """Test PUT method not allowed in PostCommentView"""
+
+        post = self.post
+        request = self.factory.put(
             f"post/{post.unique_id}/comments/",
             {"comment": "Comment 1"},
             format="json",
         )
         force_authenticate(request, user=self.user)
         response = self.view(request, unique_id=post.unique_id)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 405)
+
+    def test_delete_http_method_not_allowed(self):
+        """Test DELETE method not allowed in PostCommentView"""
+
+        post = self.post
+        request = self.factory.delete(
+            "/api/v1/blog/post/",
+            {"comment": "Comment 1"},
+            format="json",
+        )
+        force_authenticate(request, user=self.user)
+        response = self.view(request, unique_id=post.unique_id)
+        self.assertEqual(response.status_code, 405)
+
+
+class PostImageView(TestCase):
+    """Test class for the PostImageView."""
+
+    def setUp(self):
+        """Set up variables for tests"""
+
+        account = Account.objects.create(
+            firstname="Test", lastname="Test", email="test@email.com"
+        )
+        post = Post.objects.create(
+            title="Test Title",
+            content="Test Content",
+            account=account,
+        )
+        image = SimpleUploadedFile(
+            name="test_image.jpg",
+            content=open("/Users/Rem_files/Desktop/stuff/download.png", "rb").read(),
+            content_type="image/jpeg",
+        )
+        PostImage.objects.create(post=post, image=image)
+
+        self.factory = RequestFactory()
+        self.view = PostCommentView.as_view()
+        self.user = Account.objects.get(firstname="Test")
+
+    def test_retrieve(self):
+        """Test the retrieve fucntion in PostImageView"""
+
+        post = Post.objects.get(title="Test Title")
+        request = self.factory.get(f"post/{post.unique_id}/images/")
+        request.user = self.user
+        response = self.view(request, unique_id=post.unique_id)
+        self.assertEqual(response.status_code, 200)
