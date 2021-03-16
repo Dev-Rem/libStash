@@ -7,5 +7,4 @@ libStash/.env
 libStash/libStash/settings.py
 libStash/libStash/settings.py
 libStash.code-workspace
-.env
-libStash/libStash.env
+
