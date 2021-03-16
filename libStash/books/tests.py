@@ -146,3 +146,96 @@ class AuuthorTestCase(TestCase):
         author.delete()
 
         self.assertRaises(ObjectDoesNotExist)
+
+
+class BookTestCase(TestCase):
+    """
+    Test casees for the Book model
+    """
+
+    def setUp(self):
+        """ Set up data to be used in test cases """
+
+        self.author = Author.objects.create(
+            name="Test Name",
+            email="testemail@email.com",
+            address="Test address",
+            bio="Test bio",
+        )
+        self.publisher = publisher = Publisher.objects.create(
+            name="Test Name",
+            address="Test address",
+            email="testemail@email.com",
+            publisher_url="http://testpublisherurl.com",
+        )
+
+        self.book = Book.objects.create(
+            title="Test title",
+            publisher=publisher,
+            category="E-BK",
+            isbn="1234567890123",
+            year=2019,
+            price=20,
+        )
+        self.book.author.add(self.author)
+
+    def test_model_fields_with_correct_values(self):
+        """ Test the model fields with correct values. """
+
+        author = Author.objects.get(name="Test Name")
+
+        self.assertEqual(self.book.title, "Test title")
+        self.assertEqual(self.book.author.get(pk=author.pk), author)
+        self.assertEqual(self.book.publisher, self.publisher)
+        self.assertEqual(self.book.category, "E-BK")
+        self.assertEqual(self.book.isbn, "1234567890123")
+        self.assertEqual(self.book.year, 2019)
+        self.assertEqual(self.book.price, 20)
+
+    def test_model_fields_with_incorrect_values(self):
+        """ Test the model fields with incorrect values. """
+
+        wrong_author = Author.objects.create(
+            name=" Wrong Test Name",
+            email="wrongtestemail@email.com",
+            address="Wrong Test address",
+            bio="Wrong Test bio",
+        )
+        wrong_publisher = Publisher.objects.create(
+            name="Wrong Test Name",
+            address="Wrong Test address",
+            email="wrongtestemail@email.com",
+            publisher_url="http://wrongtestpublisherurl.com",
+        )
+
+        self.assertNotEqual(self.book.title, "Wrong Test title")
+        self.assertNotEqual(self.book.author.get(pk=self.author.pk), wrong_author)
+        self.assertNotEqual(self.book.publisher, wrong_publisher)
+        self.assertNotEqual(self.book.category, "PPR-BCK")
+        self.assertNotEqual(self.book.isbn, "1345624539872")
+        self.assertNotEqual(self.book.year, 2022)
+        self.assertNotEqual(self.book.price, 0)
+
+    def test_create(self):
+        """ Test create functionality on model instance """
+
+        book = Book.objects.create(
+            title="Test title 2",
+            publisher=self.publisher,
+            category="E-BK",
+            isbn="1234567890123",
+            year=2019,
+            price=20,
+        )
+        book.author.add(self.author)
+
+        self.assertIsInstance(book, Book)
+
+    def test_update(self):
+        """ Test update functionality on model instance """
+
+        book = self.book
+        book.title = "Update Test Title"
+        book.save()
+
+        self.assertEqual(book.title, "Update Test Title")
