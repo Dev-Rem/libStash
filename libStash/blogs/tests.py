@@ -1,7 +1,6 @@
 import datetime
 from django.test import TestCase, RequestFactory
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import force_authenticate
 from .models import Post, PostComment, PostImage
 from .views import PostListView, PostDetailView, PostCommentView
@@ -13,7 +12,7 @@ from users.models import Account
 
 class PostTestCase(TestCase):
     """
-    Test case for the Post model
+    Test casees for the Post model
     """
 
     def setUp(self):
@@ -35,24 +34,36 @@ class PostTestCase(TestCase):
         self.assertTrue(post.is_active)
 
     def test_create(self):
-        post = Post.objects.get(title="Test Title")
+        """ Test create on model instance """
+
+        account = Account.objects.get(firstname="Test")
+        post = Post.objects.create(
+            title="Test Title 2", content="Test Content 2", account=account
+        )
+
         self.assertIsInstance(post, Post)
 
     def test_update(self):
+        """ Test update on model instance """
+
         post = Post.objects.get(title="Test Title")
         post.title = "Updated Test Title"
         post.save()
+
         self.assertEqual(post.title, "Updated Test Title")
 
     def test_delete(self):
+        """ Test delete functionality on model instance """
+
         post = Post.objects.get(title="Test Title")
         post.delete()
+
         self.assertRaises(ObjectDoesNotExist)
 
 
-class PostImageTests(TestCase):
+class PostImageTestCase(TestCase):
     """
-    Test case for testing the fields of the Post image model
+    Test cases for the PostImage model
     """
 
     def setUp(self):
@@ -75,16 +86,25 @@ class PostImageTests(TestCase):
         self.assertEqual(post_image.post, post)
 
     def test_create(self):
-        post_image = PostImage.objects.get(image="image.jpg")
+        """ Test create on model instance """
+
+        post = Post.objects.get(title="Test Title")
+        post_image = PostImage.objects.create(image="image2.jpg", post=post)
+
         self.assertIsInstance(post_image, PostImage)
 
     def test_update(self):
+        """ Test update functionality on model instance """
+
         post_image = PostImage.objects.get(image="image.jpg")
         post_image.image = "image2.jpg"
         post_image.save()
+
         self.assertEqual(post_image.image, "image2.jpg")
 
     def test_delete(self):
+        """ Test delete functionality on model instance """
+
         post_image = PostImage.objects.get(image="image.jpg")
         post_image.delete()
         self.assertRaises(ObjectDoesNotExist)
@@ -92,10 +112,12 @@ class PostImageTests(TestCase):
 
 class PostCommmentTests(TestCase):
     """
-    Test case for testing the fields of the Post comment model
+    Test cases for the PostComment model
     """
 
     def setUp(self):
+        """ Set up data to be used in test cases """
+
         account = Account.objects.create(
             firstname="Test", lastname="Test", email="test@email.com"
         )
@@ -120,18 +142,28 @@ class PostCommmentTests(TestCase):
         self.assertEqual(comment.account, account)
 
     def test_create(self):
-        post_comment = PostComment.objects.get(comment="Test Comment")
+        """ Test create functionality on model instance """
+
+        post = Post.objects.get(title="Test Title")
+        post_comment = PostComment.objects.create(comment="Test Comment 2", post=post)
+
         self.assertIsInstance(post_comment, PostComment)
 
     def test_update(self):
+        """ Test update functionality on model instance """
+
         post_comment = PostComment.objects.get(comment="Test Comment")
         post_comment.comment = "Test Comment Update"
         post_comment.save()
+
         self.assertEqual(post_comment.comment, "Test Comment Update")
 
     def test_delete(self):
+        """ Test delete functionality on model instance """
+
         post_comment = PostComment.objects.get(comment="Test Comment")
         post_comment.delete()
+
         self.assertRaises(ObjectDoesNotExist)
 
 
@@ -374,12 +406,7 @@ class PostImageView(TestCase):
             content="Test Content",
             account=account,
         )
-        image = SimpleUploadedFile(
-            name="test_image.jpg",
-            content=open("/Users/Rem_files/Desktop/stuff/download.png", "rb").read(),
-            content_type="image/jpeg",
-        )
-        PostImage.objects.create(post=post, image=image)
+        PostImage.objects.create(post=post, image="tesimage.jpg")
 
         self.factory = RequestFactory()
         self.view = PostCommentView.as_view()

@@ -198,7 +198,7 @@ STRIPE_ENDPOINT_SECRET = config("STRIPE_ENDPOINT_SECRET")
 
 ELASTICSEARCH_DSL = {
     "default": {
-        "hosts": "localhost:9200",
+        "hosts": "elasticsearch:9200",
     },
 }
 
