@@ -134,7 +134,7 @@ class UserViewSet(UserViewSet):
             sg = SendGridAPIClient(config("SENDGRID_API_KEY"))
             sg.send(message)
         except Exception as e:
-            print(e.message)
+            print(e)
 
         user = serializer.save()
         cart = Cart.objects.create(account=user, is_active=True)
