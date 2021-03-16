@@ -13,7 +13,7 @@ from users.models import Account
 
 class PostTestCase(TestCase):
     """
-    Test case to testing the fields of the Post model
+    Test case for the Post model
     """
 
     def setUp(self):
@@ -25,7 +25,7 @@ class PostTestCase(TestCase):
         )
         Post.objects.create(title="Test Title", content="Test Content", account=account)
 
-    def test_model_fields_with_values(self):
+    def test_model_fields_with_correct_values(self):
         account = Account.objects.get(firstname="Test")
         post = Post.objects.get(title="Test Title")
 
