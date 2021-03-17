@@ -76,9 +76,7 @@ class Book(models.Model):
 
 class Warehouse(models.Model):
     address = models.TextField(verbose_name="Address", max_length=200)
-    phone = PhoneField(
-        verbose_name="Phone number", blank=True, help_text="Contact phone number"
-    )
+    phone = PhoneField(verbose_name="Phone number", blank=True)
     unique_id = models.UUIDField(
         default=uuid.uuid4, editable=False, db_index=True, unique=True
     )

@@ -16,15 +16,14 @@ class PostTestCase(TestCase):
     """
 
     def setUp(self):
+        """ Set up data to be used in test cases """
         account = Account.objects.create(
             firstname="Test", lastname="Test", email="test@email.com"
-        )
-        Account.objects.create(
-            firstname="Wrong Test", lastname="Wrong Test", email="wrongtest@email.com"
         )
         Post.objects.create(title="Test Title", content="Test Content", account=account)
 
     def test_model_fields_with_correct_values(self):
+        """ Test the model fields with correct values. """
         account = Account.objects.get(firstname="Test")
         post = Post.objects.get(title="Test Title")
 
@@ -32,6 +31,20 @@ class PostTestCase(TestCase):
         self.assertEqual(post.content, "Test Content")
         self.assertEqual(post.account, account)
         self.assertTrue(post.is_active)
+
+    def test_model_fields_with_incorrect_values(self):
+        """ Test the model fields with correct values. """
+        account = Account.objects.create(
+            firstname="Wrong Test",
+            lastname="Wrong Test",
+            email="wrongtest@email.com",
+        )
+        post = Post.objects.get(title="Test Title")
+
+        self.assertNotEqual(post.title, "Wrong Test Title")
+        self.assertNotEqual(post.content, "Wrong Test Content")
+        self.assertNotEqual(post.account, account)
+        self.assertNotEqual(post.is_active, False)
 
     def test_create(self):
         """ Test create on model instance """

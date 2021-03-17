@@ -172,7 +172,8 @@ class BookTestCase(TestCase):
         self.book = Book.objects.create(
             title="Test title",
             publisher=publisher,
-            category="E-BK",
+            category="THR",
+            format="E-BK",
             isbn="1234567890123",
             year=2019,
             price=20,
@@ -183,11 +184,11 @@ class BookTestCase(TestCase):
         """ Test the model fields with correct values. """
 
         author = Author.objects.get(name="Test Name")
-
         self.assertEqual(self.book.title, "Test title")
         self.assertEqual(self.book.author.get(pk=author.pk), author)
         self.assertEqual(self.book.publisher, self.publisher)
-        self.assertEqual(self.book.category, "E-BK")
+        self.assertEqual(self.book.category, "THR")
+        self.assertEqual(self.book.format, "E-BK")
         self.assertEqual(self.book.isbn, "1234567890123")
         self.assertEqual(self.book.year, 2019)
         self.assertEqual(self.book.price, 20)
@@ -211,7 +212,8 @@ class BookTestCase(TestCase):
         self.assertNotEqual(self.book.title, "Wrong Test title")
         self.assertNotEqual(self.book.author.get(pk=self.author.pk), wrong_author)
         self.assertNotEqual(self.book.publisher, wrong_publisher)
-        self.assertNotEqual(self.book.category, "PPR-BCK")
+        self.assertNotEqual(self.book.format, "PPR-BCK")
+        self.assertNotEqual(self.book.category, "FNSY")
         self.assertNotEqual(self.book.isbn, "1345624539872")
         self.assertNotEqual(self.book.year, 2022)
         self.assertNotEqual(self.book.price, 0)
@@ -222,7 +224,8 @@ class BookTestCase(TestCase):
         book = Book.objects.create(
             title="Test title 2",
             publisher=self.publisher,
-            category="E-BK",
+            category="THR",
+            format="E-BK",
             isbn="1234567890123",
             year=2019,
             price=20,
@@ -239,3 +242,59 @@ class BookTestCase(TestCase):
         book.save()
 
         self.assertEqual(book.title, "Update Test Title")
+
+    def test_delete(self):
+        """ Test delete functionality on model instance """
+
+        publisher = Publisher.objects.get(name="Test Name")
+        publisher.delete()
+
+        self.assertRaises(ObjectDoesNotExist)
+
+
+class WarehouseTestCase(TestCase):
+    """
+    Test casees for the Warehouse model
+    """
+
+    def setUp(self):
+        """ Set up data to be used in test cases """
+
+        self.warehouse = Warehouse.objects.create(
+            address="Test address",
+            phone="+36735454656",
+        )
+
+    def test_model_fields_with_correct_values(self):
+        """ Test the model fields with correct values. """
+
+        self.assertEqual(self.warehouse.address, "Test address")
+        self.assertEqual(self.warehouse.phone, "+36735454656")
+
+    def test_model_fields_with_incorrect_values(self):
+        """ Test the model fields with incorrect values. """
+
+        self.assertNotEqual(self.warehouse.address, "Wrong Test address")
+        self.assertNotEqual(self.warehouse.phone, "+3435342322343")
+
+    def test_create(self):
+        """ Test create on model instance """
+
+        self.assertIsInstance(self.warehouse, Warehouse)
+
+    def test_update(self):
+        """ Test update on model instance """
+
+        warehouse = self.warehouse
+        warehouse.address = "Update Test address"
+        warehouse.save()
+
+        self.assertEqual(self.warehouse.address, "Update Test address")
+
+    def test_delete(self):
+        """ Test delete functionality on model instance """
+
+        warehouse = Warehouse.objects.get(address="Test address")
+        warehouse.delete()
+
+        self.assertRaises(ObjectDoesNotExist)

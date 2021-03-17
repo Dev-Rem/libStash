@@ -282,7 +282,7 @@ class BookImageViewSet(viewsets.ModelViewSet):
         return super().list(request, *args, **kwargs)
 
     @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
+    @method_decorator(cache_page(60 * 60)) 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
