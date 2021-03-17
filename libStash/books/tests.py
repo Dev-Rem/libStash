@@ -298,3 +298,96 @@ class WarehouseTestCase(TestCase):
         warehouse.delete()
 
         self.assertRaises(ObjectDoesNotExist)
+
+
+class WarehouseBookTestCase(TestCase):
+    """
+    Test casees for the WarehouseBook model
+    """
+
+    def setUp(self):
+        """ Set up data to be used in test cases """
+
+        self.author = Author.objects.create(
+            name="Test Name",
+            email="testemail@email.com",
+            address="Test address",
+            bio="Test bio",
+        )
+        self.publisher = publisher = Publisher.objects.create(
+            name="Test Name",
+            address="Test address",
+            email="testemail@email.com",
+            publisher_url="http://testpublisherurl.com",
+        )
+
+        self.book = Book.objects.create(
+            title="Test title",
+            publisher=publisher,
+            category="THR",
+            format="E-BK",
+            isbn="1234567890123",
+            year=2019,
+            price=20,
+        )
+        self.book.author.add(self.author)
+        self.warehouse = Warehouse.objects.get(
+            address="Test address",
+            phone="+345342432",
+        )
+        self.warehouse_book = WarehouseBook.objects.create(
+            warehouse=self.warehouse,
+            book=self.book,
+            count=2,
+        )
+
+    def test_model_fields_with_correct_values(self):
+        """ Test the model fields with correct values. """
+
+        self.assertEqual(self.warehouse_book.warehouse, self.warehouse)
+        self.assertEqual(self.warehouse_book.book, self.book)
+        self.assertEqual(self.warehouse.count, 2)
+
+    def test_model_fields_with_incorrect_values(self):
+        """ Test the model fields with correct values. """
+
+        book = Book.objects.create(
+            title="Wrong Test title",
+            publisher=self.publisher,
+            category="THR",
+            format="E-BK",
+            isbn="1234567890123",
+            year=2019,
+            price=20,
+        )
+        book.author.add(self.author)
+        warehouse = Warehouse.objects.get(
+            address="Test address",
+            phone="+345342432",
+        )
+
+        self.assertNotEqual(self.warehouse_book.warehouse, self.warehouse)
+        self.assertNotEqual(self.warehouse_book.book, book)
+        self.assertNotEqual(self.warehouse_book.count, 3)
+
+    def test_create(self):
+        """ Test create on model instance """
+
+        self.assertIsInstance(self.warehouse_book, WarehouseBook)
+
+    def test_update(self):
+        """ Test update on model instance """
+
+        warehouse_book = self.warehouse_book
+        warehouse_book.count = 5
+        warehouse_book.save()
+
+        self.assertEqual(warehouse.count, 5)
+
+    def test_delete(self):
+        """ Test delete functionality on model instance """
+
+        warehouse_book = self.warehouse_book
+        warehouse_book.delete()
+
+        self.assertRaises(ObjectDoesNotExist)
