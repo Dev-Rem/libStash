@@ -145,7 +145,7 @@ class BookImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BookImage
-        fields = ["unique_id", "post", "image"]
+        fields = ["unique_id", "book", "image"]
 
 
 class BookCommentSerializer(serializers.ModelSerializer):
