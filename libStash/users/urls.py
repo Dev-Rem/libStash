@@ -1,16 +1,17 @@
-from django.urls import path, include
-from djoser.views import UserViewSet
-from users.views import *
-
+from django.urls import path
+from users.views import AddressListView, AddressUpdateView, UserViewSet 
 
 urlpatterns = [
-    # url paths
-    path('account/register/', UserViewSet.as_view({'post': 'create'}), name='account-register'), # done
-    path("account/address/", AddressListView.as_view(), name="account-address"), # done
-    path("account/address/edit/<int:adrs_pk>/", AddressUpdateView.as_view(), name="account-address-edit"), # done
-    path("account/address/delete/<int:adrs_pk>/", AddressUpdateView.as_view(), name="account-address-delete"), # done
-    path("account/cart/", CartDetailView.as_view(),name="account-cart"), # done
-    path('account/cart/book/edit/<int:pk>/',BookInCartDetailView.as_view(), name='book-in-cart-edit'), # done
-    path('account/cart/add-to-cart/',AddToCartView.as_view(), name='add-to-cart'), # done
+    
+    path('register/', UserViewSet.as_view({'post': 'create'}), name='account-register'),
+    path('edit/<uuid:unique_id>/', UserViewSet.as_view({'patch': 'partial_update'}), name='account-update'),
+    path("address/", AddressListView.as_view(), name="account-addresses"),
+    path("address/<uuid:unique_id>/", AddressListView.as_view(), name="account-address"), 
+    path("address/edit/<uuid:unique_id>/", AddressUpdateView.as_view(), name="account-address-edit"),
+    path("address/delete/<uuid:unique_id>/", AddressUpdateView.as_view(), name="account-address-delete"),
+    
+    # auth/token/login/ login token url
+    # auth/users/me/  account info, delete url
+    # auth/users/me/set_password/ account password reset url
 
-]
+   ]

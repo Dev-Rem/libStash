@@ -1,44 +1,132 @@
-from rest_framework import serializers
-from books.models import *
-from users.models import *
+""" Required imports"""
+import json
+
 from djoser.serializers import UserSerializer as BaseUserSerializer
+from rest_framework.fields import SerializerMethodField
+from rest_framework import serializers
+from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
+from rest_framework import serializers
+
+from blogs.models import Post, PostComment, PostImage
+from users.models import Account, Address
+from books.models import (
+    Author,
+    Book,
+    Warehouse,
+    WarehouseBook,
+    Publisher,
+    BookInCart,
+    Cart,
+    BookComment,
+    BookImage,
+)
+
+
+# Serializer classes
+
+
+class PostSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Post model.
+    """
+
+    account = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
+
+    class Meta:
+        model = Post
+        fields = [
+            "unique_id",
+            "title",
+            "content",
+            "account",
+            "likes",
+            "date",
+        ]
+
+
+class PostImageSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the PostImage model.
+    """
+
+    post = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
+
+    class Meta:
+        model = PostImage
+        fields = ["unique_id", "post", "image"]
+
+
+class PostCommentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the PostComment model.
+    """
+
+    account = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
+    post = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
+
+    class Meta:
+        model = PostComment
+        fields = ["unique_id", "post", "account", "comment", "date"]
+
 
 class PublisherSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Publisher model.
+    """
+
     class Meta:
         model = Publisher
-        fields = [ "id", "name", "address", "phone", "publisher_url"]
+        fields = ["unique_id", "name", "address", "email", "publisher_url"]
+
 
 class AuthorSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Author model.
+    """
+
     class Meta:
         model = Author
-        fields = [ "id", "name", "phone", "address"]
+        fields = ["unique_id", "name", "email", "address"]
 
-class BookReviewSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = BookReview
-        fields = ['account', 'comment', 'date']
-
-class BookReviewCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BookReview
-        fields = ['comment', 'date']
 
 class BookSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Book model.
+    """
 
-    class Meta:
-        model = Book
-        fields = '__all__'
-
-class BookDetailSerializer(serializers.ModelSerializer):
-
-    author = AuthorSerializer(read_only=True)
-    publisher = PublisherSerializer(read_only=True)
+    author = serializers.SlugRelatedField(
+        many=True, slug_field="unique_id", read_only=True
+    )
 
     class Meta:
         model = Book
         fields = [
-            "id",
+            "unique_id",
+            "title",
+            "category",
+            "author",
+            "format",
+            "year",
+            "price",
+        ]
+
+
+class BookDetailSerializer(serializers.ModelSerializer):
+
+    """
+    Serializer for getting a single Book instance.
+    It makes user of the Book model.
+    """
+
+    author = serializers.SlugRelatedField(
+        many=True, slug_field="unique_id", read_only=True
+    )
+    publisher = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
+
+    class Meta:
+        model = Book
+        fields = [
+            "unique_id",
             "title",
             "author",
             "publisher",
@@ -49,52 +137,116 @@ class BookDetailSerializer(serializers.ModelSerializer):
             "price",
         ]
 
-class ImageSerializer(serializers.ModelSerializer):
+
+class BookImageSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the BookImage model.
+    """
+
     class Meta:
-        model = Image
-        fields = '__all__'
+        model = BookImage
+        fields = ["unique_id", "post", "image"]
+
+
+class BookCommentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the BookComment model.
+    """
+
+    account = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
+    book = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
+
+    class Meta:
+        model = BookComment
+        fields = ["unique_id", "book", "account", "comment", "date"]
+
 
 class BookInCartSerializer(serializers.ModelSerializer):
-    book = BookSerializer(read_only=True)
+    """
+    Serializer for the BookInCart model.
+    """
+
+    book = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
+
     class Meta:
         model = BookInCart
-        fields = '__all__'
+        fields = ["unique_id", "book", "quantity", "amount"]
+
 
 class CartSerializer(serializers.ModelSerializer):
-    item_in_cart = BookInCartSerializer(many=True, read_only=True)
+    """
+    Serializer for the Cart model.
+    """
+
+    account = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
 
     class Meta:
         model = Cart
-        fields = ["id", "account", "item_in_cart", "is_active"]
+        fields = ["unique_id", "account", "is_active"]
 
-class AddToCartSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BookInCart
-        fields = ['book', 'count']
 
 class AddressSerializer(serializers.ModelSerializer):
-    
+    """
+    Serializer for the Address model.
+    """
+
+    account = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
+
     class Meta:
         model = Address
-        fields = ["id", 'account', "address1", "address2", "zip_code", "country"]
+        fields = [
+            "unique_id",
+            "account",
+            "address1",
+            "address2",
+            "zip_code",
+            "city",
+            "country",
+        ]
+
 
 class UserSerializer(BaseUserSerializer):
+    """
+    Serializer for overriding the djoser default UserSerializer.
+    """
+
     class Meta:
         model = Account
-        fields = ['id', 'firstname', 'lastname', 'email']
+        fields = ["unique_id", "firstname", "lastname", "email"]
+
 
 class AccountSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Account model.
+    """
+
     class Meta:
         model = Account
-        fields = '__all__'
+        fields = ["unique_id", "firstname", "lastname", "email"]
+
 
 class WarehouseSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Warehouse model.
+    """
+
     class Meta:
         model = Warehouse
-        fields = '__all__'
+        fields = ["unique_id", "address", "phone"]
+
 
 class WarehouseBookSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the WarehouseBook model.
+    """
+
+    book = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
+
     class Meta:
         model = WarehouseBook
-        fields = '__all__'
-
+        fields = [
+            "unique_id",
+            "warehouse",
+            "book",
+            "count",
+        ]

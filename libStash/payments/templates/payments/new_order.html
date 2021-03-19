@@ -1,0 +1,15 @@
+<div>     
+    <h2>New Order </h2>
+    <h3>Order(s): </h3>
+    {% for item in cart_items %}
+        <ul>
+            <li>Book Title: {{ item.book.title }}</li>
+            <li>Unit Price: {{ item.book.price }}</li>
+            <li>Year: {{ item.book.year }}</li>
+            <li>ISBN: {{ item.book.isbn }}</li>
+            <li>Count: {{ item.count }} </li>
+        </ul>
+        <hr>
+    {% endfor %}
+    <h3>Payment Successful</h3>
+</div>

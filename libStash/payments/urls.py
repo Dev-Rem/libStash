@@ -1,8 +1,20 @@
 from django.urls import path
-from django.conf.urls import url
-from payments import views
+from payments.views import (
+    IndexView,
+    stripe_config,
+    stripe_webhook,
+    checkout,
+    SuccessView,
+    CancelledView,
+)
+
+
 urlpatterns = [
     # url paths
-
-    url(r'^test-payment/$', views.test_payment),
+    path("", IndexView.as_view(), name="index"),
+    path("config/", stripe_config, name="stripe-config"),
+    path("checkout/", checkout, name="checkout"),
+    path("success/", SuccessView.as_view(), name="success"),
+    path("cancelled/", CancelledView.as_view()),
+    path("webhook/", stripe_webhook, name="webhook"),
 ]

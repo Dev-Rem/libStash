@@ -1,46 +1,43 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from users.views import *
-from books.views import *
-from api.views import *
+from api.views import (
+    AccountViewSet,
+    AddressViewSet,
+    AuthorViewSet,
+    BookInCartViewSet,
+    BookViewSet,
+    CartViewSet,
+    BookCommentViewSet,
+    BookImageViewSet,
+    PostViewSet,
+    PostImageViewSet,
+    PostCommentViewSet,
+    PublisherViewSet,
+    WarehouseBookViewSet,
+    WarehouseViewSet,
+)
 
-app_name = 'users'
+app_name = "users"
 
 router = DefaultRouter()
-router.register(r'authors', AuthorViewSet, basename='author')
-router.register(r'books', BookViewSet, basename='book')
-router.register(r'images', ImageViewSet, basename='image')
-router.register(r'publishers', AuthorViewSet, basename='author')
-router.register(r'warehousebooks', WarehouseBookViewSet, basename='warehousebook')
-router.register(r'warehouses', WarehouseViewSet, basename='warehouse')
-router.register(r'accounts', AccountViewSet, basename='account')
-router.register(r'address', AddressViewSet, basename='address')
-router.register(r'books-in-cart', BookInCartViewSet, basename='book-in-cart')
-router.register(r'book-reviews', BookReviewViewSet, basename='book-review')
-router.register(r'carts', CartViewSet, basename='cart')
+router.register(r"posts", PostViewSet, basename="post")
+router.register(r"comments", BookCommentViewSet, basename="book-comment")
+router.register(r"comments", PostCommentViewSet, basename="post-comment")
+router.register(r"images", BookImageViewSet, basename="image")
+router.register(r"images", BookImageViewSet, basename="image")
+router.register(r"authors", AuthorViewSet, basename="author")
+router.register(r"books", BookViewSet, basename="book")
+router.register(r"publishers", PublisherViewSet, basename="publisher")
+router.register(r"warehousebooks", WarehouseBookViewSet, basename="warehousebook")
+router.register(r"warehouses", WarehouseViewSet, basename="warehouse")
+router.register(r"accounts", AccountViewSet, basename="account")
+router.register(r"address", AddressViewSet, basename="address")
+router.register(r"books-in-cart", BookInCartViewSet, basename="book-in-cart")
+router.register(r"carts", CartViewSet, basename="cart")
 
 urlpatterns = [
-
-    path("books", BookListView.as_view()),
-    path("book/<int:pk>/", BookDetailView.as_view(), name="book-detail"), # done
-    path('book/<int:pk>/reviews/', BookReviewListView.as_view(), name='book-reviews'),
-    path("author/<int:pk>/", AuthorDetailView.as_view(), name="author-detail"), # done
-    path('author/<int:pk>/books/', BooksByAuthorView.as_view(), name='books-by-author'), # done
-    path("publisher/<int:pk>/", PublisherDetailView.as_view(), name="publisher-detail"), # done
-    path('account/register/', UserViewSet.as_view({'post': 'create'}), name='account-register'), # done
-    path("account/address/", AddressListView.as_view(), name="account-address"), # done
-    path("account/address/edit/<int:adrs_pk>/", AddressUpdateView.as_view(), name="account-address-edit"), # done
-    path("account/address/delete/<int:adrs_pk>/", AddressUpdateView.as_view(), name="account-address-delete"), # done
-    path("account/cart/", CartDetailView.as_view(),name="account-cart"), # done
-    path('account/cart/book/edit/<int:pk>/',BookInCartDetailView.as_view(), name='book-in-cart-edit'), # done
-    path('account/cart/add-to-cart/',AddToCartView.as_view(), name='add-to-cart'), # done
-
-
-    # admin related urls
-    path('admin/', include(router.urls) ),
-
-    # djoser urls for authentification
-    path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.authtoken')),
-
+    path("blogs/", include("blogs.urls")),
+    path("books/", include("books.urls")),
+    path("account/", include("users.urls")),
+    path("admin/", include(router.urls)),
 ]
