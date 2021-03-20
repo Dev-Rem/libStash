@@ -1,18 +1,21 @@
-version: "3.9"
+version: "3"
 
 services:
   web:
     build: .
-    command: python3.8 manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "python3.8 manage.py makemigrations && python3.8 manage.py migrate && python3.8 manage.py runserver 0.0.0.0:8000"
     ports: 
       - "8000:8000"
+    env_file:
+      - libStash.env
     volumes: 
       - .:/usr/src/libStash
     environment:
-      - POSTGRES_HOST=db
-      - POSTGRES_DB=clearpage
-      - POSTGRES_USER=clearpageuser
-      - POSTGRES_PASSWORD=clearpage1407
+      - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     depends_on:
       - db
       - redis
@@ -22,9 +25,9 @@ services:
   db:
     image: postgres
     environment:
-      - POSTGRES_DB=clearpage
-      - POSTGRES_USER=clearpageuser
-      - POSTGRES_PASSWORD=clearpage1407
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
       - "5432:5432"
   elasticsearch:
