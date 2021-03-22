@@ -15,7 +15,7 @@ from django.shortcuts import redirect
 
 # Create your views here.
 
-CACHE_TTL = getattr(settings, "CACHE_TTL")
+CACHE_TTL = config("CACHE_TTL")
 
 
 class PostListView(generics.ListAPIView):

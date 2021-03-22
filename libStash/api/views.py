@@ -1,4 +1,6 @@
+from decouple import config
 from rest_framework import status, viewsets
+from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.utils.decorators import method_decorator
@@ -35,10 +37,9 @@ from .serializers import (
     AccountSerializer,
     AddressSerializer,
 )
-from rest_framework.response import Response
 
 
-CACHE_TTL = getattr(settings, "CACHE_TTL")
+CACHE_TTL = config("CACHE_TTL")
 
 # Create your views here.
 
@@ -282,7 +283,7 @@ class BookImageViewSet(viewsets.ModelViewSet):
         return super().list(request, *args, **kwargs)
 
     @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60)) 
+    @method_decorator(cache_page(60 * 60))
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 

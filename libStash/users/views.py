@@ -20,7 +20,7 @@ from decouple import config
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, Personalization, Email, To
 
-CACHE_TTL = getattr(project_settings, "CACHE_TTL")
+CACHE_TTL = config("CACHE_TTL")
 
 
 # Create your views here.
