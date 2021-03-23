@@ -1,5 +1,4 @@
 import json
-
 import stripe
 from books.models import Book, BookInCart, Cart
 from decouple import config

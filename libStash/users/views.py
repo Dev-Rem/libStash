@@ -4,10 +4,10 @@ from rest_framework import status, generics, permissions, viewsets
 from djoser.conf import settings
 from djoser import signals, utils
 from djoser.views import UserViewSet
+from decouple import config
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from libStash import settings as project_settings
 from users.models import Account, Address
 from books.models import Cart
 from api.serializers import (

@@ -1,5 +1,6 @@
 import elasticsearch
 import logging
+from decouple import config
 from blogs.models import Post, PostComment, PostImage
 from api.serializers import PostCommentSerializer, PostImageSerializer, PostSerializer
 from rest_framework import permissions, status, generics

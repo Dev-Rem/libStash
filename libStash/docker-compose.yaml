@@ -4,11 +4,9 @@ services:
   web:
     build: .
     command: >
-      sh -c "python3.8 manage.py makemigrations --settings=libStash.settings.development && python3.8 manage.py migrate --settings=libStash.settings.development && python3.8 manage.py runserver --settings=libStash.settings.development 0.0.0.0:8000"
+      sh -c "python3.8 manage.py makemigrations --settings=libStash.settings.development && python3.8 manage.py migrate --settings=libStash.settings.development && python3.8 manage.py runserver 0.0.0.0:8000 --settings=libStash.settings.development"
     ports: 
       - "8000:8000"
-    env_file:
-      - libStash.env
     volumes: 
       - .:/usr/src/libStash
     environment:

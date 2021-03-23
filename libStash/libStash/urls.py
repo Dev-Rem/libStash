@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from libStash import settings
+from libStash.settings import production as settings
 from django.conf.urls.static import static
 
 urlpatterns = [
