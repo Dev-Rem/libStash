@@ -26,7 +26,7 @@ from books.models import (
     BookInCart,
 )
 
-CACHE_TTL = config("CACHE_TTL")
+CACHE_TTL = int(config("CACHE_TTL"))
 
 # Create your views here.
 

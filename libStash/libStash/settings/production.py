@@ -3,23 +3,14 @@ import dj_database_url
 from decouple import config
 from libStash.settings.base import *
 
-SECRET_KEY = config("PROD_SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DEBUG = 0
 
-ALLOWED_HOSTS = ["libstash"]
+ALLOWED_HOSTS = ["libstash.herokuapp.com"]
 
 
-DATABASES = {
-    "default": {
-        "ENGINE": config("DB_ENGINE"),
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT"),
-    }
-}
+DATABASES = {"default": {}}
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 db_from_env = dj_database_url.config(
@@ -31,8 +22,8 @@ CSRF_COOKIE_SECURE = True
 
 SESSION_COOKIE_SECURE = True
 
-CONN_MAX_AGE = 60 * 60
+SECURE_SSL_REDIRECT = True
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
 ADMINS = [("Aremu", "kingremzy1407@gmail.com")]
-
-MIDDLEWARE += "django.middleware.common.BrokenLinkEmailsMiddleware"

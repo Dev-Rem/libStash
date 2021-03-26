@@ -19,7 +19,7 @@ from libStash.settings import production as settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("default_admin/", admin.site.urls),
     path("api/v1/", include("api.urls")),
     path("payment/", include("payments.urls")),
     path("search/", include("searches.urls")),

@@ -1,19 +1,18 @@
 FROM python:3.8
 
-
-WORKDIR /app
-
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
-ENV DEBUG 0
 
-COPY ./requirements.txt .
-COPY ./entrypoint.sh .
-COPY . .
+WORKDIR /usr/src/libStash
+
+COPY ./libStash/requirements.txt /usr/src/libStash/
+
+COPY . /usr/src/libStash/
 
 RUN pip install -r requirements.txt
 
 RUN adduser --disabled-password --gecos '' user
 USER user
 
-CMD gunicorn libStash.wsgi:application --bind 0.0.0.0:$PORT
+
+

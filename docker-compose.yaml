@@ -2,9 +2,13 @@ version: "3"
 
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     command: >
-      sh -c "python3.8 manage.py makemigrations --settings=libStash.settings.development && python3.8 manage.py migrate --settings=libStash.settings.development && python3.8 manage.py runserver 0.0.0.0:8000 --settings=libStash.settings.development"
+      sh -c "cd libStash && python3.8 manage.py makemigrations --settings=libStash.settings.development && python3.8 manage.py migrate --settings=libStash.settings.development && python3.8 manage.py runserver 0.0.0.0:8000 --settings=libStash.settings.development"
+    env_file: 
+      - ./libStash/.env
     ports: 
       - "8000:8000"
     volumes: 

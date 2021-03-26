@@ -11,3 +11,5 @@ __pycache__
 libStash/*.pyc
 .vscode/settings.json
 libStash.env
+.env
+libStash/ssh.pub
