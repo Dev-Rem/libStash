@@ -1,13 +1,6 @@
 from django.urls import path
-from payments.views import (
-    IndexView,
-    stripe_config,
-    stripe_webhook,
-    checkout,
-    SuccessView,
-    CancelledView,
-)
-
+from payments.views import (CancelledView, IndexView, SuccessView, checkout,
+                            stripe_config, stripe_webhook)
 
 urlpatterns = [
     # url paths

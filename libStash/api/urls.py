@@ -1,21 +1,10 @@
-from django.urls import path, include
+from api.views import (AccountViewSet, AddressViewSet, AuthorViewSet,
+                       BookCommentViewSet, BookImageViewSet, BookInCartViewSet,
+                       BookViewSet, CartViewSet, PostCommentViewSet,
+                       PostImageViewSet, PostViewSet, PublisherViewSet,
+                       WarehouseBookViewSet, WarehouseViewSet)
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from api.views import (
-    AccountViewSet,
-    AddressViewSet,
-    AuthorViewSet,
-    BookInCartViewSet,
-    BookViewSet,
-    CartViewSet,
-    BookCommentViewSet,
-    BookImageViewSet,
-    PostViewSet,
-    PostImageViewSet,
-    PostCommentViewSet,
-    PublisherViewSet,
-    WarehouseBookViewSet,
-    WarehouseViewSet,
-)
 
 app_name = "users"
 
@@ -24,7 +13,7 @@ router.register(r"posts", PostViewSet, basename="post")
 router.register(r"book-comments", BookCommentViewSet, basename="book-comments")
 router.register(r"post-comments", PostCommentViewSet, basename="post-comments")
 router.register(r"book-images", BookImageViewSet, basename="book-images")
-router.register(r"post-images", PostCommentViewSet, basename="post-images")
+router.register(r"post-images", PostImageViewSet, basename="post-images")
 router.register(r"authors", AuthorViewSet, basename="author")
 router.register(r"books", BookViewSet, basename="book")
 router.register(r"publishers", PublisherViewSet, basename="publisher")

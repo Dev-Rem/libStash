@@ -1,43 +1,23 @@
+from blogs.models import Post, PostComment, PostImage
+from books.models import (Author, Book, BookComment, BookImage, BookInCart,
+                          Cart, Publisher, Warehouse, WarehouseBook)
 from decouple import config
-from rest_framework import status, viewsets
-from rest_framework.response import Response
-from rest_framework.permissions import IsAdminUser
-from rest_framework.filters import SearchFilter, OrderingFilter
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from blogs.models import Post, PostComment, PostImage
-from books.models import (
-    Author,
-    Book,
-    Warehouse,
-    WarehouseBook,
-    Publisher,
-    BookInCart,
-    Cart,
-    BookComment,
-    BookImage,
-)
+from rest_framework import status, viewsets
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import IsAdminUser
+from rest_framework.response import Response
 from users.models import Account, Address
-from libStash import settings
-from .serializers import (
-    PostSerializer,
-    PostImageSerializer,
-    PostCommentSerializer,
-    AuthorSerializer,
-    BookSerializer,
-    BookDetailSerializer,
-    BookImageSerializer,
-    BookCommentSerializer,
-    BookInCartSerializer,
-    CartSerializer,
-    PublisherSerializer,
-    WarehouseBookSerializer,
-    WarehouseSerializer,
-    AccountSerializer,
-    AddressSerializer,
-)
 
+from .serializers import (AccountSerializer, AddressSerializer,
+                          AuthorSerializer, BookCommentSerializer,
+                          BookImageSerializer, BookInCartSerializer,
+                          BookSerializer, CartSerializer,
+                          PostCommentSerializer, PostImageSerializer,
+                          PostSerializer, PublisherSerializer,
+                          WarehouseBookSerializer, WarehouseSerializer)
 
 CACHE_TTL = int(config("CACHE_TTL"))
 

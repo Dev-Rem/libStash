@@ -1,15 +1,7 @@
 from django.contrib import admin
-from .models import (
-    Book,
-    Author,
-    Publisher,
-    Warehouse,
-    WarehouseBook,
-    BookComment,
-    BookImage,
-    Cart,
-    BookInCart,
-)
+
+from .models import (Author, Book, BookComment, BookImage, BookInCart, Cart,
+                     Publisher, Warehouse, WarehouseBook)
 
 # Register your models here.
 

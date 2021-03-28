@@ -1,26 +1,14 @@
 """ Required imports"""
 import json
 
-from djoser.serializers import UserSerializer as BaseUserSerializer
-from rest_framework.fields import SerializerMethodField
-from rest_framework import serializers
-from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
-from rest_framework import serializers
-
 from blogs.models import Post, PostComment, PostImage
+from books.models import (Author, Book, BookComment, BookImage, BookInCart,
+                          Cart, Publisher, Warehouse, WarehouseBook)
+from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
+from djoser.serializers import UserSerializer as BaseUserSerializer
+from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
 from users.models import Account, Address
-from books.models import (
-    Author,
-    Book,
-    Warehouse,
-    WarehouseBook,
-    Publisher,
-    BookInCart,
-    Cart,
-    BookComment,
-    BookImage,
-)
-
 
 # Serializer classes
 

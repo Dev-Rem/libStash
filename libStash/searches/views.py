@@ -1,31 +1,18 @@
 """Required imports"""
-from django.shortcuts import render
-from django_elasticsearch_dsl_drf.viewsets import BaseDocumentViewSet
+from django_elasticsearch_dsl_drf.constants import (LOOKUP_FILTER_RANGE,
+                                                    LOOKUP_QUERY_GT,
+                                                    LOOKUP_QUERY_GTE,
+                                                    LOOKUP_QUERY_IN,
+                                                    LOOKUP_QUERY_LT,
+                                                    LOOKUP_QUERY_LTE)
+from django_elasticsearch_dsl_drf.filter_backends import (
+    DefaultOrderingFilterBackend, FilteringFilterBackend, IdsFilterBackend,
+    OrderingFilterBackend, SearchFilterBackend)
 from django_elasticsearch_dsl_drf.pagination import PageNumberPagination
+from django_elasticsearch_dsl_drf.viewsets import BaseDocumentViewSet
 
 from .documents import PostDocument
 from .serializers import PostDocumentSerializer
-
-from django_elasticsearch_dsl_drf.filter_backends import (
-    FilteringFilterBackend,
-    IdsFilterBackend,
-    OrderingFilterBackend,
-    DefaultOrderingFilterBackend,
-    SearchFilterBackend,
-)
-
-from django_elasticsearch_dsl_drf.constants import (
-    LOOKUP_FILTER_TERMS,
-    LOOKUP_FILTER_RANGE,
-    LOOKUP_FILTER_PREFIX,
-    LOOKUP_FILTER_WILDCARD,
-    LOOKUP_QUERY_IN,
-    LOOKUP_QUERY_GT,
-    LOOKUP_QUERY_GTE,
-    LOOKUP_QUERY_LT,
-    LOOKUP_QUERY_LTE,
-    LOOKUP_QUERY_EXCLUDE,
-)
 
 # Create your views here.
 

@@ -1,7 +1,9 @@
-from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from libStash import settings
 import uuid
+
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.db import models
+
+from libStash import settings
 
 # Create your models here.
 

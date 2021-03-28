@@ -1,11 +1,10 @@
-import datetime
-from django.test import TestCase, RequestFactory
 from django.core.exceptions import ObjectDoesNotExist
+from django.test import RequestFactory, TestCase
 from rest_framework.test import force_authenticate
-from .models import Post, PostComment, PostImage
-from .views import PostListView, PostDetailView, PostCommentView
 from users.models import Account
 
+from .models import Post, PostComment, PostImage
+from .views import PostCommentView, PostDetailView, PostListView
 
 # Create your tests here.
 

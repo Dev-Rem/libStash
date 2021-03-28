@@ -1,18 +1,16 @@
 import json
+
 import stripe
 from books.models import Book, BookInCart, Cart
 from decouple import config
 from django.core import serializers
 from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from django.views.generic.base import TemplateView
 from django.template.loader import render_to_string
-from users.models import Account
-from decouple import config
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.base import TemplateView
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, Personalization, Email, To, Content
-
+from sendgrid.helpers.mail import Content, Mail, To
+from users.models import Account
 
 # Create your views here.
 
@@ -54,7 +52,7 @@ def checkout(request):
         try:
             item_amount = get_amount(request)
             account = Account.objects.get(email=request.user)
-            if account.stripe_id == None:
+            if account.stripe_id is None:
                 customer = stripe.Customer.create(
                     email=account.email,
                     name=f"{account.firstname} {account.lastname}",

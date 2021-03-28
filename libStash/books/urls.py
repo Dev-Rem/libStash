@@ -1,18 +1,9 @@
-from django.urls import path
+from books.views import (AuthorDetailView, BookCommentListView, BookDetailView,
+                         BookImageView, BookListView, BooksByAuthorView,
+                         BooksByPublisherView, CartDetailView, ManageCartView,
+                         PublisherDetailView)
 from django.conf.urls import include
-from books.views import (
-    AuthorDetailView,
-    BookCommentListView,
-    BookDetailView,
-    BookImageView,
-    BookListView,
-    BooksByAuthorView,
-    BooksByPublisherView,
-    CartDetailView,
-    ManageCartView,
-    PublisherDetailView,
-)
-
+from django.urls import path
 
 urlpatterns = [
     # url paths

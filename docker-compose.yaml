@@ -2,13 +2,11 @@ version: "3"
 
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
+    build: .
     command: >
       sh -c "cd libStash && python3.8 manage.py makemigrations --settings=libStash.settings.development && python3.8 manage.py migrate --settings=libStash.settings.development && python3.8 manage.py runserver 0.0.0.0:8000 --settings=libStash.settings.development"
     env_file: 
-      - ./libStash/.env
+      - .env
     ports: 
       - "8000:8000"
     volumes: 
@@ -26,7 +24,11 @@ services:
     image: "redis:alpine"
   db:
     image: postgres
+    restart: always
+    env_file: 
+      - .env
     environment:
+      - POSTGRES_HOST=${DB_HOST}
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}

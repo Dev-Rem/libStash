@@ -1,6 +1,8 @@
 import os
+
 import dj_database_url
 from decouple import config
+
 from libStash.settings.base import *
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
@@ -23,6 +25,7 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SECURE_CONTENT_TYPE_NOSNIFF = True
 

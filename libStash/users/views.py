@@ -1,24 +1,19 @@
-from django.contrib.auth.tokens import default_token_generator
-from rest_framework.response import Response
-from rest_framework import status, generics, permissions, viewsets
-from djoser.conf import settings
-from djoser import signals, utils
-from djoser.views import UserViewSet
+from api.serializers import (AddressSerializer, BookInCartSerializer,
+                             CartSerializer, UserSerializer)
+from books.models import Cart
 from decouple import config
+from django.contrib.auth.tokens import default_token_generator
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from users.models import Account, Address
-from books.models import Cart
-from api.serializers import (
-    AddressSerializer,
-    BookInCartSerializer,
-    CartSerializer,
-    UserSerializer,
-)
-from decouple import config
+from djoser import signals, utils
+from djoser.conf import settings
+from djoser.views import UserViewSet
+from rest_framework import generics, permissions, status, viewsets
+from rest_framework.response import Response
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, Personalization, Email, To
+from sendgrid.helpers.mail import Email, Mail, Personalization, To
+from users.models import Account, Address
 
 CACHE_TTL = int(config("CACHE_TTL"))
 

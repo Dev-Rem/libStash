@@ -1,18 +1,16 @@
-import elasticsearch
-import logging
-from decouple import config
+from api.serializers import (PostCommentSerializer, PostImageSerializer,
+                             PostSerializer)
 from blogs.models import Post, PostComment, PostImage
-from api.serializers import PostCommentSerializer, PostImageSerializer, PostSerializer
-from rest_framework import permissions, status, generics
-from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FormParser
+from decouple import config
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
-from rest_framework.response import Response
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from libStash import settings
-from django.shortcuts import redirect
+from rest_framework import generics, permissions, status
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.response import Response
 
 # Create your views here.
 
@@ -65,7 +63,7 @@ class PostCommentView(generics.ListCreateAPIView):
     def get_object(self, unique_id):
         try:
             return Post.objects.get(unique_id=unique_id)
-        except:
+        except ObjectDoesNotExist:
             return Http404
 
     @method_decorator(vary_on_cookie)
@@ -101,7 +99,7 @@ class PostImageView(generics.RetrieveAPIView):
     def get_object(self, unique_id):
         try:
             return Post.objects.get(unique_id=unique_id)
-        except:
+        except ObjectDoesNotExist:
             raise Http404
 
     @method_decorator(vary_on_cookie)
@@ -114,5 +112,5 @@ class PostImageView(generics.RetrieveAPIView):
                 image, many=True, context={"request": request}
             )
             return Response(serializer.data)
-        except:
+        except ObjectDoesNotExist:
             raise Http404

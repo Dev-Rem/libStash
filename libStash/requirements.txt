@@ -31,17 +31,13 @@ djoser==2.1.0
 elasticsearch==7.10.1
 elasticsearch-dsl==7.3.0
 filelock==3.0.12
+flake8==3.8.3
 gunicorn==20.0.4
 idna==2.10
-ipykernel==5.4.2
-ipython==7.19.0
-ipython-genutils==0.2.0
 isort==5.5.2
 itypes==1.2.0
 jedi==0.17.2
 Jinja2==2.11.3
-jupyter-client==6.1.7
-jupyter-core==4.7.0
 lazy-object-proxy==1.4.3
 MarkupSafe==1.1.1
 mccabe==0.6.1
@@ -51,7 +47,7 @@ parso==0.7.1
 pathspec==0.8.0
 pexpect==4.8.0
 pickleshare==0.7.5
-Pillow==7.1.1
+Pillow
 prompt-toolkit==3.0.8
 psycopg2-binary==2.8.6
 ptyprocess==0.6.0
@@ -63,11 +59,9 @@ pylint-django==2.3.0
 pylint-plugin-utils==0.6
 python-dateutil==2.8.1
 python-decouple==3.4
-python-dotenv==0.15.0
 python-http-client==3.3.1
 python3-openid==3.2.0
 pytz==2019.3
-pyzmq==20.0.0
 redis==3.5.3
 regex==2020.7.14
 requests==2.25.1
@@ -76,8 +70,6 @@ semantic-version==2.8.5
 sendgrid==6.5.0
 setuptools-rust==0.11.6
 six==1.14.0
-social-auth-app-django==4.0.0
-social-auth-core==4.0.3
 sqlparse==0.3.1
 starkbank-ecdsa==1.1.0
 stripe==2.55.2
@@ -85,7 +77,6 @@ toml==0.10.1
 tornado==6.1
 traitlets==5.0.5
 typed-ast==1.4.1
-typing-extensions==3.7.4.3
 uritemplate==3.0.1
 urllib3==1.26.3
 virtualenv==20.0.9

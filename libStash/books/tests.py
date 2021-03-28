@@ -1,20 +1,11 @@
 """Required imports"""
-from django.test import TestCase, RequestFactory
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import RequestFactory, TestCase
 from rest_framework.test import force_authenticate
 from users.models import Account
-from .models import (
-    Publisher,
-    Author,
-    Book,
-    Warehouse,
-    WarehouseBook,
-    BookImage,
-    BookComment,
-    Cart,
-    BookInCart,
-)
+
+from .models import (Author, Book, BookComment, BookImage, BookInCart, Cart,
+                     Publisher, Warehouse, WarehouseBook)
 
 # Create your tests here.
 

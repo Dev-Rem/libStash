@@ -1,7 +1,8 @@
 import uuid
+
 from django.db import models
-from users.models import Account
 from django.utils.translation import ugettext_lazy as _
+from users.models import Account
 
 # Create your models here.
 

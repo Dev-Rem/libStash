@@ -1,8 +1,8 @@
 """Required imports"""
+from blogs.models import Post, PostComment, PostImage
 from django.conf import settings
 from django_elasticsearch_dsl import Document, Index, fields
 from elasticsearch_dsl import analyzer
-from blogs.models import Post, PostImage, PostComment
 
 """Get index name for setting"""
 INDEX = Index(settings.ELASTICSEARCH_INDEX_NAMES[__name__])

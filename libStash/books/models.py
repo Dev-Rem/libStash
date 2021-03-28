@@ -1,6 +1,8 @@
+import datetime
+import uuid
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-import datetime, uuid
 from phone_field import PhoneField
 from users.models import Account
 

@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import os
 from decouple import config
+
 from libStash.settings.base import *
 
 # Quick-start development settings - unsuitable for production
@@ -31,11 +31,11 @@ ALLOWED_HOSTS = []
 
 DATABASES = {
     "default": {
-        "ENGINE": config("DB_ENGINE"),
+        "ENGINE": 'django.db.backends.postgresql_psycopg2',
         "NAME": config("DB_NAME"),
         "USER": config("DB_USER"),
         "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
+        "HOST": 'db',
         "PORT": config("DB_PORT"),
     }
 }
