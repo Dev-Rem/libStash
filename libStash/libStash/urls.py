@@ -20,14 +20,14 @@ from django.urls import include, path
 from libStash.settings import production as settings
 
 urlpatterns = [
-    path("default_admin/", admin.site.urls),
+    path("libstash_admin/", admin.site.urls),
     path("api/v1/", include("api.urls")),
     path("payment/", include("payments.urls")),
     path("search/", include("searches.urls")),
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.authtoken")),
     path("api-auth/", include("rest_framework.urls")),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
