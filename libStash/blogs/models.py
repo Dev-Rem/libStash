@@ -25,6 +25,9 @@ class Post(models.Model):
     date = models.DateTimeField(_("date"), auto_now_add=True)
     last_update = models.DateTimeField(_("last update"), auto_now=True)
 
+    class Meta:
+        db_table = "post"
+
 
 class PostImage(models.Model):
     """A model for the Post images"""
@@ -38,6 +41,9 @@ class PostImage(models.Model):
     )
     date = models.DateTimeField(_("date"), auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "post_image"
 
     @property
     def post_indexing(self):
@@ -72,7 +78,7 @@ class PostComment(models.Model):
     last_update = models.DateTimeField(_("last update"), auto_now=True)
 
     class Meta:
-        ordering = ["-date"]
+        db_table = "post_comment"
 
     def __str__(self):
         return self.comment

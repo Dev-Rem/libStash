@@ -19,6 +19,9 @@ class Publisher(models.Model):
     )
     last_update = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        db_table = "publisher"
+
     def __str__(self):
         return f"{ self.name }"
 
@@ -32,6 +35,9 @@ class Author(models.Model):
         default=uuid.uuid4, editable=False, db_index=True, unique=True
     )
     last_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "author"
 
     def __str__(self):
         return f"{ self.name }"
@@ -72,6 +78,9 @@ class Book(models.Model):
     )
     last_update = models.DateTimeField("Last Update", auto_now=True)
 
+    class Meta:
+        db_table = "book"
+
     def __str__(self):
         return self.title
 
@@ -83,6 +92,9 @@ class Warehouse(models.Model):
         default=uuid.uuid4, editable=False, db_index=True, unique=True
     )
     last_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "warehouse"
 
     def __str__(self):
         return f"{self.address}"
@@ -97,6 +109,9 @@ class WarehouseBook(models.Model):
     )
     last_update = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        db_table = "warehouse_book"
+
     def __str__(self):
         return f"{self.book}, {self.count}"
 
@@ -108,6 +123,9 @@ class BookImage(models.Model):
         default=uuid.uuid4, editable=False, db_index=True, unique=True
     )
     last_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "book_image"
 
 
 class BookComment(models.Model):
@@ -121,7 +139,7 @@ class BookComment(models.Model):
     last_update = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["-date"]
+        db_table = "book_comment"
 
     def __str__(self):
         return self.comment
@@ -134,6 +152,9 @@ class Cart(models.Model):
         default=uuid.uuid4, editable=False, db_index=True, unique=True
     )
     last_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "cart"
 
     def __str__(self):
         return "Cart for " + str(self.account)
@@ -152,3 +173,6 @@ class BookInCart(models.Model):
     )
     amount = models.IntegerField(verbose_name="Book unit amount", default=0)
     last_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "book_in_cart"

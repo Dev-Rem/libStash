@@ -64,6 +64,9 @@ class Account(AbstractBaseUser):
     REQUIRED_FIELDS = ["firstname", "lastname"]
     objects = AccountManager()
 
+    class Meta:
+        db_table = "account"
+
     def __str__(self):
         return self.email
 
@@ -101,6 +104,9 @@ class Address(models.Model):
         default=uuid.uuid4, editable=False, db_index=True, unique=True
     )
     last_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "address"
 
     def __str__(self):
         return "Address for " + str(self.account)
