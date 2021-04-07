@@ -1,6 +1,15 @@
 from blogs.models import Post, PostComment, PostImage
-from books.models import (Author, Book, BookComment, BookImage, BookInCart,
-                          Cart, Publisher, Warehouse, WarehouseBook)
+from books.models import (
+    Author,
+    Book,
+    BookComment,
+    BookImage,
+    BookInCart,
+    Cart,
+    Publisher,
+    Warehouse,
+    WarehouseBook,
+)
 from decouple import config
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -11,13 +20,22 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from users.models import Account, Address
 
-from .serializers import (AccountSerializer, AddressSerializer,
-                          AuthorSerializer, BookCommentSerializer,
-                          BookImageSerializer, BookInCartSerializer,
-                          BookSerializer, CartSerializer,
-                          PostCommentSerializer, PostImageSerializer,
-                          PostSerializer, PublisherSerializer,
-                          WarehouseBookSerializer, WarehouseSerializer)
+from .serializers import (
+    AccountSerializer,
+    AddressSerializer,
+    AuthorSerializer,
+    BookCommentSerializer,
+    BookImageSerializer,
+    BookInCartSerializer,
+    BookSerializer,
+    CartSerializer,
+    PostCommentSerializer,
+    PostImageSerializer,
+    PostSerializer,
+    PublisherSerializer,
+    WarehouseBookSerializer,
+    WarehouseSerializer,
+)
 
 CACHE_TTL = int(config("CACHE_TTL"))
 
@@ -26,6 +44,7 @@ CACHE_TTL = int(config("CACHE_TTL"))
 
 class PostViewSet(viewsets.ModelViewSet):
     """
+    Admin Post model viewset
     GET: Returns all Post instances
     POST: Create a new Post Instance
     PUT: Update an Post Instance

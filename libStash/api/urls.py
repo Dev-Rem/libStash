@@ -28,5 +28,5 @@ urlpatterns = [
     path("blogs/", include("blogs.urls")),
     path("books/", include("books.urls")),
     path("account/", include("users.urls")),
-    path("admin/", include(router.urls)),
+    path("dashboard/", include(router.urls)),
 ]

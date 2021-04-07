@@ -1,24 +1,29 @@
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+
 from django_elasticsearch_dsl.registries import registry
 
 
-@receiver(post_save)
-def update_document(sender, **kwargs):
-    """
-    Make update to document when changes are made to the Post model.
-    """
+@receiver([post_save])
+def update_document(sender, instance, **kwargs):
+    model_name = sender._meta.model_name
+    print(model_name)
 
-    app_label = sender._meta.appo_label
+    if model_name == "postimage":
+        registry.update(instance)
+
+    if model_name == "postcomment":
+        registry.update(instance)
+
+
+@receiver([post_delete])
+def delete_document(sender, **kwargs):
     model_name = sender._meta.model_name
     instance = kwargs["instance"]
+    print(model_name)
 
-    """
-    Update all Post documents if users.Account is being updated
-    users.Account instance is the admin use that created the blog post.
-    """
-    if app_label == "blogs":
-        if model_name == "account":
-            instances = instance.post.all()
-            for _instance in instances:
-                registry.update(_instance)
+    if model_name == "postimage":
+        registry.delete(instance)
+
+    if model_name == "postcomment":
+        registry.delete(instance)

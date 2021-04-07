@@ -74,7 +74,7 @@ class PublisherTestCase(TestCase):
         self.assertRaises(ObjectDoesNotExist)
 
 
-class AuuthorTestCase(TestCase):
+class AuthorTestCase(TestCase):
     """
     Test casees for the Author model
     """
@@ -242,6 +242,17 @@ class BookTestCase(TestCase):
 
         self.assertRaises(ObjectDoesNotExist)
 
+class BookCommentTestCase(TestCase):
+    pass
+
+class BookImageTestCase(TestCase):
+    pass
+
+class BookInCartTestCase(TestCase):
+    pass
+
+class CartTestCase(TestCase):
+    pass
 
 class WarehouseTestCase(TestCase):
     """

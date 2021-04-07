@@ -1,5 +1,9 @@
-from api.serializers import (AddressSerializer, BookInCartSerializer,
-                             CartSerializer, UserSerializer)
+from api.serializers import (
+    AddressSerializer,
+    BookInCartSerializer,
+    CartSerializer,
+    UserSerializer,
+)
 from books.models import Cart
 from decouple import config
 from django.contrib.auth.tokens import default_token_generator
@@ -129,7 +133,7 @@ class UserViewSet(UserViewSet):
             sg = SendGridAPIClient(config("SENDGRID_API_KEY"))
             sg.send(message)
         except Exception as e:
-            print(e)
+            return e
 
         user = serializer.save()
         cart = Cart.objects.create(account=user, is_active=True)
@@ -149,4 +153,4 @@ class UserViewSet(UserViewSet):
             sg = SendGridAPIClient(config("SENDGRID_API_KEY"))
             sg.send(message)
         except Exception as e:
-            print(e)
+            return e

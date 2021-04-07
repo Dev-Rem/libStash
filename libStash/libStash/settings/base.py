@@ -5,6 +5,7 @@ from decouple import config
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 INSTALLED_APPS = [
+    # django default apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.sites",
@@ -12,12 +13,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # local apps
     "books.apps.BooksConfig",
     "api.apps.ApiConfig",
     "payments.apps.PaymentsConfig",
     "users.apps.UsersConfig",
     "blogs.apps.BlogsConfig",
     "searches.apps.SearchesConfig",
+    # Third party apps
     "rest_framework",
     "rest_framework.authtoken",
     "phone_field",
@@ -152,7 +155,9 @@ ELASTICSEARCH_DSL = {
 }
 
 ELASTICSEARCH_INDEX_NAMES = {
-    "searches.documents": "post",
+    "searches.documents.post": "post",
+    "searches.documents.postimage": "postimage",
+    "searches.documents.postcomment": "postcomment",
 }
 
 APPEND_SLASH = True
