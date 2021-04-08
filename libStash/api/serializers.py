@@ -2,59 +2,23 @@
 import json
 
 from blogs.models import Post, PostComment, PostImage
-from books.models import (Author, Book, BookComment, BookImage, BookInCart,
-                          Cart, Publisher, Warehouse, WarehouseBook)
-from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
+from books.models import (
+    Author,
+    Book,
+    BookComment,
+    BookImage,
+    BookInCart,
+    Cart,
+    Publisher,
+    Warehouse,
+    WarehouseBook,
+)
 from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 from users.models import Account, Address
 
 # Serializer classes
-
-
-class PostSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the Post model.
-    """
-
-    account = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
-
-    class Meta:
-        model = Post
-        fields = [
-            "unique_id",
-            "title",
-            "content",
-            "account",
-            "likes",
-            "date",
-        ]
-
-
-class PostImageSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the PostImage model.
-    """
-
-    post = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
-
-    class Meta:
-        model = PostImage
-        fields = ["unique_id", "post", "image"]
-
-
-class PostCommentSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the PostComment model.
-    """
-
-    account = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
-    post = serializers.SlugRelatedField(slug_field="unique_id", read_only=True)
-
-    class Meta:
-        model = PostComment
-        fields = ["unique_id", "post", "account", "comment", "date"]
 
 
 class PublisherSerializer(serializers.ModelSerializer):

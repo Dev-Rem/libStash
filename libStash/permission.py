@@ -1,11 +1,14 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
-from users.models import Account
+
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
 
 
 class AbstractBasePermission(BasePermission):
     def has_permission(self, request, view) -> bool:
-        return request.user and request.user.is_authenticated
+        return request.user and request.user.is_authenticate
 
 
 class IsOwner(AbstractBasePermission):
@@ -14,7 +17,7 @@ class IsOwner(AbstractBasePermission):
     """
 
     def has_object_permission(self, request, view, obj) -> bool:
-        return request.user == obj.user
+        return request.user == obj.account
 
 
 class IsOwnProfile(AbstractBasePermission):
@@ -23,4 +26,4 @@ class IsOwnProfile(AbstractBasePermission):
     """
 
     def has_object_permission(self, request, view, obj) -> bool:
-        return request.user.id == obj.id
+        return request.user.unique_id == obj.unique_id
