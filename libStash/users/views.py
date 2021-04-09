@@ -91,7 +91,7 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
             except Exception as e:
                 print(e)
             serializer.save()
-            return Response({"status": "Address Updated"})
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
@@ -110,7 +110,7 @@ class AddressUpdateView(generics.RetrieveUpdateDestroyAPIView):
             sg.send(message)
         except Exception as e:
             print(e)
-        return Response({"status": "Address Deleted"})
+        return Response({"status": "Success"})
 
 
 class UserViewSet(UserViewSet):

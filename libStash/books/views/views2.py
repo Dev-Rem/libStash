@@ -1,21 +1,6 @@
-from books.serializers import (
-    AuthorSerializer,
-    BookCommentSerializer,
-    BookImageSerializer,
-    BookInCartSerializer,
-    BookSerializer,
-    CartSerializer,
-    PublisherSerializer,
-)
-from books.models import (
-    Author,
-    Book,
-    BookComment,
-    BookImage,
-    BookInCart,
-    Cart,
-    Publisher,
-)
+from books.serializers import AuthorSerializer, BookSerializer, PublisherSerializer
+from books.models import Author, Book, Publisher
+
 from permission import IsOwner
 from paginations import CustomPaginator
 
@@ -97,14 +82,21 @@ class AuthorListView(ListAPIView):
 class AuthorDetailView(RetrieveAPIView):
     """GET: Returns an author instance."""
 
-    queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     lookup_field = "unique_id"
+
+    def get_queryset(self):
+        return Author.objects.get(unique_id=self.kwargs["unique_id"])
 
     @method_decorator(vary_on_cookie)
     @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+        try:
+            author = self.get_queryset()
+            serializer = AuthorSerializer(author)
+            return Response(serializer.data)
+        except Exception:
+            return Response(status=HTTP_404_NOT_FOUND)
 
 
 class BooksByAuthorView(ListAPIView):
@@ -127,7 +119,7 @@ class BooksByAuthorView(ListAPIView):
             serializer = BookSerializer(books, many=True)
             return Response(serializer.data)
         except:
-            return Response(serializer.errors, status=HTTP_404_NOT_FOUND)
+            return Response(status=HTTP_404_NOT_FOUND)
 
 
 class PublisherListView(ListAPIView):
@@ -178,5 +170,3 @@ class BooksByPublisherView(ListAPIView):
             return Response(serializer.data)
         except:
             return Response(status=HTTP_404_NOT_FOUND)
-
-

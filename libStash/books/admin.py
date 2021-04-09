@@ -1,7 +1,16 @@
 from django.contrib import admin
 
-from .models import (Author, Book, BookComment, BookImage, BookInCart, Cart,
-                     Publisher, Warehouse, WarehouseBook)
+from .models import (
+    Author,
+    Book,
+    BookComment,
+    BookImage,
+    BookInCart,
+    Cart,
+    Publisher,
+    Warehouse,
+    WarehouseBook,
+)
 
 # Register your models here.
 
@@ -54,4 +63,4 @@ class CartAdmin(admin.ModelAdmin):
 
 @admin.register(BookInCart)
 class BookInCartAdmin(admin.ModelAdmin):
-    list_display = ("unique_id", "cart", "book", "quantity", "amount")
+    list_display = ("cart", "book", "quantity", "amount")

@@ -129,7 +129,13 @@ class BookImage(models.Model):
 
 
 class BookComment(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+        related_name="bookComment",
+        blank=True,
+        null=True,
+    )
     account = models.ForeignKey(Account, null=True, on_delete=models.CASCADE)
     comment = models.TextField(verbose_name="Comment")
     unique_id = models.UUIDField(

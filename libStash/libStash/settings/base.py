@@ -129,6 +129,9 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "permission.ReadOnly",
+    ],
 }
 
 SIMPLE_JWT = {

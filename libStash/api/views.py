@@ -60,16 +60,6 @@ class PostViewSet(viewsets.ModelViewSet):
     ordering_fields = "__all__"
     lookup_field = "unique_id"
 
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
     def create(self, request, *args, **kwargs):
         serializer = PostSerializer(data=request.data)
         if serializer.is_valid():
@@ -96,24 +86,6 @@ class PostImageViewSet(viewsets.ModelViewSet):
     ordering_fields = "__all__"
     lookup_field = "unique_id"
 
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        serializer = PostImageSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.validated_data["account"] = request.user
-            serializer.save()
-            return Response({"status": "Post image created"})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class PostCommentViewSet(viewsets.ModelViewSet):
     """
@@ -132,22 +104,12 @@ class PostCommentViewSet(viewsets.ModelViewSet):
     ordering_fields = "__all__"
     lookup_field = "unique_id"
 
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
     def create(self, request, *args, **kwargs):
         serializer = PostCommentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.validated_data["account"] = request.user
             serializer.save()
-            return Response({"status": "Post comment created"})
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -168,24 +130,6 @@ class PublisherViewSet(viewsets.ModelViewSet):
     ordering_fields = "__all__"
     lookup_field = "unique_id"
 
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        serializer = PublisherSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.validated_data["account"] = request.user
-            serializer.save()
-            return Response({"status": "Publisher created"})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class AuthorViewSet(viewsets.ModelViewSet):
     """
@@ -203,24 +147,6 @@ class AuthorViewSet(viewsets.ModelViewSet):
     search_fields = "__all__"
     ordering_fields = "__all__"
     lookup_field = "unique_id"
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        serializer = AuthorSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.validated_data["account"] = request.user
-            serializer.save()
-            return Response({"status": "Author created"})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BookViewSet(viewsets.ModelViewSet):
@@ -240,24 +166,6 @@ class BookViewSet(viewsets.ModelViewSet):
     ordering_fields = "__all__"
     lookup_field = "unique_id"
 
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        serializer = BookSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.validated_data["account"] = request.user
-            serializer.save()
-            return Response({"status": "Book created"})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class BookImageViewSet(viewsets.ModelViewSet):
     """
@@ -275,24 +183,6 @@ class BookImageViewSet(viewsets.ModelViewSet):
     search_fields = "__all__"
     ordering_fields = "__all__"
     lookup_field = "unique_id"
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        serializer = BookImageSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.validated_data["account"] = request.user
-            serializer.save()
-            return Response({"status": "Book image created"})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BookCommentViewSet(viewsets.ModelViewSet):
@@ -312,24 +202,6 @@ class BookCommentViewSet(viewsets.ModelViewSet):
     ordering_fields = "__all__"
     lookup_field = "unique_id"
 
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        serializer = BookCommentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.validated_data["account"] = request.user
-            serializer.save()
-            return Response({"status": "Book comment created"})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class WarehouseBookViewSet(viewsets.ModelViewSet):
     """
@@ -347,24 +219,6 @@ class WarehouseBookViewSet(viewsets.ModelViewSet):
     search_fields = "__all__"
     ordering_fields = "__all__"
     lookup_field = "unique_id"
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        serializer = WarehouseBookSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.validated_data["account"] = request.user
-            serializer.save()
-            return Response({"status": "Post created"})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class WarehouseViewSet(viewsets.ModelViewSet):
@@ -384,16 +238,6 @@ class WarehouseViewSet(viewsets.ModelViewSet):
     ordering_fields = "__all__"
     lookup_field = "unique_id"
 
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
 
 class AccountViewSet(viewsets.ModelViewSet):
     """
@@ -411,16 +255,6 @@ class AccountViewSet(viewsets.ModelViewSet):
     search_fields = "__all__"
     ordering_fields = "__all__"
     lookup_field = "unique_id"
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
 
 
 class AddressViewSet(viewsets.ModelViewSet):
@@ -440,16 +274,6 @@ class AddressViewSet(viewsets.ModelViewSet):
     ordering_fields = "__all__"
     lookup_field = "unique_id"
 
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
 
 class BookInCartViewSet(viewsets.ModelViewSet):
     """
@@ -468,16 +292,6 @@ class BookInCartViewSet(viewsets.ModelViewSet):
     ordering_fields = "__all__"
     lookup_field = "unique_id"
 
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
 
 class CartViewSet(viewsets.ModelViewSet):
     """
@@ -495,13 +309,3 @@ class CartViewSet(viewsets.ModelViewSet):
     search_fields = "__all__"
     ordering_fields = "__all__"
     lookup_field = "unique_id"
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @method_decorator(vary_on_cookie)
-    @method_decorator(cache_page(60 * 60))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)

@@ -8,7 +8,7 @@ class ReadOnly(BasePermission):
 
 class AbstractBasePermission(BasePermission):
     def has_permission(self, request, view) -> bool:
-        return request.user and request.user.is_authenticate
+        return request.user and request.user.is_authenticated
 
 
 class IsOwner(AbstractBasePermission):

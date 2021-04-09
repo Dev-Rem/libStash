@@ -10,8 +10,8 @@ from blogs.views import (
 
 urlpatterns = [
     # url paths
-    path("posts/", PostListView.as_view(), name="post-list"),
-    path("post/<uuid:unique_id>/", PostDetailView.as_view(), name="post-detail"),
+    path("", PostListView.as_view(), name="post-list"),
+    path("<uuid:unique_id>/", PostDetailView.as_view(), name="post-detail"),
     path("post/<uuid:unique_id>/image/", PostImageView.as_view(), name="post-image"),
     path(
         "post/<uuid:unique_id>/comments/",
