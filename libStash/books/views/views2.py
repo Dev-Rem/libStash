@@ -95,8 +95,8 @@ class AuthorDetailView(RetrieveAPIView):
             author = self.get_queryset()
             serializer = AuthorSerializer(author)
             return Response(serializer.data)
-        except Exception:
-            return Response(status=HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response(e, status=HTTP_404_NOT_FOUND)
 
 
 class BooksByAuthorView(ListAPIView):

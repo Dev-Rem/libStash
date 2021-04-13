@@ -17,16 +17,24 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from libStash.settings import production as settings
+from libStash.settings import base as settings
 
 urlpatterns = [
-    path("libstash_admin/", admin.site.urls),
-    path("api/v1/", include("api.urls")),
-    path("payment/", include("payments.urls")),
-    path("search/", include("searches.urls")),
+    # DJANGO DEFAULT ADMIN
+    path(settings.ADMIN_URL, admin.site.urls),
+    # USER ACCOUNT MANAGEMENT
     path("auth/", include("djoser.urls")),
-    path("auth/", include("djoser.urls.authtoken")),
-    path("api-auth/", include("rest_framework.urls")),
+    path("auth/", include("djoser.urls.jwt")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# API URLS
+urlpatterns += [
+    path('api/v1/dashboard/', include('dashboard.urls')),
+    path("api/v1/blogs", include("blogs.urls")),
+    path("api/v1/books", include("books.urls")),
+    path("api/v1/payments/", include("payments.urls")),
+    path("api/v1/searches/", include("searches.urls")),
+    path("api/v1/users/", include("users.urls")),
+]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

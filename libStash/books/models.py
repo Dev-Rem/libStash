@@ -85,36 +85,6 @@ class Book(models.Model):
         return self.title
 
 
-class Warehouse(models.Model):
-    address = models.TextField(verbose_name="Address", max_length=200)
-    phone = PhoneField(verbose_name="Phone number", blank=True)
-    unique_id = models.UUIDField(
-        default=uuid.uuid4, editable=False, db_index=True, unique=True
-    )
-    last_update = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = "warehouse"
-
-    def __str__(self):
-        return f"{self.address}"
-
-
-class WarehouseBook(models.Model):
-    warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    count = models.IntegerField(verbose_name="Book count", default=0)
-    unique_id = models.UUIDField(
-        default=uuid.uuid4, editable=False, db_index=True, unique=True
-    )
-    last_update = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = "warehouse_book"
-
-    def __str__(self):
-        return f"{self.book}, {self.count}"
-
 
 class BookImage(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
@@ -153,7 +123,7 @@ class BookComment(models.Model):
 
 class Cart(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    is_active = models.BooleanField(verbose_name="State", default=False)
+    is_active = models.BooleanField(verbose_name="State", default=True)
     unique_id = models.UUIDField(
         default=uuid.uuid4, editable=False, db_index=True, unique=True
     )

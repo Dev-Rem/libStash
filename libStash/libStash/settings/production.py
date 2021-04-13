@@ -8,7 +8,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DEBUG = 0
 
-ALLOWED_HOSTS = ["libstash.herokuapp.com", "*", ".herokuapp.com"]
+ALLOWED_HOSTS = ["libstash.herokuapp.com"]
 
 
 DATABASES = {"default": {}}
@@ -78,4 +78,4 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-ADMINS = [("Aremu", "kingremzy1407@gmail.com")]
+ADMINS = [("Aremu Oluwaseyi Festus", "kingremzy1407@gmail.com")]

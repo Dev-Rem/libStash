@@ -6,8 +6,6 @@ from books.models import (
     BookInCart,
     Cart,
     Publisher,
-    Warehouse,
-    WarehouseBook,
 )
 
 from rest_framework.serializers import ModelSerializer, SlugRelatedField

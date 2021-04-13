@@ -15,7 +15,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # local apps
     "books.apps.BooksConfig",
-    "api.apps.ApiConfig",
+    "dashboard.apps.DashboardConfig",
     "payments.apps.PaymentsConfig",
     "users.apps.UsersConfig",
     "blogs.apps.BlogsConfig",
@@ -125,8 +125,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
@@ -142,8 +141,8 @@ DJOSER = {
     "USER_CREATE_PASSWORD_RETYPE": True,
     "SET_PASSWORD_RETYPE": True,
     "SERIALIZERS": {
-        "user": "api.serializers.UserSerializer",
-        "current_user": "api.serializers.UserSerializer",
+        "user": "users.serializers.UserSerializer",
+        "current_user": "users.serializers.UserSerializer",
     },
 }
 
@@ -164,3 +163,11 @@ ELASTICSEARCH_INDEX_NAMES = {
 }
 
 APPEND_SLASH = True
+
+SENDGRID_API_KEY = config("SENDGRID_API_KEY")
+
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
+
+ADMIN_URL = config("ADMIN_URL")
+
+CACHE_TTL = int(config("CACHE_TTL"))

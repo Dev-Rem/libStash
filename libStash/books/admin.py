@@ -8,8 +8,6 @@ from .models import (
     BookInCart,
     Cart,
     Publisher,
-    Warehouse,
-    WarehouseBook,
 )
 
 # Register your models here.
@@ -27,20 +25,11 @@ class AuthorAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
 
-@admin.register(Warehouse)
-class WarehouseAdmin(admin.ModelAdmin):
-    list_display = ("address", "phone")
-
-
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):
     list_display = ("name", "address", "email", "publisher_url")
     search_fields = ("name",)
 
-
-@admin.register(WarehouseBook)
-class WarehouseBookAdmin(admin.ModelAdmin):
-    list_display = ("warehouse", "book", "count")
 
 
 @admin.register(BookComment)

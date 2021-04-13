@@ -34,9 +34,9 @@ class CancelledView(TemplateView):
 def get_amount(request):
     if request.method == "GET":
         total = 0
-        account = Account.objects.get(email=request.user)
-        cart = Cart.objects.get(account=account)
+        cart = Cart.objects.get(account=request.user)
         cart_items = BookInCart.objects.filter(cart=cart)
+
         serialized_data = serializers.serialize("json", cart_items)
         objects = json.loads(serialized_data)
         for item in objects:
@@ -50,7 +50,7 @@ def checkout(request):
     if request.method == "GET":
         domain_url = config("DOMAIN_URL")
         try:
-            item_amount = get_amount(request)
+            total = get_amount(request)
             account = Account.objects.get(email=request.user)
             if account.stripe_id is None:
                 customer = stripe.Customer.create(
@@ -73,8 +73,8 @@ def checkout(request):
                 mode="payment",
                 line_items=[
                     {
-                        "name": "LibStash test payment",
-                        "amount": int(item_amount),
+                        "name": "{} {}".format(account.firstname, account.lastanme),
+                        "amount": int(total),
                         "quantity": 1,
                         "currency": "usd",
                     }
@@ -121,8 +121,8 @@ def stripe_webhook(request):
         mail_content = render_to_string("new_order.html", {"cart_items": cart_items})
         message = Mail(
             from_email=config("DEFAULT_FROM_EMAIL"),
-            to_emails=To("kingremzy1407@gmail.com"),
-            subject=f"Order for {account.email}",
+            to_emails=To(request.user),
+            subject="Checkout Succesful",
             html_content=Content("text/html", mail_content),
         )
         try:
@@ -130,5 +130,5 @@ def stripe_webhook(request):
             sg.send(message)
             cart_items.delete()
         except Exception as e:
-            print(e)
+            print(e.message)
     return HttpResponse(status=200)
