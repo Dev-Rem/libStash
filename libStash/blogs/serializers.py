@@ -4,19 +4,11 @@ from rest_framework.serializers import ModelSerializer, SlugRelatedField
 
 
 class PostSerializer(ModelSerializer):
-    """
-    Serializer for the Post model.
-    """
+    """Serializer for the Post model."""
 
     class Meta:
         model = Post
-        fields = [
-            "unique_id",
-            "title",
-            "content",
-            "likes",
-            "date",
-        ]
+        fields = ["unique_id", "title", "content", "likes", "date"]
 
 
 class PostImageSerializer(ModelSerializer):

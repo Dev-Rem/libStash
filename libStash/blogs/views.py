@@ -2,6 +2,7 @@ from blogs.serializers import PostCommentSerializer, PostImageSerializer, PostSe
 from blogs.models import Post, PostComment, PostImage
 
 from permission import ReadOnly, IsOwner
+from paginations import CustomPaginator
 
 from decouple import config
 from django.core.exceptions import ObjectDoesNotExist
@@ -30,6 +31,7 @@ class PostListView(ListAPIView):
 
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    pagination_class = CustomPaginator
     permission_classes = [ReadOnly]
     lookup_field = "unique_id"
 

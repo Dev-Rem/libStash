@@ -3,7 +3,6 @@ from users.views import AddressCreateView, AddressUpdateView, UserViewSet
 
 urlpatterns = [
     path("register/", UserViewSet.as_view({"post": "create"}), name="account-register"),
-    path("me/", UserViewSet.as_view({"get": "retrieve"}), name="account-info"),
     path(
         "edit/<uuid:unique_id>/",
         UserViewSet.as_view({"patch": "partial_update"}),

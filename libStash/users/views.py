@@ -98,4 +98,3 @@ class UserViewSet(UserViewSet):
     queryset = Account.objects.all()
     permission_classes = settings.PERMISSIONS.user
     token_generator = default_token_generator
-    lookup_field = "unique_id"
