@@ -51,13 +51,6 @@ class PostImage(models.Model):
         if self.post is not None:
             return self.post.id
 
-    @property
-    def image_indexing(self):
-        """Post indexing. Used in Elasticsearch indexing."""
-        if self.image is not None:
-            return [{"id": self.id, "image": self.image.url}]
-
-
 class PostComment(models.Model):
     """A model for the Post comments"""
 

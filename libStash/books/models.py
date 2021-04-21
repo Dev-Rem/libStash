@@ -60,8 +60,12 @@ class Book(models.Model):
         PAPER_BACK = "PPR-BCK", _("Paperback")
 
     title = models.CharField(verbose_name="Title", max_length=150)
-    author = models.ManyToManyField(Author, related_name="book_author")
-    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, default=None)
+    author = models.ManyToManyField(
+        Author, related_name="bookAuthor", verbose_name=_("author")
+    )
+    publisher = models.ForeignKey(
+        Publisher, on_delete=models.CASCADE, related_name="bookPublisher",default=None, verbose_name=_("publisher")
+    )
     category = models.CharField(
         verbose_name="Category", max_length=5, choices=Categories.choices
     )
@@ -84,10 +88,21 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def author_indexing(self):
+        """Author for indexing. Used in Elasticsearch indexing."""
+        if self.author is not None:
+            return self.author.id
+
+    @property
+    def publisher_indexing(self):
+        """Publisher for indexing. Used in Elasticsearch indexing."""
+        if self.publisher is not None:
+            return self.publisher.id
 
 
 class BookImage(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name=_("book"), related_name='bookImage')
     image = models.ImageField(verbose_name="Image")
     unique_id = models.UUIDField(
         default=uuid.uuid4, editable=False, db_index=True, unique=True
@@ -97,6 +112,12 @@ class BookImage(models.Model):
     class Meta:
         db_table = "book_image"
 
+    @property
+    def book_indexing(self):
+        """Book for indexing. Used in Elasticsearch indexing."""
+        if self.book is not None:
+            return self.book.id
+
 
 class BookComment(models.Model):
     book = models.ForeignKey(
@@ -105,8 +126,11 @@ class BookComment(models.Model):
         related_name="bookComment",
         blank=True,
         null=True,
+        verbose_name=_("book"),
     )
-    account = models.ForeignKey(Account, null=True, on_delete=models.CASCADE)
+    account = models.ForeignKey(
+        Account, null=True, on_delete=models.CASCADE, verbose_name=_("account")
+    )
     comment = models.TextField(verbose_name="Comment")
     unique_id = models.UUIDField(
         default=uuid.uuid4, editable=False, db_index=True, unique=True
@@ -119,6 +143,18 @@ class BookComment(models.Model):
 
     def __str__(self):
         return self.comment
+
+    @property
+    def book_indexing(self):
+        """Book for indexing. Used in Elasticsearch indexing."""
+        if self.book is not None:
+            return self.book.id
+
+    @property
+    def account_indexing(self):
+        """Book for indexing. Used in Elasticsearch indexing."""
+        if self.account is not None:
+            return self.account.id
 
 
 class Cart(models.Model):

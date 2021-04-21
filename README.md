@@ -1,6 +1,6 @@
 # LibStash API
 
-A Restful Api for book e-commerce, using the Python Django web framework and Django Rest framework.
+A Restful API service for book e-commerce, using the Python Django web framework and Django Rest framework.
 
 This is my final year project of my Computer Science BSC.
 
@@ -99,5 +99,4 @@ python manage.py createsuperuser --settings=libStash.settings.development
 Follow the prompt by providing your name email, first name, last name, password, and confirm your password.
 
 If the prompt is completed without any error you can now access the admin dashboard at <http://localhost:8000/admin/>, using the email and password you just provided in registeration.
-
 

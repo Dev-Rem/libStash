@@ -145,9 +145,8 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=24),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=3),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=3),
     "AUTH_HEADER_TYPES": ("Bearer",),
-    
 }
 
 DJOSER = {
@@ -170,20 +169,25 @@ ELASTICSEARCH_DSL = {
 }
 
 ELASTICSEARCH_INDEX_NAMES = {
-    "searches.documents.post": "post",
-    "searches.documents.postimage": "postimage",
-    "searches.documents.postcomment": "postcomment",
+    "searches.documents.posts.post": "post",
+    "searches.documents.posts.postimage": "postimage",
+    "searches.documents.posts.postcomment": "postcomment",
+    "searches.documents.books.author": "author",
+    "searches.documents.books.publisher": "publisher",
+    "searches.documents.books.book": "book",
+    "searches.documents.books.bookimage": "bookimage",
+    "searches.documents.books.bookcomment": "bookcomment",
 }
 
 APPEND_SLASH = True
 
-SENDGRID_API_KEY = config("SENDGRID_API_KEY")
+ADMIN_URL = config("ADMIN_URL")
 
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
-ADMIN_URL = config("ADMIN_URL")
-
 CACHE_TTL = int(config("CACHE_TTL"))
+
+SENDGRID_API_KEY = config("SENDGRID_API_KEY")
 
 LOGGING = {
     "version": 1,

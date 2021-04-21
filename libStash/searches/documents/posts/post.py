@@ -1,4 +1,3 @@
-"""Required imports"""
 from blogs.models import Post, PostImage, PostComment
 from django.conf import settings
 from django_elasticsearch_dsl import (
