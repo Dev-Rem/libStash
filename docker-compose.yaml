@@ -24,7 +24,6 @@ services:
     image: "redis:alpine"
   db:
     image: postgres
-    restart: always
     env_file: 
       - .env
     environment:

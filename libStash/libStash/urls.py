@@ -30,8 +30,8 @@ urlpatterns = [
 # API URLS
 urlpatterns += [
     path('api/v1/dashboard/', include('dashboard.urls')),
-    path("api/v1/blogs", include("blogs.urls")),
-    path("api/v1/books", include("books.urls")),
+    path("api/v1/blogs/", include("blogs.urls")),
+    path("api/v1/books/", include("books.urls")),
     path("api/v1/payments/", include("payments.urls")),
     path("api/v1/searches/", include("searches.urls")),
     path("api/v1/users/", include("users.urls")),

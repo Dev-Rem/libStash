@@ -64,15 +64,19 @@ class Book(models.Model):
         Author, related_name="bookAuthor", verbose_name=_("author")
     )
     publisher = models.ForeignKey(
-        Publisher, on_delete=models.CASCADE, related_name="bookPublisher",default=None, verbose_name=_("publisher")
+        Publisher,
+        on_delete=models.CASCADE,
+        related_name="bookPublisher",
+        default=None,
+        verbose_name=_("publisher"),
     )
     category = models.CharField(
-        verbose_name="Category", max_length=5, choices=Categories.choices
+        verbose_name="Category", max_length=10, choices=Categories.choices
     )
     format = models.CharField(
-        verbose_name="Format", max_length=7, choices=Formats.choices
+        verbose_name="Format", max_length=10, choices=Formats.choices
     )
-    isbn = models.CharField(verbose_name="ISBN", max_length=13)
+    isbn = models.CharField(verbose_name="ISBN", max_length=20)
     year = models.IntegerField(
         _("year"), choices=YEAR_CHOICES, default=datetime.datetime.now().year
     )
@@ -102,7 +106,9 @@ class Book(models.Model):
 
 
 class BookImage(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name=_("book"), related_name='bookImage')
+    book = models.ForeignKey(
+        Book, on_delete=models.CASCADE, verbose_name=_("book"), related_name="bookImage"
+    )
     image = models.ImageField(verbose_name="Image")
     unique_id = models.UUIDField(
         default=uuid.uuid4, editable=False, db_index=True, unique=True
