@@ -1,16 +1,20 @@
 import json
-
 import stripe
+
 from books.models import Book, BookInCart, Cart
+from users.models import Account, Address
+
 from decouple import config
 from django.core import serializers
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
+from django.views.decorators.http import require_http_methods
+
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Content, Mail, To
-from users.models import Account
+
 
 # Create your views here.
 
@@ -29,8 +33,8 @@ class CancelledView(TemplateView):
     template_name = "cancelled.html"
 
 
-# calculate order total
 @csrf_exempt
+# calculate order total
 def get_amount(request):
     if request.method == "GET":
         total = 0
@@ -47,7 +51,9 @@ def get_amount(request):
 
 @csrf_exempt
 def checkout(request):
+    print(request)
     if request.method == "GET":
+        print(request.user)
         domain_url = config("DOMAIN_URL")
         try:
             total = get_amount(request)
@@ -66,14 +72,14 @@ def checkout(request):
                 if request.user.is_authenticated
                 else None,
                 success_url=domain_url
-                + "payment/success?session_id={CHECKOUT_SESSION_ID}",
-                cancel_url=domain_url + "payment/cancelled/",
+                + "api/v1/payments/success?session_id={CHECKOUT_SESSION_ID}",
+                cancel_url=domain_url + "api/v1/payments/cancelled/",
                 payment_method_types=["card"],
                 customer=customer.id,
                 mode="payment",
                 line_items=[
                     {
-                        "name": "{} {}".format(account.firstname, account.lastanme),
+                        "name": "{} {}".format(account.firstname, account.lastname),
                         "amount": int(total),
                         "quantity": 1,
                         "currency": "usd",
@@ -87,6 +93,7 @@ def checkout(request):
 
 @csrf_exempt
 def stripe_config(request):
+    print(request.user)
     if request.method == "GET":
         stripe_config = {"publicKey": config("STRIPE_PUBLISHABLE_KEY")}
         return JsonResponse(stripe_config, safe=False)
@@ -94,6 +101,7 @@ def stripe_config(request):
 
 @csrf_exempt
 def stripe_webhook(request):
+    print(request.user)
     endpoint_secret = config("STRIPE_ENDPOINT_SECRET")
     payload = request.body.decode("utf-8")
     sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
@@ -116,19 +124,30 @@ def stripe_webhook(request):
         account = Account.objects.get(
             unique_id=payload["data"]["object"]["client_reference_id"]
         )
+
+        # prepare context for the template file
         cart = Cart.objects.get(account=account)
+        address = Address.objects.get(account=account)
         cart_items = BookInCart.objects.filter(cart=cart)
-        mail_content = render_to_string("new_order.html", {"cart_items": cart_items})
+        mail_content = render_to_string(
+            "new_order.html",
+            {"cart_items": cart_items, "user": account, "address": address},
+        )
+
+        # define SendGrid Mail object
         message = Mail(
             from_email=config("DEFAULT_FROM_EMAIL"),
-            to_emails=To(request.user),
+            to_emails=To(account.email),
             subject="Checkout Succesful",
             html_content=Content("text/html", mail_content),
         )
+
+        # send email and delete cart items.
         try:
             sg = SendGridAPIClient(config("SENDGRID_API_KEY"))
             sg.send(message)
             cart_items.delete()
         except Exception as e:
             print(e.message)
+
     return HttpResponse(status=200)
