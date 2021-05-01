@@ -8,11 +8,21 @@ This is my final year project of my Computer Science BSC.
 
 # Prerequisites and Requirements
 
-* A Stripe Payment Gateway account (API Keys needed)
+* A Stripe Payment Gateway account (API Keys needed) 
+
+    Guide: <https://hostlaunch.io/docs/how-to-get-a-stripe-api-key/>
 * A Twilio SendGrid account (API Keys needed)
-* Basic knowlegde of Django and Django Rest Framework
+
+    Guide: <https://www.youtube.com/watch?v=DA2ubUEV1uQ>
+* Basic to advance knowlegde of Django and Django Rest Framework
+    Django Web Framework: <https://www.djangoproject.com/>
+
+    Django Rest Framework: <https://www.django-rest-framework.org/>
+
 * Basic knowledge of HTML/CSS and JavaScript
 * Docker Engine or Docker Desktop installed
+
+    Guide: <https://docs.docker.com/get-docker/>
 * An IDE or code editor
 
 <br>
@@ -93,7 +103,7 @@ Amonsgt the containers you should see a container named "libstash_web_1" or "lib
 Run the command:
 ```
 cd libStas
-python manage.py createsuperuser --settings=libStash.settings.development
+python manage.py createsuperuser
 ```
 
 Follow the prompt by providing your name email, first name, last name, password, and confirm your password.
