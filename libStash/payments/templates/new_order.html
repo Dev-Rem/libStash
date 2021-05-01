@@ -60,7 +60,7 @@
                 <hr>
                 <ul class="list">
                     <li>Book Title: {{ item.book.title }}</li>
-                    <li>Price: {{ item.book.price }}</li>
+                    <li>Sub total: {{ item.amount }}</li>
                     <li>Year: {{ item.book.year }}</li>
                     <li>ISBN: {{ item.book.isbn }}</li>
                     <li>Count: {{ item.quantity }} </li>
@@ -70,6 +70,7 @@
                 <h3 class="content-headers">Payment</h3>
                 <hr>
                 <p>Status: Sucessful</p>
+                <p>Total: {{ total }}</p>
             </div>
             
         </div>

@@ -106,7 +106,6 @@ def stripe_webhook(request):
     payload = request.body.decode("utf-8")
     sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
     event = None
-
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
     except ValueError as e:
@@ -121,24 +120,31 @@ def stripe_webhook(request):
     # Handle the checkout.session.completed event and delete cart items
     if event["type"] == "checkout.session.completed":
         payload = json.loads(payload)
+        print(payload)
         account = Account.objects.get(
             unique_id=payload["data"]["object"]["client_reference_id"]
         )
 
         # prepare context for the template file
+        total = payload["data"]["object"]["amount_total"]
         cart = Cart.objects.get(account=account)
         address = Address.objects.get(account=account)
         cart_items = BookInCart.objects.filter(cart=cart)
         mail_content = render_to_string(
             "new_order.html",
-            {"cart_items": cart_items, "user": account, "address": address},
+            {
+                "cart_items": cart_items,
+                "user": account,
+                "address": address,
+                "total": total / 100,
+            },
         )
 
         # define SendGrid Mail object
         message = Mail(
             from_email=config("DEFAULT_FROM_EMAIL"),
             to_emails=To(account.email),
-            subject="Checkout Succesful",
+            subject="New User Order",
             html_content=Content("text/html", mail_content),
         )
 
